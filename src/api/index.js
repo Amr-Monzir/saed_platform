@@ -144,9 +144,14 @@ let mockApplications = [
 ];
 
 export const fetchApplications = async (orgId) => {
-  // Return applications for jobs belonging to this org
-  const orgJobIds = mockJobs.filter(j => j.organizationId === orgId).map(j => j.id);
-  return mockApplications.filter(app => orgJobIds.includes(app.jobId)).map(Application.fromObject);
+  if (orgId) {
+    // Return applications for jobs belonging to this org
+    const orgJobIds = mockJobs.filter(j => j.organizationId === orgId).map(j => j.id);
+    return mockApplications.filter(app => orgJobIds.includes(app.jobId)).map(Application.fromObject);
+  } else {
+    // Return all applications
+    return mockApplications.map(Application.fromObject);
+  }
 };
 
 export const updateApplicationStatus = async (appId, status) => {

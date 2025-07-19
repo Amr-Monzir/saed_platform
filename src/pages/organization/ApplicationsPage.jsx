@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import OrganizationDashboard from './OrganizationDashboard';
 import {
-  Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Dialog, DialogTitle, DialogContent, DialogActions, Avatar, Chip, Stack, Divider
+  Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Dialog, DialogTitle, DialogContent, DialogActions, Avatar, Chip, Stack, Divider, TextField, Snackbar, Alert
 } from '@mui/material';
 import { fetchApplications, updateApplicationStatus, getVolunteerById, mockJobs } from '../../api/index.js';
 import { useAuth } from '../../contexts/useAuth';
@@ -12,13 +12,19 @@ const ApplicationsPageContent = () => {
   const [loading, setLoading] = useState(true);
   const [selectedVolunteer, setSelectedVolunteer] = useState(null);
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
+  // Email dialog state
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const [emailSubject, setEmailSubject] = useState('');
+  const [emailBody, setEmailBody] = useState('');
+  const [emailAction, setEmailAction] = useState(null); // 'accepted' or 'rejected'
+  const [emailAppId, setEmailAppId] = useState(null);
+  const [emailVolunteerEmail, setEmailVolunteerEmail] = useState('');
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
   useEffect(() => {
     const load = async () => {
       setLoading(true);
-      console.log('Fetching applications for orgId:', user.organizationId);
       const apps = await fetchApplications(user.organizationId);
-      console.log('Fetched applications:', apps);
       setApplications(apps);
       setLoading(false);
     };
@@ -26,8 +32,37 @@ const ApplicationsPageContent = () => {
   }, [user]);
 
   const handleStatus = async (appId, status) => {
-    await updateApplicationStatus(appId, status);
-    setApplications(apps => apps.map(a => a.id === appId ? { ...a, status } : a));
+    // Find app, volunteer, job
+    const app = applications.find(a => a.id === appId);
+    const volunteer = getVolunteerById(app.volunteerId);
+    const job = mockJobs.find(j => j.id === app.jobId);
+    // Prepare default email
+    let subject = '';
+    let body = '';
+    if (status === 'accepted') {
+      subject = `Congratulations! Your Application Has Been Accepted`;
+      body = `Dear ${volunteer.name},\n\nWe are pleased to inform you that your application for the position of '${job.title}' has been accepted. We look forward to working with you!\n\nBest regards,\n${user.name || 'The Organization Team'}`;
+    } else {
+      subject = `Update on Your Application`;
+      body = `Dear ${volunteer.name},\n\nThank you for applying for the position of '${job.title}'. We regret to inform you that your application was not selected at this time. We appreciate your interest and encourage you to apply for future opportunities.\n\nBest regards,\n${user.name || 'The Organization Team'}`;
+    }
+    setEmailSubject(subject);
+    setEmailBody(body);
+    setEmailAction(status);
+    setEmailAppId(appId);
+    setEmailVolunteerEmail(volunteer.email);
+    setEmailDialogOpen(true);
+  };
+
+  const handleSendEmail = async () => {
+    // Open mail client with mailto link
+    const mailto = `mailto:${encodeURIComponent(emailVolunteerEmail)}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+    window.location.href = mailto;
+    setEmailDialogOpen(false);
+    setSnackbar({ open: true, message: 'Mail client opened for volunteer email!', severity: 'success' });
+    // Now update application status
+    await updateApplicationStatus(emailAppId, emailAction);
+    setApplications(apps => apps.map(a => a.id === emailAppId ? { ...a, status: emailAction } : a));
   };
 
   const handleVolunteerClick = (volunteerId) => {
@@ -166,6 +201,40 @@ const ApplicationsPageContent = () => {
             <Button onClick={() => setProfileDialogOpen(false)}>Close</Button>
           </DialogActions>
         </Dialog>
+        {/* Email Dialog */}
+        <Dialog open={emailDialogOpen} onClose={() => setEmailDialogOpen(false)} maxWidth="sm" fullWidth>
+          <DialogTitle>Email to Volunteer</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="Subject"
+              value={emailSubject}
+              onChange={e => setEmailSubject(e.target.value)}
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="Body"
+              value={emailBody}
+              onChange={e => setEmailBody(e.target.value)}
+              fullWidth
+              margin="normal"
+              multiline
+              minRows={6}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setEmailDialogOpen(false)}>Cancel</Button>
+            <Button variant="contained" onClick={handleSendEmail}>Send</Button>
+          </DialogActions>
+        </Dialog>
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={3000}
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert severity={snackbar.severity} sx={{ width: '100%' }}>{snackbar.message}</Alert>
+        </Snackbar>
       </Paper>
     </Box>
   );
