@@ -47,7 +47,7 @@ const LoginPage = () => {
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="100vh">
       <Typography variant="h4" mb={4} textAlign="center">
-        Welcome to Saed Platform
+        Welcome to Rabt Platform
       </Typography>
       <Tabs value={tab} onChange={handleTabChange} sx={{ mb: 3, width: 320 }}>
         <Tab label="Volunteer Login" />

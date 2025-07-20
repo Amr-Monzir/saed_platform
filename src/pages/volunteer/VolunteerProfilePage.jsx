@@ -1,5 +1,19 @@
 import React, { useState } from 'react';
-import { Box, Typography, Paper, Stack, TextField, Button, Chip, Autocomplete } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Paper,
+  Stack,
+  TextField,
+  Button,
+  Chip,
+  Autocomplete,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Drawer
+} from '@mui/material';
+import { Menu as MenuIcon } from '@mui/icons-material';
 import { useAuth } from '../../contexts/useAuth';
 import { useLocation } from 'react-router-dom';
 import VolunteerSideMenu from './VolunteerSideMenu';
@@ -19,6 +33,7 @@ const allSkills = [
 const VolunteerProfilePage = () => {
   const { user, login } = useAuth();
   const location = useLocation();
+  const [sideMenuOpen, setSideMenuOpen] = useState(false);
   const [form, setForm] = useState({
     name: user?.name || '',
     description: user?.description || '',
@@ -48,37 +63,62 @@ const VolunteerProfilePage = () => {
   };
 
   return (
-    <Box display="flex">
-      <VolunteerSideMenu selectedPath={location.pathname} />
-      <Box component="main" flex={1} p={4} ml={2}>
-        <Box maxWidth={600} mx="auto" mt={4}>
+    <Box sx={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
+      {/* Top App Bar */}
+      <AppBar position="static" elevation={0} sx={{ backgroundColor: 'white', color: 'text.primary' }}>
+        <Toolbar>
+          <IconButton
+            edge="start"
+            onClick={() => setSideMenuOpen(true)}
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            My Profile
+          </Typography>
+        </Toolbar>
+      </AppBar>
+
+      {/* Side Menu Drawer */}
+      <Drawer
+        anchor="left"
+        open={sideMenuOpen}
+        onClose={() => setSideMenuOpen(false)}
+        sx={{
+          '& .MuiDrawer-paper': {
+            width: 280,
+            boxSizing: 'border-box',
+          },
+        }}
+      >
+        <VolunteerSideMenu selectedPath={location.pathname} />
+      </Drawer>
+
+      {/* Main content */}
+      <Box p={3}>
+        <Box maxWidth={600} mx="auto">
           <Paper elevation={3} sx={{ borderRadius: 4, p: 4, background: '#fafbfc' }}>
             <Typography variant="h4" mb={3}>My Profile</Typography>
             <form onSubmit={handleSubmit}>
               <Stack spacing={3}>
                 <TextField
-                  label="Name"
+                  label="Full Name"
                   name="name"
                   value={form.name}
                   onChange={handleChange}
+                  fullWidth
                   required
-                  fullWidth
                 />
                 <TextField
-                  label="Email"
-                  name="email"
-                  value={user?.email || ''}
-                  disabled
-                  fullWidth
-                />
-                <TextField
-                  label="Description"
+                  label="Bio / Description"
                   name="description"
                   value={form.description}
                   onChange={handleChange}
-                  multiline
-                  minRows={2}
                   fullWidth
+                  multiline
+                  rows={4}
+                  placeholder="Tell us about yourself and your interests..."
                 />
                 <Autocomplete
                   multiple
@@ -87,18 +127,21 @@ const VolunteerProfilePage = () => {
                   onChange={handleSkillsChange}
                   renderTags={(value, getTagProps) =>
                     value.map((option, index) => (
-                      <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                      <Chip variant="outlined" label={option} {...getTagProps({ index })} key={index} />
                     ))
                   }
                   renderInput={(params) => (
-                    <TextField {...params} variant="outlined" label="Skills" placeholder="Select skills" />
+                    <TextField {...params} label="Skills" placeholder="Select your skills" />
                   )}
-                  fullWidth
                 />
-                <Button type="submit" variant="contained" color="primary" disabled={saving}>
-                  {saving ? 'Saving...' : 'Save'}
+                <Button
+                  type="submit"
+                  variant="contained"
+                  disabled={saving}
+                  sx={{ py: 1.5 }}
+                >
+                  {saving ? 'Saving...' : saved ? 'Saved!' : 'Save Profile'}
                 </Button>
-                {saved && <Typography color="success.main">Profile saved!</Typography>}
               </Stack>
             </form>
           </Paper>

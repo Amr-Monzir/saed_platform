@@ -10,6 +10,7 @@ import GuestJobsPage from '../pages/guest/GuestJobsPage';
 import CreateJobPage from '../pages/organization/CreateJobPage';
 import MyJobsPage from '../pages/organization/MyJobsPage';
 import ApplicationsPage from '../pages/organization/ApplicationsPage';
+import OrganizationProfilePage from '../pages/organization/OrganizationProfilePage';
 import VolunteerJobDetailsPage from '../pages/volunteer/VolunteerJobDetailsPage';
 import VolunteerMyJobsPage from '../pages/volunteer/VolunteerMyJobsPage';
 import VolunteerProfilePage from '../pages/volunteer/VolunteerProfilePage';
@@ -41,6 +42,7 @@ const AppRoutes = () => (
       <Route index element={<MyJobsPage />} />
       <Route path="create-job" element={<CreateJobPage />} />
       <Route path="applications" element={<ApplicationsPage />} />
+      <Route path="profile" element={<OrganizationProfilePage />} />
     </Route>
     <Route
       path="/volunteer/*"

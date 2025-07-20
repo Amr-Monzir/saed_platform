@@ -29,7 +29,7 @@ const VolunteerSideMenu = ({ selectedPath }) => {
     >
       <Box sx={{ px: 3, pt: 4, pb: 2 }}>
         <Typography variant="h4" fontWeight="bold" color="primary" letterSpacing={2}>
-          Saed
+          Rabt
         </Typography>
       </Box>
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
