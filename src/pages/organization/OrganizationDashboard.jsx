@@ -9,7 +9,8 @@ import {
   Typography,
   AppBar,
   Toolbar,
-  IconButton
+  IconButton,
+  Button
 } from '@mui/material';
 import WorkIcon from '@mui/icons-material/Work';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -17,7 +18,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import PersonIcon from '@mui/icons-material/Person';
-import { Menu as MenuIcon } from '@mui/icons-material';
+import { Menu as MenuIcon, Add as AddIcon } from '@mui/icons-material';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 
 const drawerWidth = 280;
@@ -96,6 +97,21 @@ const OrganizationDashboard = () => {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Organization Dashboard
           </Typography>
+          {location.pathname === '/organization' && (
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={() => navigate('/organization/create-job')}
+              sx={{
+                backgroundColor: '#6366f1',
+                '&:hover': { backgroundColor: '#5856eb' },
+                textTransform: 'none',
+                fontWeight: 600
+              }}
+            >
+              Create a role/event
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
 

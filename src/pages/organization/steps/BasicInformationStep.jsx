@@ -5,13 +5,8 @@ import {
   TextField,
   Button,
   FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
   MenuItem,
   Select,
-  InputLabel,
-  Stack
 } from '@mui/material';
 
 const categories = [

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchJobs, updateJob, deleteJob, duplicateJob } from '../../api/index.js';
+import { advertService } from '../../api/services.js';
 import { useAuth } from '../../contexts/useAuth';
 import {
   Box, 
@@ -142,10 +142,22 @@ const MyJobsPageContent = () => {
   const loadJobs = async () => {
     setLoading(true);
     try {
-      const allJobs = await fetchJobs();
-      const orgJobs = allJobs.filter(job => job.organizationId === user?.organizationId);
-      setJobs(orgJobs);
-    } catch {
+      console.log('Fetching organization jobs for user:', user?.organizationId);
+      const response = await advertService.getMyAdverts({ limit: 100, offset: 0 });
+      if (response.success && response.data) {
+        console.log('Fetched all jobs:', response.data);
+        
+        // Filter jobs by organization ID since API returns all jobs
+        const orgJobs = response.data.filter(job => 
+          job.organizer && job.organizer.id === user?.organizationId
+        );
+        console.log('Filtered organization jobs:', orgJobs);
+        setJobs(orgJobs);
+      } else {
+        setError(response.error?.message || 'Failed to load jobs');
+      }
+    } catch (err) {
+      console.error('Error loading jobs:', err);
       setError('Failed to load jobs');
     } finally {
       setLoading(false);
@@ -186,11 +198,16 @@ const MyJobsPageContent = () => {
 
   const handleEditSave = async () => {
     try {
-      await updateJob(editJob.id, editFields);
-      setSnackbar({ open: true, message: 'Job updated successfully!', severity: 'success' });
-      setEditDialogOpen(false);
-      loadJobs();
-    } catch {
+      const response = await advertService.updateAdvert(editJob.id, editFields);
+      if (response.success) {
+        setSnackbar({ open: true, message: 'Job updated successfully!', severity: 'success' });
+        setEditDialogOpen(false);
+        loadJobs();
+      } else {
+        setSnackbar({ open: true, message: response.error?.message || 'Failed to update job', severity: 'error' });
+      }
+    } catch (err) {
+      console.error('Error updating job:', err);
       setSnackbar({ open: true, message: 'Failed to update job', severity: 'error' });
     }
   };
@@ -203,23 +220,23 @@ const MyJobsPageContent = () => {
 
   const handleDeleteConfirm = async () => {
     try {
-      await deleteJob(jobToDelete.id);
-      setSnackbar({ open: true, message: 'Job deleted successfully!', severity: 'success' });
-      setDeleteDialogOpen(false);
-      loadJobs();
-    } catch {
+      const response = await advertService.deleteAdvert(jobToDelete.id);
+      if (response.success) {
+        setSnackbar({ open: true, message: 'Job deleted successfully!', severity: 'success' });
+        setDeleteDialogOpen(false);
+        loadJobs();
+      } else {
+        setSnackbar({ open: true, message: response.error?.message || 'Failed to delete job', severity: 'error' });
+      }
+    } catch (err) {
+      console.error('Error deleting job:', err);
       setSnackbar({ open: true, message: 'Failed to delete job', severity: 'error' });
     }
   };
 
-  const handleDuplicateClick = async (job) => {
-    try {
-      await duplicateJob(job.id);
-      setSnackbar({ open: true, message: 'Job duplicated successfully!', severity: 'success' });
-      loadJobs();
-    } catch {
-      setSnackbar({ open: true, message: 'Failed to duplicate job', severity: 'error' });
-    }
+  const handleDuplicateClick = async () => {
+    // TODO: Implement duplicate functionality when API supports it
+    setSnackbar({ open: true, message: 'Duplicate functionality not yet implemented', severity: 'info' });
     handleMenuClose();
   };
 
@@ -252,36 +269,7 @@ const MyJobsPageContent = () => {
            matchesCategory && matchesDays && matchesTimeCommitment && matchesStatus;
   });
 
-  const getStatusChip = (job) => {
-    // Mock status logic - consistent based on job ID to prevent random changes
-    const isDraft = job.status === 'Draft' || (job.id % 3 === 0); // Consistent based on job ID
-    return isDraft ? (
-      <Chip 
-        label="Draft" 
-        size="small" 
-        sx={{ 
-          backgroundColor: '#f3f4f6', 
-          color: '#6b7280',
-          fontWeight: 500
-        }} 
-      />
-    ) : (
-      <Chip 
-        label="Published" 
-        size="small" 
-        sx={{ 
-          backgroundColor: '#dcfce7', 
-          color: '#16a34a',
-          fontWeight: 500
-        }} 
-      />
-    );
-  };
 
-  const formatDate = () => {
-    // Mock date formatting - would use actual job dates
-    return "18 July";
-  };
 
   if (loading) return <CircularProgress />;
   if (error) return <Typography color="error">{error}</Typography>;
@@ -363,12 +351,34 @@ const MyJobsPageContent = () => {
                   <Stack direction="row" spacing={2} alignItems="center">
                     {/* Date */}
                     <Box sx={{ minWidth: 60, textAlign: 'center' }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '14px' }}>
-                        July
-                      </Typography>
-                      <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '18px' }}>
-                        20
-                      </Typography>
+                      {job.frequency === 'one-off' && job.oneoff_details?.event_datetime ? (
+                        <>
+                          <Typography variant="body2" color="text.secondary" sx={{ fontSize: '14px' }}>
+                            {new Date(job.oneoff_details.event_datetime).toLocaleDateString('en-GB', { month: 'short' })}
+                          </Typography>
+                          <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '18px' }}>
+                            {new Date(job.oneoff_details.event_datetime).getDate()}
+                          </Typography>
+                        </>
+                      ) : job.frequency === 'recurring' ? (
+                        <>
+                          <Typography variant="body2" color="text.secondary" sx={{ fontSize: '14px' }}>
+                            {job.recurring_details?.recurrence || 'Recurring'}
+                          </Typography>
+                          <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '18px' }}>
+                            🔄
+                          </Typography>
+                        </>
+                      ) : (
+                        <>
+                          <Typography variant="body2" color="text.secondary" sx={{ fontSize: '14px' }}>
+                            {new Date(job.created_at).toLocaleDateString('en-GB', { month: 'short' })}
+                          </Typography>
+                          <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '18px' }}>
+                            {new Date(job.created_at).getDate()}
+                          </Typography>
+                        </>
+                      )}
                     </Box>
                     
                     {/* Job Image/Icon */}
@@ -377,37 +387,139 @@ const MyJobsPageContent = () => {
                         width: 48,
                         height: 48,
                         borderRadius: 1,
-                        backgroundColor: job.category === 'Digital Campaign' ? '#3b82f6' : 
-                                       job.category === 'Media/Communications' ? '#ef4444' : '#8b5cf6',
+                        overflow: 'hidden',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
+                        backgroundColor: job.advert_image_url ? 'transparent' : 
+                                       (job.category === 'Digital Campaign' ? '#3b82f6' : 
+                                        job.category === 'Media/Communications' ? '#ef4444' : '#8b5cf6'),
                         color: 'white',
                         fontSize: '20px'
                       }}
                     >
-                      {job.category === 'Digital Campaign' ? '📱' : 
-                       job.category === 'Media/Communications' ? '📸' : '📚'}
+                      {job.advert_image_url ? (
+                        <img
+                          src={job.advert_image_url}
+                          alt={job.title}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover'
+                          }}
+                          onError={(e) => {
+                            // Fallback to emoji if image fails to load
+                            e.target.style.display = 'none';
+                            e.target.parentNode.innerHTML = job.category === 'Digital Campaign' ? '📱' : 
+                                                          job.category === 'Media/Communications' ? '📸' : '📚';
+                            e.target.parentNode.style.backgroundColor = job.category === 'Digital Campaign' ? '#3b82f6' : 
+                                                                       job.category === 'Media/Communications' ? '#ef4444' : '#8b5cf6';
+                          }}
+                        />
+                      ) : (
+                        // Fallback to emoji icons when no image URL
+                        job.category === 'Digital Campaign' ? '📱' : 
+                        job.category === 'Media/Communications' ? '📸' : '📚'
+                      )}
                     </Box>
                     
                     {/* Job Details */}
-                    <Box>
+                    <Box sx={{ flex: 1 }}>
                       <Typography variant="body1" fontWeight="600" sx={{ mb: 0.5 }}>
                         {job.title}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '14px' }}>
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '14px', mb: 1 }}>
                         {job.description}
                       </Typography>
+                      
+                      {/* Additional Details */}
+                      <Stack direction="row" spacing={2} sx={{ mt: 1 }}>
+                        {/* Location */}
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '12px' }}>
+                          📍 {job.location_type === 'remote' ? 'Remote' : 
+                               job.location_type === 'on-site' ? (job.address_text || 'On-site') :
+                               job.location_type === 'hybrid' ? 'Hybrid' : job.location_type}
+                        </Typography>
+                        
+                        {/* Volunteers needed */}
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '12px' }}>
+                          👥 {job.number_of_volunteers} volunteer{job.number_of_volunteers !== 1 ? 's' : ''}
+                        </Typography>
+                        
+                        {/* Time commitment */}
+                        {(job.oneoff_details?.time_commitment || job.recurring_details?.time_commitment_per_session) && (
+                          <Typography variant="body2" color="text.secondary" sx={{ fontSize: '12px' }}>
+                            ⏱️ {job.oneoff_details?.time_commitment || job.recurring_details?.time_commitment_per_session}
+                          </Typography>
+                        )}
+                      </Stack>
+                      
+                      {/* Skills */}
+                      {job.required_skills && job.required_skills.length > 0 && (
+                        <Stack direction="row" spacing={0.5} sx={{ mt: 1, flexWrap: 'wrap', gap: 0.5 }}>
+                          {job.required_skills.slice(0, 3).map((skill) => (
+                            <Chip
+                              key={skill.id}
+                              label={skill.name}
+                              size="small"
+                              sx={{
+                                fontSize: '10px',
+                                height: 20,
+                                backgroundColor: '#f3f4f6',
+                                color: '#374151'
+                              }}
+                            />
+                          ))}
+                          {job.required_skills.length > 3 && (
+                            <Chip
+                              label={`+${job.required_skills.length - 3} more`}
+                              size="small"
+                              sx={{
+                                fontSize: '10px',
+                                height: 20,
+                                backgroundColor: '#e5e7eb',
+                                color: '#6b7280'
+                              }}
+                            />
+                          )}
+                        </Stack>
+                      )}
                     </Box>
                   </Stack>
                 </TableCell>
                 
                 <TableCell sx={{ py: 3 }}>
                   <Box>
-                    {getStatusChip(job)}
+                    {/* Status */}
+                    <Chip
+                      label={job.is_active ? 'Active' : 'Inactive'}
+                      size="small"
+                      sx={{
+                        backgroundColor: job.is_active ? '#dcfce7' : '#fef2f2',
+                        color: job.is_active ? '#166534' : '#dc2626',
+                        fontWeight: 500,
+                        fontSize: '12px'
+                      }}
+                    />
+                    
+                    {/* Created date */}
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 1, fontSize: '12px' }}>
-                      Started {formatDate(job.createdAt)}
+                      Created {new Date(job.created_at).toLocaleDateString('en-GB')}
                     </Typography>
+                    
+                    {/* Application deadline for one-off jobs */}
+                    {job.frequency === 'one-off' && job.oneoff_details?.application_deadline && (
+                      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, fontSize: '12px' }}>
+                        Deadline {new Date(job.oneoff_details.application_deadline).toLocaleDateString('en-GB')}
+                      </Typography>
+                    )}
+                    
+                    {/* Duration for recurring jobs */}
+                    {job.frequency === 'recurring' && job.recurring_details?.duration && (
+                      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, fontSize: '12px' }}>
+                        Duration: {job.recurring_details.duration.replace('-', ' ')}
+                      </Typography>
+                    )}
                   </Box>
                 </TableCell>
                 

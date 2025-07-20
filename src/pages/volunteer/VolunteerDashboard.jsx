@@ -27,7 +27,7 @@ import {
   FavoriteBorder,
   Share
 } from '@mui/icons-material';
-import { fetchJobs } from '../../api/index.js';
+import { advertService } from '../../api/services.js';
 import { useNavigate, useLocation } from 'react-router-dom';
 import VolunteerSideMenu from './VolunteerSideMenu';
 
@@ -55,18 +55,33 @@ const VolunteerDashboard = () => {
   const location = useLocation();
 
   useEffect(() => {
-    fetchJobs().then(setJobs);
+    const fetchJobs = async () => {
+      try {
+        const response = await advertService.listAdverts();
+        if (response.success) {
+          setJobs(response.data || []);
+        }
+      } catch (error) {
+        console.error('Error fetching jobs:', error);
+      }
+    };
+    
+    fetchJobs();
   }, []);
 
   const filteredJobs = jobs.filter(job => {
-    const matchesSearch = job.title.toLowerCase().includes(search.toLowerCase()) || job.description.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = job.title?.toLowerCase().includes(search.toLowerCase()) || 
+                         job.description?.toLowerCase().includes(search.toLowerCase()) ||
+                         job.organizer?.name?.toLowerCase().includes(search.toLowerCase());
     const matchesCategory = category === 'All' || job.category === category;
-    const matchesFrequency = frequency === 'All' || job.frequency === frequency;
+    const matchesFrequency = frequency === 'All' || 
+                           (frequency === 'One-off' && job.frequency === 'one-off') ||
+                           (frequency === 'Recurring' && job.frequency === 'recurring');
     return matchesSearch && matchesCategory && matchesFrequency;
   });
 
-  const oneOffJobs = filteredJobs.filter(j => j.frequency === 'One-off');
-  const ongoingJobs = filteredJobs.filter(j => j.frequency === 'Recurring');
+  const oneOffJobs = filteredJobs.filter(j => j.frequency === 'one-off');
+  const ongoingJobs = filteredJobs.filter(j => j.frequency === 'recurring');
 
   const JobCard = ({ job }) => (
     <Card 
@@ -84,8 +99,23 @@ const VolunteerDashboard = () => {
       }}
       onClick={() => navigate(`/volunteer/jobs/${job.id}`)}
     >
-      <Box sx={{ position: 'relative', height: 200, backgroundColor: '#f5f5f5' }}>
-        {/* Job category specific images/colors */}
+      <Box sx={{ position: 'relative', height: 200, backgroundColor: '#f5f5f5', overflow: 'hidden' }}>
+        {/* Display actual image if available, otherwise fallback to gradient */}
+        {job.advert_image_url ? (
+          <img 
+            src={`${import.meta.env.VITE_API_MEDIA_URL}${job.advert_image_url}`}
+            alt={job.title}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover'
+            }}
+            onError={(e) => {
+              e.target.style.display = 'none';
+              e.target.nextSibling.style.display = 'flex';
+            }}
+          />
+        ) : null}
         <Box 
           sx={{ 
             width: '100%', 
@@ -95,7 +125,7 @@ const VolunteerDashboard = () => {
                        job.title.includes('Photographer') ? 'linear-gradient(135deg, #333 0%, #666 100%)' :
                        job.title.includes('Gaza Doctors') ? 'linear-gradient(135deg, #dc3545 0%, #fd7e14 100%)' :
                        'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            display: 'flex',
+            display: job.advert_image_url ? 'none' : 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: 'white',
@@ -122,7 +152,7 @@ const VolunteerDashboard = () => {
           {job.title}
         </Typography>
         <Typography variant="body2" color="text.secondary" mb={2}>
-          {job.organizationName || 'Imperial College Students for Palestine'}
+          {job.organizer?.name || 'Organization'}
         </Typography>
         <Box sx={{ mt: 'auto' }}>
           <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -133,7 +163,7 @@ const VolunteerDashboard = () => {
               sx={{ backgroundColor: '#e8f5e8', color: '#2e7d32' }}
             />
             <Typography variant="body2" color="text.secondary">
-              {job.frequency}
+              {job.frequency === 'one-off' ? 'One-off' : 'Ongoing'}
             </Typography>
           </Stack>
         </Box>

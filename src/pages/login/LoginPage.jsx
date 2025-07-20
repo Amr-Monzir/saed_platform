@@ -8,7 +8,8 @@ import Tab from '@mui/material/Tab';
 import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/useAuth';
-import { login as apiLogin } from '../../api/index.js';
+import { authService } from '../../api/services.js';
+import { setAuthToken } from '../../api/client.js';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -32,15 +33,44 @@ const LoginPage = () => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    const role = tab === 0 ? 'volunteer' : 'organization';
-    const res = await apiLogin({ ...form, role });
-    setLoading(false);
-    if (res.success) {
-      login(res.user);
-      if (role === 'organization') navigate('/organization');
-      else navigate('/volunteer');
-    } else {
-      setError(res.error);
+    
+    try {
+      const role = tab === 0 ? 'volunteer' : 'organization';
+      const { success, data, error } = await authService.login(form.email, form.password);
+      
+      if (success && data) {
+        // Store the auth token
+        setAuthToken(data.access_token);
+        localStorage.setItem('authToken', data.access_token);
+        
+        // Create login data for context
+        const loginData = {
+          role: role,
+          email: form.email,
+          token: data.access_token
+        };
+        
+        // Update auth context and fetch user profile
+        const loginResult = await login(loginData);
+        
+        if (loginResult.success) {
+          // Navigate based on role
+          if (role === 'organization') {
+            navigate('/organization');
+          } else {
+            navigate('/volunteer');
+          }
+        } else {
+          setError(loginResult.error || 'Failed to fetch user profile.');
+        }
+      } else {
+        setError(error?.message || 'Login failed. Please check your credentials.');
+      }
+    } catch (err) {
+      setError('Network error. Please try again.');
+      console.error('Login error:', err);
+    } finally {
+      setLoading(false);
     }
   };
 

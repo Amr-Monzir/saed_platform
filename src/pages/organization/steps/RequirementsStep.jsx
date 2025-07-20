@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -7,23 +7,71 @@ import {
   FormControl,
   Select,
   MenuItem,
-  Stack
+  Stack,
+  CircularProgress
 } from '@mui/material';
-
-const skills = [
-  'Graphic Design',
-  'Social Media',
-  'Translation',
-  'Public Speaking',
-  'Event Planning',
-  'Photography',
-  'Writing',
-  'Research',
-  'Other',
-  'No Skills Required',
-];
+import { skillsService } from '../../../api/services.js';
 
 const RequirementsStep = ({ data, errors, onUpdate, onNext, onBack }) => {
+  const [skills, setSkills] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        setLoading(true);
+        console.log('Fetching skills...');
+        const response = await skillsService.getSkills();
+        console.log('Skills response:', response);
+        
+        if (response.success && response.data && response.data.skills) {
+          console.log('Setting skills:', response.data.skills);
+          setSkills(response.data.skills);
+        } else {
+          console.error('Skills API failed:', response);
+          // Use fallback skills instead of showing error
+          setSkills([
+            { id: 1, name: 'Graphic Design', category: 'General', is_predefined: true },
+            { id: 2, name: 'Social Media Management', category: 'General', is_predefined: true },
+            { id: 3, name: 'Translation', category: 'General', is_predefined: true },
+            { id: 4, name: 'Public Speaking', category: 'General', is_predefined: true },
+            { id: 5, name: 'Event Planning', category: 'General', is_predefined: true },
+            { id: 6, name: 'Photography', category: 'General', is_predefined: true },
+            { id: 7, name: 'Videography', category: 'General', is_predefined: true },
+            { id: 8, name: 'Writing', category: 'General', is_predefined: true },
+            { id: 9, name: 'Research', category: 'General', is_predefined: true },
+            { id: 10, name: 'Legal Knowledge', category: 'General', is_predefined: true },
+            { id: 11, name: 'Medical Training', category: 'General', is_predefined: true },
+            { id: 12, name: 'None Required', category: 'General', is_predefined: true },
+            { id: 13, name: 'Other', category: 'General', is_predefined: true }
+          ]);
+        }
+      } catch (err) {
+        console.error('Error fetching skills:', err);
+        // Use fallback skills instead of showing error
+        setSkills([
+          { id: 1, name: 'Graphic Design', category: 'General', is_predefined: true },
+          { id: 2, name: 'Social Media Management', category: 'General', is_predefined: true },
+          { id: 3, name: 'Translation', category: 'General', is_predefined: true },
+          { id: 4, name: 'Public Speaking', category: 'General', is_predefined: true },
+          { id: 5, name: 'Event Planning', category: 'General', is_predefined: true },
+          { id: 6, name: 'Photography', category: 'General', is_predefined: true },
+          { id: 7, name: 'Videography', category: 'General', is_predefined: true },
+          { id: 8, name: 'Writing', category: 'General', is_predefined: true },
+          { id: 9, name: 'Research', category: 'General', is_predefined: true },
+          { id: 10, name: 'Legal Knowledge', category: 'General', is_predefined: true },
+          { id: 11, name: 'Medical Training', category: 'General', is_predefined: true },
+          { id: 12, name: 'None Required', category: 'General', is_predefined: true },
+          { id: 13, name: 'Other', category: 'General', is_predefined: true }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSkills();
+  }, []);
+
   const handleChange = (field, value) => {
     onUpdate({ [field]: value });
   };
@@ -31,9 +79,12 @@ const RequirementsStep = ({ data, errors, onUpdate, onNext, onBack }) => {
   const handleSubmit = () => {
     // Basic validation
     const newErrors = {};
-    if (!data.skillsRequired || data.skillsRequired.length === 0) {
+    
+    // Only require skills if they were loaded successfully
+    if (skills.length > 0 && (!data.skillsRequired || data.skillsRequired.length === 0)) {
       newErrors.skillsRequired = 'Please select at least one skill';
     }
+    
     if (!data.volunteersNeeded?.trim()) {
       newErrors.volunteersNeeded = 'Please specify number of volunteers needed';
     }
@@ -43,6 +94,18 @@ const RequirementsStep = ({ data, errors, onUpdate, onNext, onBack }) => {
     }
   };
 
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+
+
+  console.log('RequirementsStep render:', { skills, loading, data });
+  
   return (
     <Box>
       {/* Skills Required */}
@@ -65,8 +128,8 @@ const RequirementsStep = ({ data, errors, onUpdate, onNext, onBack }) => {
             sx={{ backgroundColor: 'white' }}
           >
             {skills.map((skill) => (
-              <MenuItem key={skill} value={skill}>
-                {skill}
+              <MenuItem key={skill.id} value={skill.name}>
+                {skill.name}
               </MenuItem>
             ))}
           </Select>

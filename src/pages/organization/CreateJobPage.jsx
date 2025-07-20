@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import {
-  Box, Typography, Button, Stepper, Step, StepLabel
+  Box, Typography, Button, Stepper, Step, StepLabel, Snackbar, Alert
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { advertService } from '../../api/services.js';
 
 // Import step components
 import BasicInformationStep from './steps/BasicInformationStep';
@@ -19,7 +21,10 @@ const steps = [
 ];
 
 const CreateJobPage = () => {
+  const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
   // All form data state
   const [formData, setFormData] = useState({
@@ -28,13 +33,14 @@ const CreateJobPage = () => {
     category: '',
     title: '',
     description: '',
+    image: null, // File object for image upload
 
     // Step 2: Requirements
     skillsRequired: [],
     volunteersNeeded: '',
 
     // Step 3: Logistics
-    locationType: 'venue',
+    locationType: 'on-site',
     locationDetails: '',
 
     // Step 4: Screening
@@ -68,10 +74,110 @@ const CreateJobPage = () => {
     setErrors({});
   };
 
-  const handleSave = () => {
-    // Submit logic here
-    alert('Job created! (Check console for data)');
-    console.log('Form Data:', formData);
+  const transformFormDataToAPI = (data) => {
+    // Transform the form data to match the API model
+    const apiData = {
+      title: data.title,
+      description: data.description,
+      category: data.category,
+      frequency: data.frequency === 'Single event/role' ? 'one-off' : 'recurring',
+      number_of_volunteers: parseInt(data.volunteersNeeded) || 1,
+      location_type: data.locationType,
+      address_text: data.locationDetails || '',
+      postcode: '', // Will be filled from location details if available
+      latitude: 0,
+      longitude: 0,
+      advert_image_url: '', // Will be set by the server
+      is_active: true,
+      required_skills: data.skillsRequired.map(skill => {
+        // If skill is a string (skill name), return it as is
+        if (typeof skill === 'string') {
+          return skill;
+        }
+        // If skill is an object, return the name
+        return skill.name || skill;
+      }),
+    };
+
+    // Helper function to convert time commitment format
+    const convertTimeCommitment = (timeCommitment) => {
+      if (!timeCommitment) return '1-2h';
+      
+      // Convert from "1–2 hours" to "1-2h" format
+      return timeCommitment
+        .replace(/–/g, '-') // Replace en dash with hyphen
+        .replace(/\s*hours?/i, 'h') // Replace "hours" or "hour" with "h"
+        .replace(/\s*\+/g, '+'); // Keep plus sign for "10+"
+    };
+
+    // Add frequency-specific details
+    if (data.frequency === 'Single event/role') {
+      // One-off event details
+      const eventDateTime = new Date(data.eventDate);
+      if (data.startTime) {
+        eventDateTime.setHours(data.startTime.getHours(), data.startTime.getMinutes());
+      }
+      
+      apiData.oneoff_details = {
+        event_datetime: eventDateTime.toISOString(),
+        time_commitment: convertTimeCommitment(data.timeCommitment),
+        application_deadline: data.deadline ? data.deadline.toISOString() : null
+      };
+    } else {
+      // Recurring event details
+      apiData.recurring_details = {
+        recurrence: data.recurrence?.toLowerCase() || 'weekly',
+        time_commitment_per_session: convertTimeCommitment(data.timeCommitment),
+        duration: data.duration?.toLowerCase().replace(' ', '') || '1month',
+        specific_days: data.daysOfWeek?.map(day => ({
+          day: day.toLowerCase(),
+          periods: ['am', 'pm'] // Default periods
+        })) || []
+      };
+    }
+
+    return apiData;
+  };
+
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      console.log('Submitting job with data:', formData);
+      
+      // Transform form data to API format
+      const apiData = transformFormDataToAPI(formData);
+      console.log('Transformed API data:', apiData);
+      
+      // Submit to API
+      const response = await advertService.createAdvert(apiData, formData.image);
+      
+      if (response.success) {
+        setSnackbar({ 
+          open: true, 
+          message: 'Job created successfully!', 
+          severity: 'success' 
+        });
+        // Navigate to My Jobs page after a short delay
+        setTimeout(() => {
+          navigate('/organization/my-jobs');
+        }, 2000);
+      } else {
+        setSnackbar({ 
+          open: true, 
+          message: response.error?.message || 'Failed to create job', 
+          severity: 'error' 
+        });
+      }
+    } catch (error) {
+      console.error('Error creating job:', error);
+      setSnackbar({ 
+        open: true, 
+        message: 'An error occurred while creating the job', 
+        severity: 'error' 
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const renderStepContent = () => {
@@ -123,6 +229,7 @@ const CreateJobPage = () => {
             onUpdate={updateFormData}
             onSave={handleSave}
             onBack={handleBack}
+            loading={loading}
           />
         );
       default:
@@ -233,6 +340,22 @@ const CreateJobPage = () => {
           </Box>
         </Box>
       </Box>
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert 
+          onClose={() => setSnackbar({ ...snackbar, open: false })} 
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

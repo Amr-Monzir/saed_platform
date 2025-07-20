@@ -59,7 +59,7 @@ const daysOfWeekOptions = [
   'Sunday'
 ];
 
-const SchedulingStep = ({ data, errors, onUpdate, onSave, onBack }) => {
+const SchedulingStep = ({ data, errors, onUpdate, onSave, onBack, loading = false }) => {
   const handleChange = (field, value) => {
     onUpdate({ [field]: value });
   };
@@ -402,6 +402,7 @@ const SchedulingStep = ({ data, errors, onUpdate, onSave, onBack }) => {
           <Button
             variant="contained"
             onClick={handleSubmit}
+            disabled={loading}
             sx={{
               backgroundColor: '#6366f1',
               '&:hover': {
@@ -411,7 +412,7 @@ const SchedulingStep = ({ data, errors, onUpdate, onSave, onBack }) => {
               py: 1.5
             }}
           >
-            Save
+            {loading ? 'Creating...' : 'Save'}
           </Button>
         </Box>
       </Box>

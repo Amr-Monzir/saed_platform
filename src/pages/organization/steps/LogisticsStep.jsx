@@ -44,7 +44,7 @@ const LogisticsStep = ({ data, errors, onUpdate, onNext, onBack }) => {
             sx={{ gap: 4 }}
           >
             <FormControlLabel 
-              value="venue" 
+              value="on-site" 
               control={
                 <Radio 
                   sx={{
@@ -58,13 +58,13 @@ const LogisticsStep = ({ data, errors, onUpdate, onNext, onBack }) => {
               label={
                 <Box>
                   <Typography variant="body1" fontWeight="500">
-                    🏢 Venue
+                    🏢 On-site
                   </Typography>
                 </Box>
               }
             />
             <FormControlLabel 
-              value="online" 
+              value="remote" 
               control={
                 <Radio 
                   sx={{
@@ -78,13 +78,13 @@ const LogisticsStep = ({ data, errors, onUpdate, onNext, onBack }) => {
               label={
                 <Box>
                   <Typography variant="body1" fontWeight="500">
-                    💻 Online
+                    💻 Remote
                   </Typography>
                 </Box>
               }
             />
             <FormControlLabel 
-              value="tba" 
+              value="hybrid" 
               control={
                 <Radio 
                   sx={{
@@ -98,7 +98,7 @@ const LogisticsStep = ({ data, errors, onUpdate, onNext, onBack }) => {
               label={
                 <Box>
                   <Typography variant="body1" fontWeight="500">
-                    📍 To be announced
+                    🔄 Hybrid
                   </Typography>
                 </Box>
               }
@@ -113,8 +113,8 @@ const LogisticsStep = ({ data, errors, onUpdate, onNext, onBack }) => {
         )}
       </Box>
 
-      {/* Location Search and Map - only show if venue is selected */}
-      {data.locationType === 'venue' && (
+      {/* Location Search and Map - only show if on-site is selected */}
+      {data.locationType === 'on-site' && (
         <Box mb={4}>
           <TextField
             fullWidth
