@@ -57,19 +57,25 @@ export default function AppAppBar() {
             <Sitemark />
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
               <Button variant="text" color="info" size="small"></Button>
-              <Button variant="text" color="info" size="small">
+              <Button
+                variant="text"
+                color="info"
+                size="small"
+                href="/guest/jobs"
+              >
                 Browse
               </Button>
-              <Button variant="text" color="info" size="small">
+              <Button variant="text" color="info" size="small" href="#features">
                 About Us
               </Button>
-              <Button variant="text" color="info" size="small">
+              <Button variant="text" color="info" size="small" href="#">
                 Organisers
               </Button>
               <Button
                 variant="text"
                 color="info"
                 size="small"
+                href="#faq"
                 sx={{ minWidth: 0 }}
               >
                 FAQ
@@ -83,10 +89,15 @@ export default function AppAppBar() {
               alignItems: "center",
             }}
           >
-            <Button color="primary" variant="text" size="small">
+            <Button color="primary" variant="text" size="small" href="/login">
               Sign in
             </Button>
-            <Button color="primary" variant="contained" size="small">
+            <Button
+              color="primary"
+              variant="contained"
+              size="small"
+              href="/signup"
+            >
               Join us!
             </Button>
             {/* <ColorModeIconDropdown /> */}
@@ -118,18 +129,36 @@ export default function AppAppBar() {
                   </IconButton>
                 </Box>
 
-                <MenuItem>Browse</MenuItem>
-                <MenuItem>About Us</MenuItem>
-                <MenuItem>Organisers</MenuItem>
-                <MenuItem>FAQ</MenuItem>
+                <MenuItem component="a" href="/guest/jobs">
+                  Browse
+                </MenuItem>
+                <MenuItem component="a" href="#features">
+                  About Us
+                </MenuItem>
+                <MenuItem component="a" href="#">
+                  Organisers
+                </MenuItem>
+                <MenuItem component="a" href="#faq">
+                  FAQ
+                </MenuItem>
                 <Divider sx={{ my: 3 }} />
                 <MenuItem>
-                  <Button color="primary" variant="contained" fullWidth>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    fullWidth
+                    href="/signup"
+                  >
                     Join us!
                   </Button>
                 </MenuItem>
                 <MenuItem>
-                  <Button color="primary" variant="outlined" fullWidth>
+                  <Button
+                    color="primary"
+                    variant="outlined"
+                    fullWidth
+                    href="/login"
+                  >
                     Sign in
                   </Button>
                 </MenuItem>

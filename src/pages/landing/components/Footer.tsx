@@ -17,7 +17,7 @@ function Copyright() {
     <Typography variant="body2" sx={{ color: "text.secondary", mt: 1 }}>
       {"Copyright © "}
       <Link color="text.secondary" href="https://mui.com/">
-        Sitemark
+        RABT
       </Link>
       &nbsp;
       {new Date().getFullYear()}
@@ -60,38 +60,20 @@ export default function Footer() {
               gutterBottom
               sx={{ fontWeight: 600, mt: 2 }}
             >
-              Join the newsletter
+              Join the RABT!
             </Typography>
             <Typography variant="body2" sx={{ color: "text.secondary", mb: 2 }}>
-              Subscribe for weekly updates. No spams ever!
+              Use your skills to make an impact.
             </Typography>
-            <InputLabel htmlFor="email-newsletter">Email</InputLabel>
-            <Stack direction="row" spacing={1} useFlexGap>
-              <TextField
-                id="email-newsletter"
-                hiddenLabel
-                size="small"
-                variant="outlined"
-                fullWidth
-                aria-label="Enter your email address"
-                placeholder="Your email address"
-                slotProps={{
-                  htmlInput: {
-                    autoComplete: "off",
-                    "aria-label": "Enter your email address",
-                  },
-                }}
-                sx={{ width: "250px" }}
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                sx={{ flexShrink: 0 }}
-              >
-                Subscribe
-              </Button>
-            </Stack>
+
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              sx={{ flexShrink: 0 }}
+            >
+              Sign up
+            </Button>
           </Box>
         </Box>
         <Box
@@ -101,63 +83,18 @@ export default function Footer() {
             gap: 1,
           }}
         >
-          <Typography variant="body2" sx={{ fontWeight: "medium" }}>
-            Product
-          </Typography>
-          <Link color="text.secondary" variant="body2" href="#">
-            Features
+          <Link color="text.secondary" variant="body2" href="/guest/jobs">
+            Browse
           </Link>
-          <Link color="text.secondary" variant="body2" href="#">
-            Testimonials
+          <Link
+            color="text.secondary"
+            variant="body2"
+            href="/signup/organization"
+          >
+            For Organisers
           </Link>
-          <Link color="text.secondary" variant="body2" href="#">
-            Highlights
-          </Link>
-          <Link color="text.secondary" variant="body2" href="#">
-            Pricing
-          </Link>
-          <Link color="text.secondary" variant="body2" href="#">
-            FAQs
-          </Link>
-        </Box>
-        <Box
-          sx={{
-            display: { xs: "none", sm: "flex" },
-            flexDirection: "column",
-            gap: 1,
-          }}
-        >
-          <Typography variant="body2" sx={{ fontWeight: "medium" }}>
-            Company
-          </Typography>
-          <Link color="text.secondary" variant="body2" href="#">
+          <Link color="text.secondary" variant="body2" href="#features">
             About us
-          </Link>
-          <Link color="text.secondary" variant="body2" href="#">
-            Careers
-          </Link>
-          <Link color="text.secondary" variant="body2" href="#">
-            Press
-          </Link>
-        </Box>
-        <Box
-          sx={{
-            display: { xs: "none", sm: "flex" },
-            flexDirection: "column",
-            gap: 1,
-          }}
-        >
-          <Typography variant="body2" sx={{ fontWeight: "medium" }}>
-            Legal
-          </Typography>
-          <Link color="text.secondary" variant="body2" href="#">
-            Terms
-          </Link>
-          <Link color="text.secondary" variant="body2" href="#">
-            Privacy
-          </Link>
-          <Link color="text.secondary" variant="body2" href="#">
-            Contact
           </Link>
         </Box>
       </Box>
@@ -189,15 +126,6 @@ export default function Footer() {
           useFlexGap
           sx={{ justifyContent: "left", color: "text.secondary" }}
         >
-          <IconButton
-            color="inherit"
-            size="small"
-            href="https://github.com/mui"
-            aria-label="GitHub"
-            sx={{ alignSelf: "center" }}
-          >
-            <GitHubIcon />
-          </IconButton>
           <IconButton
             color="inherit"
             size="small"

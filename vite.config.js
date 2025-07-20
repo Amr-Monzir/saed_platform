@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -7,10 +7,6 @@ export default defineConfig({
   server: {
     host: true,
     port: 5173,
-    allowedHosts: [
-      'localhost',
-      '127.0.0.1',
-      'ae68d143ab8b.ngrok-free.app'
-    ]
-  }
-})
+    allowedHosts: ["localhost", "127.0.0.1", "dbb1f7732e59.ngrok-free.app"],
+  },
+});
