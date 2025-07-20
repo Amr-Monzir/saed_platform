@@ -1,31 +1,20 @@
-import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { AuthProvider } from './contexts/AuthContext';
-import { useAuth } from './contexts/useAuth';
-import AppRoutes from './routes/AppRoutes';
-import { Box, CircularProgress, Typography } from '@mui/material';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+import CssBaseline from "@mui/material/CssBaseline";
+import { AuthProvider } from "./contexts/AuthContext";
+import { useAuth } from "./contexts/useAuth";
+import AppRoutes from "./routes/AppRoutes";
+import { Box, CircularProgress, Typography } from "@mui/material";
+import "./App.css";
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#1976d2',
-    },
-    secondary: {
-      main: '#dc004e',
-    },
-  },
-});
-
+import AppTheme from "./themes/AppTheme";
 // Loading component for auth check
 const AuthLoadingScreen = () => (
-  <Box 
-    display="flex" 
+  <Box
+    display="flex"
     flexDirection="column"
-    alignItems="center" 
-    justifyContent="center" 
+    alignItems="center"
+    justifyContent="center"
     minHeight="100vh"
     gap={2}
   >
@@ -39,24 +28,27 @@ const AuthLoadingScreen = () => (
 // App content that uses auth context
 const AppContent = () => {
   const { loading } = useAuth();
-  
+
   if (loading) {
     return <AuthLoadingScreen />;
   }
-  
+
   return <AppRoutes />;
 };
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <AppTheme>
+      <CssBaseline enableColorScheme />
+
+      {/*<ThemeProvider theme={theme}>*/}
       <AuthProvider>
         <Router>
           <AppContent />
         </Router>
       </AuthProvider>
-    </ThemeProvider>
+      {/* </ThemeProvider> */}
+    </AppTheme>
   );
 }
 
