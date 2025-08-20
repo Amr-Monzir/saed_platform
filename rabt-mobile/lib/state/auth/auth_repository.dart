@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../services/api_service.dart';
 import '../../models/user.dart';
-import '../auth/auth_providers.dart';
 
 class AuthRepository {
   AuthRepository(this._ref);
