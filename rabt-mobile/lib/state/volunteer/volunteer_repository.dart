@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/volunteer.dart';
 import '../../services/api_service.dart';
@@ -17,7 +18,7 @@ class VolunteerApiDataSource implements VolunteerDataSource {
   Future<VolunteerResponse> me() async {
     final token = _ref.read(authControllerProvider).session?.token;
     final resp = await _api.get('/api/v1/volunteers/profile', headers: _api.authHeaders(token));
-    return VolunteerResponse.fromJson(ApiService.instance.decodeJson(resp.body) as Map<String, dynamic>);
+    return VolunteerResponse.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
   }
 
   @override
@@ -30,7 +31,7 @@ class VolunteerApiDataSource implements VolunteerDataSource {
       if (country != null) 'country': country,
       if (skillIds != null) 'skill_ids': skillIds,
     }, headers: _api.authHeaders(token));
-    return VolunteerResponse.fromJson(ApiService.instance.decodeJson(resp.body) as Map<String, dynamic>);
+    return VolunteerResponse.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
   }
 }
 

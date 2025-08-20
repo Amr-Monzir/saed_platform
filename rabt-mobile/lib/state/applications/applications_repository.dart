@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/application.dart';
 import '../../models/advert.dart';
@@ -24,7 +26,7 @@ class ApplicationsApiDataSource implements ApplicationsDataSource {
       'advert_id': advertId,
       'cover_message': coverMessage,
     }, headers: _api.authHeaders(token));
-    return ApplicationResponse.fromJson(ApiService.instance.decodeJson(resp.body) as Map<String, dynamic>);
+    return ApplicationResponse.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
   }
 
   @override
@@ -34,7 +36,7 @@ class ApplicationsApiDataSource implements ApplicationsDataSource {
       'status': status,
       'organizer_message': organizerMessage,
     }, headers: _api.authHeaders(token));
-    return ApplicationResponse.fromJson(ApiService.instance.decodeJson(resp.body) as Map<String, dynamic>);
+    return ApplicationResponse.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
   }
 }
 
@@ -103,9 +105,7 @@ class ApplicationsMockDataSource implements ApplicationsDataSource {
 
 class ApplicationsRepository {
   ApplicationsRepository(this._ref)
-      : _ds = dotenv.env['ENV'] == 'local'
-            ? ApplicationsMockDataSource()
-            : ApplicationsApiDataSource(_ref, ApiService.instance);
+    : _ds = dotenv.env['ENV'] == 'local' ? ApplicationsMockDataSource() : ApplicationsApiDataSource(_ref, ApiService.instance);
 
   final Ref _ref;
   final ApplicationsDataSource _ds;
@@ -117,5 +117,3 @@ class ApplicationsRepository {
 }
 
 final applicationsRepositoryProvider = Provider<ApplicationsRepository>((ref) => ApplicationsRepository(ref));
-
-

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../screens/splash_screen.dart';
 import '../screens/auth/login_screen.dart';
+import '../screens/auth/login_organizer_screen.dart';
+import '../screens/auth/signup_organizer_screen.dart';
 import '../screens/auth/signup_screen.dart';
 import '../screens/volunteer/volunteer_shell.dart';
 import '../screens/organization/org_shell.dart';
@@ -35,6 +37,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/login/organization',
+        builder: (context, state) => const OrganizerLoginScreen(),
+      ),
+      GoRoute(
+        path: '/signup/organization',
+        builder: (context, state) => const OrganizerSignupScreen(),
       ),
       GoRoute(
         path: '/signup',

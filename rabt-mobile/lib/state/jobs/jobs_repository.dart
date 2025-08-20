@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/advert.dart';
 import '../../models/organizer.dart';
@@ -27,7 +28,7 @@ class AdvertsApiDataSource implements AdvertsDataSource {
   Future<AdvertResponse> create(AdvertResponse advert) async {
     final token = _ref.read(authControllerProvider).session?.token;
     final resp = await _api.post('/api/v1/adverts', advert.toJson(), headers: _api.authHeaders(token));
-    return AdvertResponse.fromJson(_decode(resp.body));
+    return AdvertResponse.fromJson(jsonDecode(resp.body));
   }
 
   @override
@@ -40,7 +41,7 @@ class AdvertsApiDataSource implements AdvertsDataSource {
   Future<AdvertResponse?> getById(int id) async {
     final token = _ref.read(authControllerProvider).session?.token;
     final resp = await _api.get('/api/v1/adverts/$id', headers: _api.authHeaders(token));
-    return AdvertResponse.fromJson(_decode(resp.body));
+    return AdvertResponse.fromJson(jsonDecode(resp.body));
   }
 
   @override
@@ -48,7 +49,7 @@ class AdvertsApiDataSource implements AdvertsDataSource {
     final token = _ref.read(authControllerProvider).session?.token;
     final uri = Uri.parse('${_api.baseUrl}/api/v1/adverts').replace(queryParameters: query);
     final resp = await http.get(uri, headers: _api.authHeaders(token));
-    final json = _decode(resp.body) as Map<String, dynamic>;
+    final json = jsonDecode(resp.body) as Map<String, dynamic>;
     final data = (json['items'] as List<dynamic>).map((e) => AdvertResponse.fromJson(e as Map<String, dynamic>)).toList();
     final totalPages = (json['total_pages'] as num?)?.toInt() ?? 1;
     return PaginatedAdverts(items: data, totalPages: totalPages);
@@ -57,13 +58,10 @@ class AdvertsApiDataSource implements AdvertsDataSource {
   @override
   Future<List<AdvertResponse>> listMine(String ownerToken) async {
     final resp = await _api.get('/api/v1/adverts?owner=me', headers: _api.authHeaders(ownerToken));
-    final data = _decode(resp.body) as List<dynamic>;
+    final data = jsonDecode(resp.body) as List<dynamic>;
     return data.map((e) => AdvertResponse.fromJson(e as Map<String, dynamic>)).toList();
   }
 
-  dynamic _decode(String body) {
-    return ApiService.instance.decodeJson(body);
-  }
 }
 
 class AdvertsMockDataSource implements AdvertsDataSource {

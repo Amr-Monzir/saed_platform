@@ -98,7 +98,7 @@ class JobDetailScreen extends ConsumerWidget {
                           onPressed: () async {
                             final session = ref.read(authControllerProvider).session;
                             if (session == null) {
-                              context.go('/signup');
+                              context.push('/signup');
                               return;
                             }
                             final appRepo = ref.read(applicationsRepositoryProvider);

@@ -14,10 +14,7 @@ Future<void> main() async {
     await dotenv.load(fileName: 'assets/env/.env');
   }
   final prefs = await SharedPreferences.getInstance();
-  runApp(ProviderScope(
-    overrides: [sharedPrefsProvider.overrideWithValue(prefs)],
-    child: const MyApp(),
-  ));
+  runApp(ProviderScope(overrides: [sharedPrefsProvider.overrideWithValue(prefs)], child: const MyApp()));
 }
 
 class MyApp extends ConsumerWidget {
@@ -36,4 +33,3 @@ class MyApp extends ConsumerWidget {
     );
   }
 }
- 

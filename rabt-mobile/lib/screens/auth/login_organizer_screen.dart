@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../state/auth/auth_providers.dart';
 import '../../widgets/app_button.dart';
-import '../../state/volunteer/volunteer_repository.dart';
+import '../../state/organizer/organizer_repository.dart';
 
-class LoginScreen extends ConsumerWidget {
-  const LoginScreen({super.key});
+class OrganizerLoginScreen extends ConsumerWidget {
+  const OrganizerLoginScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,51 +19,49 @@ class LoginScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: 24),
-            Text('Rabt platform', style: Theme.of(context).textTheme.headlineMedium, textAlign: TextAlign.center),
+            Text('Login as Organisation', style: Theme.of(context).textTheme.headlineMedium, textAlign: TextAlign.center),
             const SizedBox(height: 8),
-            Text('Connect with organisations. Volunteer for Palestine.', style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
+            Text('Post and manage activist job adverts.', style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
             const SizedBox(height: 8),
             Image.asset('assets/images/logo/rabt_logo_512.png', width: MediaQuery.of(context).size.width, fit: BoxFit.contain),
             const Spacer(),
-            // Volunteer login only (switching to org login via link below)
             TextField(decoration: const InputDecoration(labelText: 'Email'), controller: emailController),
             const SizedBox(height: 8),
             TextField(decoration: const InputDecoration(labelText: 'Password'), controller: passController, obscureText: true),
             const SizedBox(height: 12),
             AppButton(
               onPressed: () async {
-                final ok = await ref.read(authControllerProvider.notifier).loginWithBackend(email: emailController.text.trim(), password: passController.text);
+                final ok = await ref.read(authControllerProvider.notifier).loginWithBackend(
+                      email: emailController.text.trim(),
+                      password: passController.text,
+                    );
                 if (!context.mounted) return;
                 if (ok) {
-                  final me = await ref.read(volunteerRepositoryProvider).me();
-                  if (!context.mounted) return;
-                  if (me.onboardingCompleted) {
-                    context.go('/v/jobs');
-                  } else {
-                    context.go('/v/profile-setup');
+                  try {
+                    await ref.read(organizerRepositoryProvider).me();
+                    if (!context.mounted) return;
+                    context.go('/o/my-jobs');
+                  } catch (_) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('This account is not an organization')),
+                    );
                   }
                 }
               },
               label: 'Login',
             ),
-            const SizedBox(height: 12),
-            AppButton(
-              onPressed: () => context.push('/jobs'),
-              label: 'Continue as Guest Volunteer',
-              variant: AppButtonVariant.outline,
-            ),
             const SizedBox(height: 16),
             Center(
               child: TextButton(
-                onPressed: () => context.go('/signup'),
+                onPressed: () => context.go('/signup/organization'),
                 child: const Text('Need an account? Sign up'),
               ),
             ),
             const SizedBox(height: 8),
             Center(
               child: TextButton(
-                onPressed: () => context.go('/login/organization'),
-                child: const Text('Login as Organization'),
+                onPressed: () => context.go('/login'),
+                child: const Text('Login as Volunteer'),
               ),
             ),
           ],

@@ -34,27 +34,25 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary.withValues(alpha: .1),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Icon(Icons.favorite_outline, color: Theme.of(context).colorScheme.primary, size: 36),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Spacer(),
+          Text('Welcome to Rabt', style: Theme.of(context).textTheme.titleLarge),
+          Spacer(),
+          Container(
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+            child: Image.asset(
+              'assets/images/logo/rabt_logo_512.png',
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.contain,
             ),
-            const SizedBox(height: 16),
-            Text('Rabt', style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
-            const CircularProgressIndicator(),
-          ],
-        ),
+          ),
+          Spacer(),
+          const CircularProgressIndicator(),
+          const SizedBox(height: 50),
+        ],
       ),
     );
   }
 }
-

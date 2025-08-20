@@ -57,8 +57,6 @@ class ApiService {
     }
   }
 
-  dynamic decodeJson(String body) => jsonDecode(body);
-
   Map<String, String> authHeaders(String? token, {Map<String, String>? extra}) {
     return {
       'Content-Type': 'application/json',

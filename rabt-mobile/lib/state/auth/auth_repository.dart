@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../services/api_service.dart';
 import '../../models/user.dart';
@@ -12,7 +13,7 @@ class AuthRepository {
       'username': email,
       'password': password,
     });
-    return Token.fromJson(_api.decodeJson(resp.body) as Map<String, dynamic>);
+    return Token.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
   }
 }
 

@@ -61,14 +61,14 @@ class JobsListScreen extends ConsumerWidget {
                   final job = page.items[index];
                   return JobCard(
                     job: job,
-                    onTap: () => context.go('/jobs/${job.id}'),
+                    onTap: () => context.push('/jobs/${job.id}'),
                     trailing: AppButton(
                       onPressed: () async {
                         final session = ref.read(authControllerProvider).session;
                         if (session == null) {
                           await ref.read(authControllerProvider.notifier).setPendingAdvert(job.id.toString());
                           if (!context.mounted) return;
-                          context.go('/signup');
+                          context.push('/signup');
                           return;
                         }
                         await ref.read(applicationsRepositoryProvider).create(advertId: job.id);
