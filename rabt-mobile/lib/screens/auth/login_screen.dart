@@ -47,7 +47,7 @@ class LoginScreen extends ConsumerWidget {
                 final ok = await ref.read(authControllerProvider.notifier).loginWithBackend(email: email, password: password, role: UserRole.volunteer);
                 if (!context.mounted) return;
                 if (ok) {
-                  final me = await ref.read(volunteerRepositoryProvider).me();
+                  final me = await ref.read(volunteerRepositoryProvider).fetchVolunteerProfile();
                   if (!context.mounted) return;
                   if (me.onboardingCompleted) {
                     context.go('/v/jobs');

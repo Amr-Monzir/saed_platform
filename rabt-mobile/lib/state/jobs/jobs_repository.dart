@@ -6,41 +6,13 @@ import '../../services/api_service.dart';
 import '../auth/auth_providers.dart';
 import 'paginated_adverts.dart';
 
-abstract class AdvertsDataSource {
-  Future<PaginatedAdverts> listAll({Map<String, String>? query});
-  Future<List<AdvertResponse>> listMine(String ownerToken);
-  Future<AdvertResponse?> getById(int id);
-  Future<AdvertResponse> create(AdvertResponse advert);
-  Future<void> close(int id);
-}
+class AdvertsRepository {
+  AdvertsRepository(this._ref);
 
-class AdvertsApiDataSource implements AdvertsDataSource {
-  final ApiService _api;
   final Ref _ref;
-  AdvertsApiDataSource(this._ref, this._api);
+  final ApiService _api = ApiService.instance;
 
-  @override
-  Future<AdvertResponse> create(AdvertResponse advert) async {
-    final token = _ref.read(authControllerProvider).session?.token;
-    final resp = await _api.post('/api/v1/adverts', advert.toJson(), headers: _api.authHeaders(token));
-    return AdvertResponse.fromJson(jsonDecode(resp.body));
-  }
-
-  @override
-  Future<void> close(int id) async {
-    final token = _ref.read(authControllerProvider).session?.token;
-    await _api.post('/api/v1/adverts/$id/close', {}, headers: _api.authHeaders(token));
-  }
-
-  @override
-  Future<AdvertResponse?> getById(int id) async {
-    final token = _ref.read(authControllerProvider).session?.token;
-    final resp = await _api.get('/api/v1/adverts/$id', headers: _api.authHeaders(token));
-    return AdvertResponse.fromJson(jsonDecode(resp.body));
-  }
-
-  @override
-  Future<PaginatedAdverts> listAll({Map<String, String>? query}) async {
+  Future<PaginatedAdverts> fetchAll({Map<String, String>? query}) async {
     final token = _ref.read(authControllerProvider).session?.token;
     final uri = Uri.parse('${_api.baseUrl}/api/v1/adverts').replace(queryParameters: query);
     final resp = await http.get(uri, headers: _api.authHeaders(token));
@@ -52,29 +24,29 @@ class AdvertsApiDataSource implements AdvertsDataSource {
     return PaginatedAdverts(items: data, totalPages: totalPages);
   }
 
-  @override
-  Future<List<AdvertResponse>> listMine(String ownerToken) async {
-    final resp = await _api.get('/api/v1/adverts?owner=me', headers: _api.authHeaders(ownerToken));
+  Future<List<AdvertResponse>> fetchMine() async {
+    final token = _ref.read(authControllerProvider).session?.token ?? '';
+    final resp = await _api.get('/api/v1/adverts?owner=me', headers: _api.authHeaders(token));
     final data = jsonDecode(resp.body) as List<dynamic>;
     return data.map((e) => AdvertResponse.fromJson(e as Map<String, dynamic>)).toList();
   }
-}
 
-class AdvertsRepository {
-  AdvertsRepository(this._ref) : _ds = AdvertsApiDataSource(_ref, ApiService.instance);
-
-  final Ref _ref;
-  final AdvertsDataSource _ds;
-
-  Future<PaginatedAdverts> fetchAll({Map<String, String>? query}) => _ds.listAll(query: query);
-  Future<List<AdvertResponse>> fetchMine() async {
-    final token = _ref.read(authControllerProvider).session?.token ?? '';
-    return _ds.listMine(token);
+  Future<AdvertResponse?> getById(int id) async {
+    final token = _ref.read(authControllerProvider).session?.token;
+    final resp = await _api.get('/api/v1/adverts/$id', headers: _api.authHeaders(token));
+    return AdvertResponse.fromJson(jsonDecode(resp.body));
   }
 
-  Future<AdvertResponse?> getById(int id) => _ds.getById(id);
-  Future<AdvertResponse> create(AdvertResponse advert) => _ds.create(advert);
-  Future<void> close(int id) => _ds.close(id);
+  Future<AdvertResponse> create(AdvertResponse advert) async {
+    final token = _ref.read(authControllerProvider).session?.token;
+    final resp = await _api.post('/api/v1/adverts', advert.toJson(), headers: _api.authHeaders(token));
+    return AdvertResponse.fromJson(jsonDecode(resp.body));
+  }
+
+  Future<void> close(int id) async {
+    final token = _ref.read(authControllerProvider).session?.token;
+    await _api.post('/api/v1/adverts/$id/close', {}, headers: _api.authHeaders(token));
+  }
 }
 
 final advertsRepositoryProvider = Provider<AdvertsRepository>((ref) => AdvertsRepository(ref));

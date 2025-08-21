@@ -11,17 +11,18 @@ RecurringDays _$RecurringDaysFromJson(Map<String, dynamic> json) =>
       day: json['day'] as String,
       periods:
           (json['periods'] as List<dynamic>)
-              .map((e) => $enumDecode(_$DayPeriodEnumMap, e))
+              .map((e) => $enumDecode(_$DayTimePeriodEnumMap, e))
               .toList(),
     );
 
-Map<String, dynamic> _$RecurringDaysToJson(RecurringDays instance) =>
-    <String, dynamic>{
-      'day': instance.day,
-      'periods': instance.periods.map((e) => _$DayPeriodEnumMap[e]!).toList(),
-    };
+Map<String, dynamic> _$RecurringDaysToJson(
+  RecurringDays instance,
+) => <String, dynamic>{
+  'day': instance.day,
+  'periods': instance.periods.map((e) => _$DayTimePeriodEnumMap[e]!).toList(),
+};
 
-const _$DayPeriodEnumMap = {
+const _$DayTimePeriodEnumMap = {
   DayTimePeriod.am: 'am',
   DayTimePeriod.pm: 'pm',
   DayTimePeriod.after5pm: 'after5pm',
@@ -103,7 +104,7 @@ AdvertResponse _$AdvertResponseFromJson(Map<String, dynamic> json) =>
       longitude: (json['longitude'] as num?)?.toDouble(),
       advertImageUrl: json['advert_image_url'] as String?,
       isActive: json['is_active'] as bool,
-      organizer: OrganizerResponse.fromJson(
+      organizer: OrganizerProfile.fromJson(
         json['organizer'] as Map<String, dynamic>,
       ),
       requiredSkills:

@@ -6,8 +6,8 @@ part of 'organizer.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-OrganizerResponse _$OrganizerResponseFromJson(Map<String, dynamic> json) =>
-    OrganizerResponse(
+OrganizerProfile _$OrganizerProfileFromJson(Map<String, dynamic> json) =>
+    OrganizerProfile(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
       logoUrl: json['logo_url'] as String?,
@@ -15,7 +15,7 @@ OrganizerResponse _$OrganizerResponseFromJson(Map<String, dynamic> json) =>
       description: json['description'] as String?,
     );
 
-Map<String, dynamic> _$OrganizerResponseToJson(OrganizerResponse instance) =>
+Map<String, dynamic> _$OrganizerProfileToJson(OrganizerProfile instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,

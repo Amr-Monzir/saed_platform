@@ -89,7 +89,7 @@ class AdvertResponse {
   final String? advertImageUrl;
   @JsonKey(name: 'is_active')
   final bool isActive;
-  final OrganizerResponse organizer;
+  final OrganizerProfile organizer;
   @JsonKey(name: 'required_skills')
   final List<SkillResponse> requiredSkills;
   @JsonKey(name: 'oneoff_details')

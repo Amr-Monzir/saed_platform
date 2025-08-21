@@ -46,7 +46,7 @@ class OrganizerLoginScreen extends ConsumerWidget {
                 if (!context.mounted) return;
                 if (ok) {
                   try {
-                    await ref.read(organizerRepositoryProvider).me();
+                    await ref.read(organizerRepositoryProvider).fetchOrganizerProfile();
                     if (!context.mounted) return;
                     context.go('/o/my-jobs');
                   } catch (_) {

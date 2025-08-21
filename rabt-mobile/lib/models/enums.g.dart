@@ -42,7 +42,7 @@ const _$DurationTypeEnumMap = {
   DurationType.ongoing: 'ongoing',
 };
 
-const _$DayPeriodEnumMap = {
+const _$DayTimePeriodEnumMap = {
   DayTimePeriod.am: 'am',
   DayTimePeriod.pm: 'pm',
   DayTimePeriod.after5pm: 'after5pm',

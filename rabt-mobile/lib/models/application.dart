@@ -26,7 +26,7 @@ class ApplicationResponse {
   @JsonKey(name: 'applied_at')
   final DateTime appliedAt;
   final AdvertResponse advert;
-  final VolunteerResponse? volunteer;
+  final VolunteerProfile? volunteer;
 
   factory ApplicationResponse.fromJson(Map<String, dynamic> json) => _$ApplicationResponseFromJson(json);
   Map<String, dynamic> toJson() => _$ApplicationResponseToJson(this);

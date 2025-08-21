@@ -63,16 +63,6 @@ class AuthController extends StateNotifier<AuthState> {
     return true;
   }
 
-  Future<bool> loginQuick(UserRole role) async {
-    state = state.copyWith(isLoading: true);
-    await Future.delayed(const Duration(milliseconds: 200));
-    final fakeToken = 'token_${DateTime.now().millisecondsSinceEpoch}';
-    final session = SessionData(token: fakeToken, userRole: role);
-    await _storage.write(key: _sessionKey, value: jsonEncode(session.toJson()));
-    state = AuthState(session: session, isLoading: false);
-    return true;
-  }
-
   Future<bool> loginWithBackend({required String email, required String password, required UserRole role}) async {
     try {
       state = state.copyWith(isLoading: true);

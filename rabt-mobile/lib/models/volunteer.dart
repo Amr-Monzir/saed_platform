@@ -4,8 +4,8 @@ import 'skill.dart';
 part 'volunteer.g.dart';
 
 @JsonSerializable()
-class VolunteerResponse {
-  VolunteerResponse({
+class VolunteerProfile {
+  VolunteerProfile({
     required this.id,
     required this.name,
     this.phoneNumber,
@@ -25,8 +25,8 @@ class VolunteerResponse {
   final bool onboardingCompleted;
   final List<SkillResponse> skills;
 
-  factory VolunteerResponse.fromJson(Map<String, dynamic> json) => _$VolunteerResponseFromJson(json);
-  Map<String, dynamic> toJson() => _$VolunteerResponseToJson(this);
+  factory VolunteerProfile.fromJson(Map<String, dynamic> json) => _$VolunteerProfileFromJson(json);
+  Map<String, dynamic> toJson() => _$VolunteerProfileToJson(this);
 }
 
 

@@ -167,7 +167,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
                   numberOfVolunteers: 1,
                   locationType: LocationType.onSite,
                   isActive: true,
-                  organizer: OrganizerResponse(id: 1, name: 'Me'),
+                  organizer: OrganizerProfile(id: 1, name: 'Me'),
                   requiredSkills: const [],
                   oneoffDetails:
                       _frequency == FrequencyType.oneOff

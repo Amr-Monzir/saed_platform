@@ -17,7 +17,7 @@ ApplicationResponse _$ApplicationResponseFromJson(Map<String, dynamic> json) =>
       volunteer:
           json['volunteer'] == null
               ? null
-              : VolunteerResponse.fromJson(
+              : VolunteerProfile.fromJson(
                 json['volunteer'] as Map<String, dynamic>,
               ),
     );

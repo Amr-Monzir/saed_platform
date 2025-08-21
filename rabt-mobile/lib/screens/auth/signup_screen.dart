@@ -61,37 +61,36 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
               ),
               const SizedBox(height: 16),
               AppButton(
-                onPressed: isLoading
-                    ? null
-                    : () async {
-                        if (!_formKey.currentState!.validate()) return;
-                        final success = await ref.read(authControllerProvider.notifier).signup(
-                              email: _emailController.text.trim(),
-                              password: _passwordController.text,
-                              role: _role,
-                            );
-                        if (!context.mounted) return;
-                        if (success) {
-                          if (_role == UserRole.organization) {
-                            if (!context.mounted) return;
-                            context.go('/o/my-jobs');
-                          } else {
-                            final me = await ref.read(volunteerRepositoryProvider).me();
-                            final pending = ref.read(authControllerProvider).session?.pendingAdvertId;
-                            if (!context.mounted) return;
-                            if (!me.onboardingCompleted) {
-                              context.push('/v/profile-setup');
-                            } else if (pending != null) {
-                              await ref.read(authControllerProvider.notifier).setPendingAdvert(null);
-                              context.push('/jobs/$pending');
+                onPressed:
+                    isLoading
+                        ? null
+                        : () async {
+                          if (!_formKey.currentState!.validate()) return;
+                          final success = await ref
+                              .read(authControllerProvider.notifier)
+                              .signup(email: _emailController.text.trim(), password: _passwordController.text, role: _role);
+                          if (!context.mounted) return;
+                          if (success) {
+                            if (_role == UserRole.organization) {
+                              if (!context.mounted) return;
+                              context.go('/o/my-jobs');
                             } else {
-                              context.push('/v/jobs');
+                              final me = await ref.read(volunteerRepositoryProvider).fetchVolunteerProfile();
+                              final pending = ref.read(authControllerProvider).session?.pendingAdvertId;
+                              if (!context.mounted) return;
+                              if (!me.onboardingCompleted) {
+                                context.push('/v/profile-setup');
+                              } else if (pending != null) {
+                                await ref.read(authControllerProvider.notifier).setPendingAdvert(null);
+                                context.push('/jobs/$pending');
+                              } else {
+                                context.push('/v/jobs');
+                              }
                             }
                           }
-                        }
-                      },
+                        },
                 label: isLoading ? 'Please wait...' : 'Create account',
-              )
+              ),
             ],
           ),
         ),
@@ -99,5 +98,3 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     );
   }
 }
-
-

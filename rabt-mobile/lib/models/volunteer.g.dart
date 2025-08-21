@@ -6,8 +6,8 @@ part of 'volunteer.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-VolunteerResponse _$VolunteerResponseFromJson(Map<String, dynamic> json) =>
-    VolunteerResponse(
+VolunteerProfile _$VolunteerProfileFromJson(Map<String, dynamic> json) =>
+    VolunteerProfile(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
       phoneNumber: json['phone_number'] as String?,
@@ -21,7 +21,7 @@ VolunteerResponse _$VolunteerResponseFromJson(Map<String, dynamic> json) =>
           const [],
     );
 
-Map<String, dynamic> _$VolunteerResponseToJson(VolunteerResponse instance) =>
+Map<String, dynamic> _$VolunteerProfileToJson(VolunteerProfile instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
