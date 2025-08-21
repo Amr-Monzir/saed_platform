@@ -4,59 +4,131 @@ part 'enums.g.dart';
 
 @JsonEnum(alwaysCreate: true)
 enum UserType {
-  @JsonValue('volunteer') volunteer,
-  @JsonValue('organizer') organizer,
+  @JsonValue('volunteer')
+  volunteer,
+  @JsonValue('organizer')
+  organizer;
+
+  String get displayName => switch (this) {
+    UserType.volunteer => 'Volunteer',
+    UserType.organizer => 'Organizer',
+  };
 }
 
 @JsonEnum(alwaysCreate: true)
 enum FrequencyType {
-  @JsonValue('one-off') oneOff,
-  @JsonValue('recurring') recurring,
+  @JsonValue('one-off')
+  oneOff,
+  @JsonValue('recurring')
+  recurring;
+
+  String get displayName => switch (this) {
+    FrequencyType.oneOff => 'One-off',
+    FrequencyType.recurring => 'Recurring',
+  };
 }
 
 @JsonEnum(alwaysCreate: true)
 enum LocationType {
-  @JsonValue('remote') remote,
-  @JsonValue('hybrid') hybrid,
-  @JsonValue('on-site') onSite,
+  @JsonValue('remote')
+  remote,
+  @JsonValue('hybrid')
+  hybrid,
+  @JsonValue('on-site')
+  onSite;
+
+  String get displayName => switch (this) {
+    LocationType.remote => 'Remote',
+    LocationType.hybrid => 'Hybrid',
+    LocationType.onSite => 'On-site',
+  };
 }
 
 @JsonEnum(alwaysCreate: true)
 enum TimeCommitment {
-  @JsonValue('1-2h') oneToTwo,
-  @JsonValue('3-5h') threeToFive,
-  @JsonValue('6-10h') sixToTen,
-  @JsonValue('10+h') tenPlus,
+  @JsonValue('1-2h')
+  oneToTwo,
+  @JsonValue('3-5h')
+  threeToFive,
+  @JsonValue('6-10h')
+  sixToTen,
+  @JsonValue('10+h')
+  tenPlus;
+
+  String get displayName => switch (this) {
+    TimeCommitment.oneToTwo => '1-2h',
+    TimeCommitment.threeToFive => '3-5h',
+    TimeCommitment.sixToTen => '6-10h',
+    TimeCommitment.tenPlus => '10+h',
+  };
 }
 
 @JsonEnum(alwaysCreate: true)
 enum RecurrenceType {
-  @JsonValue('weekly') weekly,
-  @JsonValue('bi-weekly') biWeekly,
-  @JsonValue('monthly') monthly,
+  @JsonValue('weekly')
+  weekly,
+  @JsonValue('bi-weekly')
+  biWeekly,
+  @JsonValue('monthly')
+  monthly;
+
+  String get displayName => switch (this) {
+    RecurrenceType.weekly => 'Weekly',
+    RecurrenceType.biWeekly => 'Bi-weekly',
+    RecurrenceType.monthly => 'Monthly',
+  };
 }
 
 @JsonEnum(alwaysCreate: true)
 enum DurationType {
-  @JsonValue('1month') oneMonth,
-  @JsonValue('3months') threeMonths,
-  @JsonValue('6months') sixMonths,
-  @JsonValue('ongoing') ongoing,
+  @JsonValue('1month')
+  oneMonth,
+  @JsonValue('3months')
+  threeMonths,
+  @JsonValue('6months')
+  sixMonths,
+  @JsonValue('ongoing')
+  ongoing;
+
+  String get displayName => switch (this) {
+    DurationType.oneMonth => '1 month',
+    DurationType.threeMonths => '3 months',
+    DurationType.sixMonths => '6 months',
+    DurationType.ongoing => 'Ongoing',
+  };
 }
 
 @JsonEnum(alwaysCreate: true)
 enum DayPeriod {
-  @JsonValue('am') am,
-  @JsonValue('pm') pm,
-  @JsonValue('after5pm') after5pm,
+  @JsonValue('am')
+  am,
+  @JsonValue('pm')
+  pm,
+  @JsonValue('after5pm')
+  after5pm;
+
+  String get displayName => switch (this) {
+    DayPeriod.am => 'AM',
+    DayPeriod.pm => 'PM',
+    DayPeriod.after5pm => 'After 5pm',
+  };
 }
 
 @JsonEnum(alwaysCreate: true)
 enum ApplicationStatus {
-  @JsonValue('pending') pending,
-  @JsonValue('accepted') accepted,
-  @JsonValue('rejected') rejected,
-  @JsonValue('withdrawn') withdrawn,
+  @JsonValue('pending')
+  pending,
+  @JsonValue('accepted')
+  accepted,
+  @JsonValue('rejected')
+  rejected,
+  @JsonValue('withdrawn')
+  withdrawn;
+
+  String get displayName => switch (this) {
+    ApplicationStatus.pending => 'Pending',
+    ApplicationStatus.accepted => 'Accepted',
+    ApplicationStatus.rejected => 'Rejected',
+    ApplicationStatus.withdrawn => 'Withdrawn',
+  };
 }
-
-

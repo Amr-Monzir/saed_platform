@@ -42,7 +42,7 @@ class OrganizerLoginScreen extends ConsumerWidget {
                   emailController.text = email;
                   passController.text = password;
                 }
-                final ok = await ref.read(authControllerProvider.notifier).loginWithBackend(email: email, password: password);
+                final ok = await ref.read(authControllerProvider.notifier).loginWithBackend(email: email, password: password, role: UserRole.organization);
                 if (!context.mounted) return;
                 if (ok) {
                   try {

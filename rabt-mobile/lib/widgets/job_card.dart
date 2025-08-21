@@ -32,8 +32,8 @@ class JobCard extends StatelessWidget {
                   runSpacing: 8,
                   children: [
                     BadgeChip(label: job.category, icon: Icons.category_outlined),
-                    BadgeChip(label: job.frequency.name, icon: Icons.schedule_outlined),
-                    BadgeChip(label: job.locationType.name, icon: Icons.place_outlined),
+                    BadgeChip(label: job.frequency.displayName, icon: Icons.schedule_outlined),
+                    BadgeChip(label: job.locationType.displayName, icon: Icons.place_outlined),
                   ],
                 ),
               ],

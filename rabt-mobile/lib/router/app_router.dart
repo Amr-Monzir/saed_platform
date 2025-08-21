@@ -110,7 +110,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     errorBuilder: (context, state) => Scaffold(
       body: Center(child: Text('Route not found: ${state.uri}')),
     ),
-    debugLogDiagnostics: false,
+    debugLogDiagnostics: true,
   );
 });
 

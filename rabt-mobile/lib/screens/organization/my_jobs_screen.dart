@@ -26,10 +26,11 @@ class MyJobsScreen extends ConsumerWidget {
                       children: [
                         Text(job.title, style: Theme.of(context).textTheme.titleMedium),
                         const SizedBox(height: 4),
-                        Text('${job.category} • ${job.frequency}'),
+                        Text('${job.category} • ${job.frequency.displayName} • ${job.locationType.displayName}'),
                       ],
                     ),
                   ),
+                  const SizedBox(width: 12),
                   AppButton(label: 'Close', variant: AppButtonVariant.outline, onPressed: () {}),
                 ],
               ),

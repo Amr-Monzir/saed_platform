@@ -73,11 +73,11 @@ class AuthController extends StateNotifier<AuthState> {
     return true;
   }
 
-  Future<bool> loginWithBackend({required String email, required String password}) async {
+  Future<bool> loginWithBackend({required String email, required String password, required UserRole role}) async {
     try {
       state = state.copyWith(isLoading: true);
       final token = await _ref.read(authRepositoryProvider).login(email: email, password: password);
-      final session = SessionData(token: token.accessToken, userRole: UserRole.volunteer);
+      final session = SessionData(token: token.accessToken, userRole: role);
       await _storage.write(key: _sessionKey, value: jsonEncode(session.toJson()));
       state = AuthState(session: session, isLoading: false);
       return true;

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../state/auth/auth_providers.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -19,7 +18,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> _navigateNext() async {
-    final session = await ref.read(authControllerProvider.notifier).restoreSession();
     if (!mounted) return;
     // Let router redirect decide destination to avoid navigation loops
     context.go('/splash');

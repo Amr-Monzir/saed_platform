@@ -16,7 +16,7 @@ class JobsListScreen extends ConsumerWidget {
     final jobsAsync = ref.watch(filteredJobsProvider);
     final searchCtrl = TextEditingController(text: ref.watch(searchQueryProvider) ?? '');
     return Scaffold(
-      appBar: AppBar(title: const Text('Activist Jobs')),
+      appBar: AppBar(title: const Text('Activist Adverts')),
       body: Column(
         children: [
           Padding(

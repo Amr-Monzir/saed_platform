@@ -1,13 +1,8 @@
-import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/advert.dart';
-import '../../models/organizer.dart';
-import '../../models/skill.dart';
-import '../../models/enums.dart';
 import 'package:http/http.dart' as http;
 import '../../services/api_service.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../auth/auth_providers.dart';
 import 'paginated_adverts.dart';
 
@@ -49,9 +44,20 @@ class AdvertsApiDataSource implements AdvertsDataSource {
     final token = _ref.read(authControllerProvider).session?.token;
     final uri = Uri.parse('${_api.baseUrl}/api/v1/adverts').replace(queryParameters: query);
     final resp = await http.get(uri, headers: _api.authHeaders(token));
-    final json = jsonDecode(resp.body) as Map<String, dynamic>;
-    final data = (json['items'] as List<dynamic>).map((e) => AdvertResponse.fromJson(e as Map<String, dynamic>)).toList();
-    final totalPages = (json['total_pages'] as num?)?.toInt() ?? 1;
+    final json = jsonDecode(resp.body);
+    List<AdvertResponse> data;
+    int totalPages;
+    if (json is List) {
+      // The response is a list of adverts, no pagination info
+      data = json.map((e) => AdvertResponse.fromJson(e as Map<String, dynamic>)).toList();
+      totalPages = 1;
+    } else if (json is Map<String, dynamic>) {
+      // The response is paginated (has 'items' and 'total_pages')
+      data = (json['items'] as List<dynamic>).map((e) => AdvertResponse.fromJson(e as Map<String, dynamic>)).toList();
+      totalPages = (json['total_pages'] as num?)?.toInt() ?? 1;
+    } else {
+      throw Exception('Unexpected adverts response format');
+    }
     return PaginatedAdverts(items: data, totalPages: totalPages);
   }
 
