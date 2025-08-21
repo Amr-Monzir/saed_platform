@@ -68,3 +68,8 @@ class AdvertResponse(AdvertBase):
 
     class Config:
         from_attributes = True
+
+
+class AdvertListResponse(BaseModel):
+    items: List[AdvertResponse]
+    total_pages: int

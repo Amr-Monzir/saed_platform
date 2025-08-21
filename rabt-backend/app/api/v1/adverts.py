@@ -14,7 +14,12 @@ import json
 
 from app.database.connection import get_db
 from app.database.models import Advert, User, Skill
-from app.schemas.advert import AdvertCreate, AdvertResponse, AdvertUpdate
+from app.schemas.advert import (
+    AdvertCreate,
+    AdvertResponse,
+    AdvertUpdate,
+    AdvertListResponse,
+)
 from app.services.advert_service import AdvertService
 from app.api.dependencies import require_organizer, get_current_user
 
@@ -42,7 +47,7 @@ def create_advert(
     return advert
 
 
-@router.get("", response_model=List[AdvertResponse])
+@router.get("", response_model=AdvertListResponse)
 def list_adverts(
     db: Session = Depends(get_db),
     search: Optional[str] = None,
@@ -50,7 +55,7 @@ def list_adverts(
     location_type: Optional[str] = None,
     skills: Optional[str] = Query(None),
     limit: int = 20,
-    offset: int = 0,
+    page: int = 1,
 ):
     query = db.query(Advert).filter(Advert.is_active == True)
     if search:
@@ -65,8 +70,13 @@ def list_adverts(
         skill_ids = [int(s_id) for s_id in skills.split(",")]
         query = query.join(Advert.required_skills).filter(Skill.id.in_(skill_ids))
 
+    total_count = query.count()
+    total_pages = (total_count + limit - 1) // limit if limit > 0 else 1
+    current_page = max(page, 1)
+    offset = (current_page - 1) * limit
+
     adverts = query.limit(limit).offset(offset).all()
-    return adverts
+    return {"items": adverts, "total_pages": total_pages}
 
 
 @router.get("/{advert_id}", response_model=AdvertResponse)

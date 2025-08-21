@@ -44,20 +44,11 @@ class AdvertsApiDataSource implements AdvertsDataSource {
     final token = _ref.read(authControllerProvider).session?.token;
     final uri = Uri.parse('${_api.baseUrl}/api/v1/adverts').replace(queryParameters: query);
     final resp = await http.get(uri, headers: _api.authHeaders(token));
-    final json = jsonDecode(resp.body);
+    final json = jsonDecode(resp.body) as Map<String, dynamic>;
     List<AdvertResponse> data;
     int totalPages;
-    if (json is List) {
-      // The response is a list of adverts, no pagination info
-      data = json.map((e) => AdvertResponse.fromJson(e as Map<String, dynamic>)).toList();
-      totalPages = 1;
-    } else if (json is Map<String, dynamic>) {
-      // The response is paginated (has 'items' and 'total_pages')
-      data = (json['items'] as List<dynamic>).map((e) => AdvertResponse.fromJson(e as Map<String, dynamic>)).toList();
-      totalPages = (json['total_pages'] as num?)?.toInt() ?? 1;
-    } else {
-      throw Exception('Unexpected adverts response format');
-    }
+    data = (json['items'] as List<dynamic>).map((e) => AdvertResponse.fromJson(e as Map<String, dynamic>)).toList();
+    totalPages = (json['total_pages'] as num).toInt();
     return PaginatedAdverts(items: data, totalPages: totalPages);
   }
 
