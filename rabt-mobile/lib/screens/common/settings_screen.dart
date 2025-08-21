@@ -3,10 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../state/auth/auth_providers.dart';
 import '../../theme/theme_providers.dart';
 import '../../state/prefs/user_prefs.dart';
+import '../auth/login_screen.dart';
 import 'package:go_router/go_router.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
+
+  static const String volunteerPath = '/v/settings';
+  static const String orgPath = '/o/settings';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,7 +56,7 @@ class SettingsScreen extends ConsumerWidget {
                 onTap: () async {
                   await ref.read(authControllerProvider.notifier).logout();
                   if (!context.mounted) return;
-                  context.go('/login');
+                  context.go(LoginScreen.path);
                 },
               ),
             ],

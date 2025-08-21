@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'my_adverts_screen.dart';
+import 'create_advert_screen.dart';
+import '../common/settings_screen.dart';
 
 class OrgShell extends StatefulWidget {
   const OrgShell({super.key, required this.child});
@@ -22,19 +25,19 @@ class _OrgShellState extends State<OrgShell> {
           setState(() => _index = i);
           switch (i) {
             case 0:
-              context.go('/o/my-jobs');
+              context.go(MyAdvertsScreen.path);
               break;
             case 1:
-              context.go('/o/create-job');
+              context.go(CreateAdvertScreen.path);
               break;
             case 2:
-              context.go('/o/settings');
+              context.go(SettingsScreen.volunteerPath);
               break;
           }
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.list_alt_outlined), label: 'My Jobs'),
-          BottomNavigationBarItem(icon: Icon(Icons.add_circle_outline), label: 'Create Job'),
+          BottomNavigationBarItem(icon: Icon(Icons.list_alt_outlined), label: 'My Adverts'),
+          BottomNavigationBarItem(icon: Icon(Icons.add_circle_outline), label: 'Create Advert'),
           BottomNavigationBarItem(icon: Icon(Icons.settings_outlined), label: 'Settings'),
         ],
       ),

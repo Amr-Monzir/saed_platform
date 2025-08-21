@@ -33,14 +33,14 @@ lib/
   models/                   # json_serializable data models (aligned with BE)
   state/
     auth/                   # session, login/signup, auth repository
-    jobs/                   # adverts repository api, providers, pagination
+    adverts/                   # adverts repository api, providers, pagination
     applications/           # applications repository api
     volunteer/              # volunteer repository api
     prefs/                  # user prefs (city, distance)
   screens/
     auth/                   # login, signup
-    jobs/                   # list, filters bar, details
-    organization/           # create job, my jobs
+    adverts/                   # list, filters bar, details
+    organization/           # create advert, my adverts
     volunteer/              # profile setup
     common/                 # settings (theme, prefs)
   widgets/                  # reusable UI: buttons, text fields, cards, chips, states
@@ -48,9 +48,9 @@ lib/
 
 ## Routing
 Defined in `lib/router/app_router.dart` with role‑based shells and guards.
-- Guest: `/login`, `/signup`, `/jobs`, `/jobs/:id`
-- Volunteer shell: `/v/jobs`, `/v/profile`, `/v/settings`
-- Organizer shell: `/o/my-jobs`, `/o/create-job`, `/o/settings`
+- Guest: `/login`, `/signup`, `/adverts`, `/adverts/:id`
+- Volunteer shell: `/v/adverts`, `/v/profile`, `/v/settings`
+- Organizer shell: `/o/my-adverts`, `/o/create-advert`, `/o/settings`
 
 ## State management (Riverpod)
 Key providers/controllers:
@@ -58,7 +58,7 @@ Key providers/controllers:
 - `advertsRepositoryProvider` → list/fetch/create/close adverts api
 - `applicationsRepositoryProvider` → create/update applications api
 - `volunteerRepositoryProvider` → profile fetch/update api
-- `jobsFilterProvider`, `searchQueryProvider`, `pageProvider` → filters/search/pagination
+- `advertsFilterProvider`, `searchQueryProvider`, `pageProvider` → filters/search/pagination
 - `userPrefsProvider` → city & distance preferences
 - `themeControllerProvider` → light/dark mode (persisted)
 
@@ -90,24 +90,24 @@ Located in `lib/models/` and generated with json_serializable.
   - `IconTile` (accent icon container)
   - `BadgeChip` (pills for category/frequency/location/skills)
   - `State views` (`EmptyView`, `ErrorView`)
-  - `JobCard` (summary row used in list)
+  - `AdvertCard` (summary row used in list)
 
 ## Screens (key flows)
 - Auth
   - Login: email/password via `/api/v1/auth/login` (form fields: `username`, `password`)
   - Signup: (WIP) to call `/api/v1/volunteers/register` or `/api/v1/organizers/register`
-- Jobs
+- Adverts
   - List: filters (frequency, category, skills, time_commitment, time_of_day), search `q`, pagination
   - Detail: badges, one‑off/recurring sections, Apply button
 - Organization
-  - Create Job (MVP fields), My Jobs (list + Close)
+  - Create Advert (MVP fields), My Adverts (list + Close)
 - Volunteer
   - Profile setup (MVP), onboard gate before accessing `/v/*`
 - Settings
   - Theme toggle, City + Distance preferences (used in listing queries)
 
 ## Filters, search, pagination
-Query params built in `state/jobs/jobs_providers.dart`:
+Query params built in `state/adverts/adverts_providers.dart`:
 - `frequency`, `category`, `skills` (comma names), `time_commitment`, `time_of_day`
 - `q` (search), `page`
 - `city`, `distance` (from settings)
@@ -115,7 +115,7 @@ Query params built in `state/jobs/jobs_providers.dart`:
 ## Auth/session
 - Session stored securely (`flutter_secure_storage`)
 - Token applied to every request via `Authorization: Bearer <token>`
-- Pending advert id saved to return guests back to intended job after signup
+- Pending advert id saved to return guests back to intended advert after signup
 
 ## API
 - real backend endpoints; ensure `API_BASE_URL` points to server root hosting `/api/v1` routes

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../adverts/adverts_list_screen.dart';
 import '../../constants/lookups.dart';
 import '../../state/volunteer/volunteer_repository.dart';
 
 class VolunteerProfileSetupScreen extends ConsumerStatefulWidget {
   const VolunteerProfileSetupScreen({super.key});
+
+  static const String path = '/v/profile-setup';
 
   @override
   ConsumerState<VolunteerProfileSetupScreen> createState() => _VolunteerProfileSetupScreenState();
@@ -63,7 +66,7 @@ class _VolunteerProfileSetupScreenState extends ConsumerState<VolunteerProfileSe
                 onPressed: () async {
                   await ref.read(volunteerRepositoryProvider).update(name: 'Volunteer', phoneNumber: null, city: null, country: null, skillIds: const []);
                   if (!context.mounted) return;
-                  context.go('/v/jobs');
+                  context.go(AdvertsListScreen.volunteerPath);
                 },
                 child: const Text('Save'),
               ),

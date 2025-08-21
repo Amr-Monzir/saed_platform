@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import '../../constants/lookups.dart';
-import '../../widgets/app_text_field.dart';
-import '../../widgets/app_button.dart';
-import '../../state/jobs/jobs_repository.dart';
-import '../../models/advert.dart';
-import '../../models/enums.dart';
-import '../../models/organizer.dart';
-// import '../../state/auth/auth_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rabt_mobile/constants/lookups.dart';
+import 'package:rabt_mobile/models/advert.dart';
+import 'package:rabt_mobile/models/enums.dart';
+import 'package:rabt_mobile/models/organizer.dart';
+import 'package:rabt_mobile/state/adverts/adverts_repository.dart';
+import 'package:rabt_mobile/widgets/app_button.dart';
+import 'package:rabt_mobile/widgets/app_text_field.dart';
 
 class CreateAdvertScreen extends ConsumerStatefulWidget {
   const CreateAdvertScreen({super.key});
+
+  static const String path = '/o/create-advert';
 
   @override
   ConsumerState<CreateAdvertScreen> createState() => _CreateAdvertScreenState();
@@ -39,7 +40,7 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Job')),
+      appBar: AppBar(title: const Text('Create Advert')),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -158,7 +159,7 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
               onPressed: () {
                 if (!_formKey.currentState!.validate()) return;
                 // Minimal create mirroring response shape for api
-                final advert = AdvertResponse(
+                final advert = Advert(
                   id: DateTime.now().millisecondsSinceEpoch,
                   title: _titleController.text.trim(),
                   description: _descController.text.trim(),
@@ -191,9 +192,9 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
                   createdAt: DateTime.now(),
                 );
                 ref.read(advertsRepositoryProvider).create(advert);
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Job created')));
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Advert created')));
               },
-              label: 'Create Job',
+              label: 'Create Advert',
             ),
           ],
         ),

@@ -6,9 +6,15 @@ import '../../widgets/app_button.dart';
 import '../../state/volunteer/volunteer_repository.dart';
 import '../../widgets/app_password_field.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../adverts/adverts_list_screen.dart';
+import '../volunteer/profile_setup_screen.dart';
+import 'signup_screen.dart';
+import 'login_organizer_screen.dart';
 
 class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
+
+  static const String path = '/login';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -50,9 +56,9 @@ class LoginScreen extends ConsumerWidget {
                   final me = await ref.read(volunteerRepositoryProvider).fetchVolunteerProfile();
                   if (!context.mounted) return;
                   if (me.onboardingCompleted) {
-                    context.go('/v/jobs');
+                    context.go(AdvertsListScreen.volunteerPath);
                   } else {
-                    context.go('/v/profile-setup');
+                    context.go(VolunteerProfileSetupScreen.path);
                   }
                 }
               },
@@ -60,21 +66,21 @@ class LoginScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             AppButton(
-              onPressed: () => context.push('/jobs'),
+              onPressed: () => context.push(AdvertsListScreen.guestPath),
               label: 'Continue as Guest Volunteer',
               variant: AppButtonVariant.outline,
             ),
             const SizedBox(height: 16),
             Center(
               child: TextButton(
-                onPressed: () => context.go('/signup'),
+                onPressed: () => context.go(SignupScreen.path),
                 child: const Text('Need an account? Sign up'),
               ),
             ),
             const SizedBox(height: 8),
             Center(
               child: TextButton(
-                onPressed: () => context.go('/login/organization'),
+                onPressed: () => context.go(OrganizerLoginScreen.path),
                 child: const Text('Login as Organization'),
               ),
             ),

@@ -7,13 +7,18 @@ import 'package:rabt_mobile/widgets/app_button.dart';
 import 'package:rabt_mobile/widgets/advert_card.dart';
 import 'package:rabt_mobile/state/applications/applications_repository.dart';
 import 'adverts_filters_sheet.dart';
+import 'adverts_detail_screen.dart';
+import '../auth/signup_screen.dart';
 
 class AdvertsListScreen extends ConsumerWidget {
   const AdvertsListScreen({super.key});
 
+  static const String volunteerPath = '/v/adverts';
+  static const String guestPath = '/adverts';
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final jobsAsync = ref.watch(filteredAdvertsProvider);
+    final advertsAsync = ref.watch(filteredAdvertsProvider);
     final searchCtrl = TextEditingController(text: ref.watch(searchQueryProvider) ?? '');
     return Scaffold(
       appBar: AppBar(title: const Text('Activist Adverts')),
@@ -49,7 +54,7 @@ class AdvertsListScreen extends ConsumerWidget {
             ),
           ),
           Expanded(
-            child: jobsAsync.when(
+            child: advertsAsync.when(
               data: (page) => ListView.builder(
                 itemCount: page.items.length + 1,
                 itemBuilder: (context, index) {
@@ -78,20 +83,20 @@ class AdvertsListScreen extends ConsumerWidget {
                       ),
                     );
                   }
-                  final job = page.items[index];
+                  final advert = page.items[index];
                   return AdvertCard(
-                    advert: job,
-                    onTap: () => context.push('/jobs/${job.id}'),
+                    advert: advert,
+                    onTap: () => context.push(AdvertsDetailScreen.pathFor(advert.id)),
                     trailing: AppButton(
                       onPressed: () async {
                         final session = ref.read(authControllerProvider).session;
                         if (session == null) {
-                          await ref.read(authControllerProvider.notifier).setPendingAdvert(job.id.toString());
+                          await ref.read(authControllerProvider.notifier).setPendingAdvert(advert.id.toString());
                           if (!context.mounted) return;
-                          context.push('/signup');
+                          context.push(SignupScreen.path);
                           return;
                         }
-                        await ref.read(applicationsRepositoryProvider).create(advertId: job.id);
+                        await ref.read(applicationsRepositoryProvider).create(advertId: advert.id);
                         if (!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Application submitted')),

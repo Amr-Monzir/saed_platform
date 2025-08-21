@@ -1,66 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../screens/splash_screen.dart';
-import '../screens/auth/login_screen.dart';
-import '../screens/auth/login_organizer_screen.dart';
-import '../screens/auth/signup_organizer_screen.dart';
-import '../screens/auth/signup_screen.dart';
-import '../screens/volunteer/volunteer_shell.dart';
-import '../screens/organization/org_shell.dart';
-import '../screens/adverts/adverts_list_screen.dart';
-import '../screens/common/settings_screen.dart';
-import '../screens/volunteer/profile_setup_screen.dart';
-import '../screens/organization/create_advert_screen.dart';
-import '../screens/organization/my_adverts_screen.dart';
-import '../state/auth/auth_providers.dart';
-import '../screens/adverts/adverts_detail_screen.dart';
+import 'package:rabt_mobile/screens/adverts/adverts_detail_screen.dart';
+import 'package:rabt_mobile/screens/adverts/adverts_list_screen.dart';
+import 'package:rabt_mobile/screens/auth/login_organizer_screen.dart';
+import 'package:rabt_mobile/screens/auth/login_screen.dart';
+import 'package:rabt_mobile/screens/auth/signup_organizer_screen.dart';
+import 'package:rabt_mobile/screens/auth/signup_screen.dart';
+import 'package:rabt_mobile/screens/common/settings_screen.dart';
+import 'package:rabt_mobile/screens/organization/create_advert_screen.dart';
+import 'package:rabt_mobile/screens/organization/my_adverts_screen.dart';
+import 'package:rabt_mobile/screens/organization/org_shell.dart';
+import 'package:rabt_mobile/screens/splash_screen.dart';
+import 'package:rabt_mobile/screens/volunteer/profile_setup_screen.dart';
+import 'package:rabt_mobile/screens/volunteer/volunteer_shell.dart';
+import 'package:rabt_mobile/state/auth/auth_providers.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final auth = ref.watch(authControllerProvider);
   return GoRouter(
-    initialLocation: '/splash',
+    initialLocation: SplashScreen.path,
     redirect: (context, state) {
       final loggedIn = auth.session != null;
       final isOrg = auth.session?.userRole == UserRole.organization;
-      final loggingIn = state.matchedLocation == '/login' || state.matchedLocation == '/signup';
-      if (state.matchedLocation == '/splash') {
-        if (!loggedIn) return '/login';
-        return isOrg ? '/o/my-jobs' : '/v/jobs';
+      final loggingIn = state.matchedLocation == LoginScreen.path || state.matchedLocation == SignupScreen.path;
+      if (state.matchedLocation == SplashScreen.path) {
+        if (!loggedIn) return LoginScreen.path;
+        return isOrg ? MyAdvertsScreen.path : AdvertsListScreen.volunteerPath;
       }
-      if (!loggedIn && state.matchedLocation.startsWith('/v')) return '/login';
-      if (!loggedIn && state.matchedLocation.startsWith('/o')) return '/login';
-      if (loggedIn && loggingIn) return isOrg ? '/o/my-jobs' : '/v/jobs';
+      if (!loggedIn && state.matchedLocation.startsWith('/v')) return LoginScreen.path;
+      if (!loggedIn && state.matchedLocation.startsWith('/o')) return LoginScreen.path;
+      if (loggedIn && loggingIn) return isOrg ? MyAdvertsScreen.path : AdvertsListScreen.volunteerPath;
       return null;
     },
     routes: [
       GoRoute(
-        path: '/splash',
+        path: SplashScreen.path,
         builder: (context, state) => const SplashScreen(),
       ),
       GoRoute(
-        path: '/login',
+        path: LoginScreen.path,
         builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
-        path: '/login/organization',
+        path: OrganizerLoginScreen.path,
         builder: (context, state) => const OrganizerLoginScreen(),
       ),
       GoRoute(
-        path: '/signup/organization',
+        path: OrganizerSignupScreen.path,
         builder: (context, state) => const OrganizerSignupScreen(),
       ),
       GoRoute(
-        path: '/signup',
+        path: SignupScreen.path,
         builder: (context, state) => const SignupScreen(),
       ),
-      // Guest jobs listing
+      // Guest adverts listing
       GoRoute(
-        path: '/jobs',
+        path: AdvertsListScreen.guestPath,
         builder: (context, state) => const AdvertsListScreen(),
       ),
       GoRoute(
-        path: '/jobs/:id',
+        path: AdvertsDetailScreen.guestPathTemplate,
         builder: (context, state) {
           final id = int.parse(state.pathParameters['id']!);
           return AdvertsDetailScreen(id: id);
@@ -71,19 +71,19 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state, child) => VolunteerShell(child: child),
         routes: [
           GoRoute(
-            path: '/v/jobs',
+            path: AdvertsListScreen.volunteerPath,
             builder: (context, state) => const AdvertsListScreen(),
           ),
           GoRoute(
-            path: '/v/profile-setup',
+            path: VolunteerProfileSetupScreen.path,
             builder: (context, state) => const VolunteerProfileSetupScreen(),
           ),
           GoRoute(
-            path: '/v/settings',
+            path: SettingsScreen.volunteerPath,
             builder: (context, state) => const SettingsScreen(),
           ),
           GoRoute(
-            path: '/v/profile',
+            path: VolunteerShell.profilePath,
             builder: (context, state) => const PlaceholderScreen(title: 'Profile'),
           ),
         ],
@@ -93,15 +93,15 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state, child) => OrgShell(child: child),
         routes: [
           GoRoute(
-            path: '/o/my-jobs',
-            builder: (context, state) => const MyJobsScreen(),
+            path: MyAdvertsScreen.path,
+            builder: (context, state) => const MyAdvertsScreen(),
           ),
           GoRoute(
-            path: '/o/create-job',
+            path: CreateAdvertScreen.path,
             builder: (context, state) => const CreateAdvertScreen(),
           ),
           GoRoute(
-            path: '/o/settings',
+            path: SettingsScreen.orgPath,
             builder: (context, state) => const SettingsScreen(),
           ),
         ],

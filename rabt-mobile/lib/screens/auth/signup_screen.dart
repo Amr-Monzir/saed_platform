@@ -5,9 +5,15 @@ import '../../state/auth/auth_providers.dart';
 import '../../widgets/app_text_field.dart';
 import '../../widgets/app_button.dart';
 import '../../state/volunteer/volunteer_repository.dart';
+import '../organization/my_adverts_screen.dart';
+import '../volunteer/profile_setup_screen.dart';
+import '../adverts/adverts_detail_screen.dart';
+import '../adverts/adverts_list_screen.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
+
+  static const String path = '/signup';
 
   @override
   ConsumerState<SignupScreen> createState() => _SignupScreenState();
@@ -73,20 +79,20 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                           if (success) {
                             if (_role == UserRole.organization) {
                               if (!context.mounted) return;
-                              context.go('/o/my-jobs');
+                              context.go(MyAdvertsScreen.path);
                             } else {
                               final me = await ref.read(volunteerRepositoryProvider).fetchVolunteerProfile();
                               final pending = ref.read(authControllerProvider).session?.pendingAdvertId;
                               if (!context.mounted) return;
                               if (!me.onboardingCompleted) {
-                                context.push('/v/profile-setup');
+                                context.push(VolunteerProfileSetupScreen.path);
                               } else if (pending != null) {
                                 await ref.read(authControllerProvider.notifier).setPendingAdvert(null);
                                 if (context.mounted) {
-                                  context.push('/jobs/$pending');
+                                  context.push(AdvertsDetailScreen.pathFor(int.parse(pending)));
                                 }
                               } else {
-                                context.push('/v/jobs');
+                                context.push(AdvertsListScreen.volunteerPath);
                               }
                             }
                           }

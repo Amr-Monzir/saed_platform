@@ -4,9 +4,12 @@ import 'package:go_router/go_router.dart';
 import '../../widgets/app_text_field.dart';
 import '../../widgets/app_button.dart';
 import '../../services/api_service.dart';
+import 'login_organizer_screen.dart';
 
 class OrganizerSignupScreen extends ConsumerStatefulWidget {
   const OrganizerSignupScreen({super.key});
+
+  static const String path = '/signup/organization';
 
   @override
   ConsumerState<OrganizerSignupScreen> createState() => _OrganizerSignupScreenState();
@@ -86,7 +89,7 @@ class _OrganizerSignupScreenState extends ConsumerState<OrganizerSignupScreen> {
                               ScaffoldMessenger.of(
                                 context,
                               ).showSnackBar(const SnackBar(content: Text('Account created. Please log in.')));
-                              context.go('/login/organization');
+                              context.go(OrganizerLoginScreen.path);
                             }
                           } catch (e) {
                             if (!mounted) return;
@@ -101,7 +104,7 @@ class _OrganizerSignupScreenState extends ConsumerState<OrganizerSignupScreen> {
               const SizedBox(height: 16),
               Center(
                 child: TextButton(
-                  onPressed: () => context.go('/login/organization'),
+                  onPressed: () => context.go(OrganizerLoginScreen.path),
                   child: const Text('Already have an account? Log in'),
                 ),
               ),

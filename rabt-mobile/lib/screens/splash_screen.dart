@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
+  static const String path = '/splash';
+
   @override
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
@@ -20,7 +22,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   Future<void> _navigateNext() async {
     if (!mounted) return;
     // Let router redirect decide destination to avoid navigation loops
-    context.go('/splash');
+    context.go(SplashScreen.path);
   }
 
   @override

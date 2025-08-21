@@ -4,11 +4,16 @@ import 'package:go_router/go_router.dart';
 import '../../state/auth/auth_providers.dart';
 import '../../widgets/app_button.dart';
 import '../../state/organizer/organizer_repository.dart';
+import '../organization/my_adverts_screen.dart';
+import 'signup_organizer_screen.dart';
+import 'login_screen.dart';
 import '../../widgets/app_password_field.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class OrganizerLoginScreen extends ConsumerWidget {
   const OrganizerLoginScreen({super.key});
+
+  static const String path = '/login/organization';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,7 +28,7 @@ class OrganizerLoginScreen extends ConsumerWidget {
             const SizedBox(height: 24),
             Text('Login as Organisation', style: Theme.of(context).textTheme.headlineMedium, textAlign: TextAlign.center),
             const SizedBox(height: 8),
-            Text('Post and manage activist job adverts.', style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
+            Text('Post and manage adverts.', style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
             const SizedBox(height: 8),
             Image.asset('assets/images/logo/rabt_logo_512.png', width: MediaQuery.of(context).size.width, fit: BoxFit.contain),
             const Spacer(),
@@ -48,7 +53,7 @@ class OrganizerLoginScreen extends ConsumerWidget {
                   try {
                     await ref.read(organizerRepositoryProvider).fetchOrganizerProfile();
                     if (!context.mounted) return;
-                    context.go('/o/my-jobs');
+                    context.go(MyAdvertsScreen.path);
                   } catch (_) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('This account is not an organization')),
@@ -61,14 +66,14 @@ class OrganizerLoginScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             Center(
               child: TextButton(
-                onPressed: () => context.go('/signup/organization'),
+                onPressed: () => context.go(OrganizerSignupScreen.path),
                 child: const Text('Need an account? Sign up'),
               ),
             ),
             const SizedBox(height: 8),
             Center(
               child: TextButton(
-                onPressed: () => context.go('/login'),
+                onPressed: () => context.go(LoginScreen.path),
                 child: const Text('Login as Volunteer'),
               ),
             ),

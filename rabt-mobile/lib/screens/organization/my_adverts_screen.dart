@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../state/jobs/jobs_providers.dart';
-import '../../widgets/app_card.dart';
-import '../../widgets/app_button.dart';
+import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
+import 'package:rabt_mobile/widgets/app_card.dart';
+import 'package:rabt_mobile/widgets/app_button.dart';
 
-class MyJobsScreen extends ConsumerWidget {
-  const MyJobsScreen({super.key});
+class MyAdvertsScreen extends ConsumerWidget {
+  const MyAdvertsScreen({super.key});
+
+  static const String path = '/o/my-adverts';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mine = ref.watch(myJobsProvider);
+    final mine = ref.watch(myAdvertsProvider);
     return Scaffold(
       appBar: AppBar(title: const Text('My Adverts')),
       body: mine.when(
         data: (items) => ListView.builder(
           itemCount: items.length,
           itemBuilder: (context, i) {
-            final job = items[i];
+            final advert = items[i];
             return AppCard(
               child: Row(
                 children: [
@@ -24,9 +26,9 @@ class MyJobsScreen extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(job.title, style: Theme.of(context).textTheme.titleMedium),
+                        Text(advert.title, style: Theme.of(context).textTheme.titleMedium),
                         const SizedBox(height: 4),
-                        Text('${job.category} • ${job.frequency.displayName} • ${job.locationType.displayName}'),
+                        Text('${advert.category} • ${advert.frequency.displayName} • ${advert.locationType.displayName}'),
                       ],
                     ),
                   ),
