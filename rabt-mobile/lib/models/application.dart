@@ -6,8 +6,8 @@ import 'volunteer.dart';
 part 'application.g.dart';
 
 @JsonSerializable()
-class ApplicationResponse {
-  ApplicationResponse({
+class Application {
+  Application({
     required this.id,
     required this.advertId,
     this.coverMessage,
@@ -25,11 +25,11 @@ class ApplicationResponse {
   final ApplicationStatus status;
   @JsonKey(name: 'applied_at')
   final DateTime appliedAt;
-  final AdvertResponse advert;
+  final Advert advert;
   final VolunteerProfile? volunteer;
 
-  factory ApplicationResponse.fromJson(Map<String, dynamic> json) => _$ApplicationResponseFromJson(json);
-  Map<String, dynamic> toJson() => _$ApplicationResponseToJson(this);
+  factory Application.fromJson(Map<String, dynamic> json) => _$ApplicationFromJson(json);
+  Map<String, dynamic> toJson() => _$ApplicationToJson(this);
 }
 
 

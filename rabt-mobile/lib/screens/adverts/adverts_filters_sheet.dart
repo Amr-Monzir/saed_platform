@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../constants/lookups.dart';
-import '../../state/jobs/jobs_providers.dart';
-import '../../models/enums.dart';
+import 'package:rabt_mobile/constants/lookups.dart';
+import 'package:rabt_mobile/models/enums.dart';
+import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
 
-class JobsFiltersSheet extends ConsumerWidget {
-  const JobsFiltersSheet({super.key});
+class AdvertsFiltersSheet extends ConsumerWidget {
+  const AdvertsFiltersSheet({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final filters = ref.watch(jobsFilterProvider);
-    final ctrl = ref.read(jobsFilterProvider.notifier);
+    final filters = ref.watch(advertsFilterProvider);
+    final ctrl = ref.read(advertsFilterProvider.notifier);
 
     final isOneOff = filters.frequency == FrequencyType.oneOff;
     final commitments = isOneOff ? kTimeCommitmentOneOff : kTimeCommitmentRecurring;

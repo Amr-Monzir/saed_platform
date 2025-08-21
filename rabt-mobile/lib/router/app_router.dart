@@ -8,13 +8,13 @@ import '../screens/auth/signup_organizer_screen.dart';
 import '../screens/auth/signup_screen.dart';
 import '../screens/volunteer/volunteer_shell.dart';
 import '../screens/organization/org_shell.dart';
-import '../screens/jobs/jobs_list_screen.dart';
+import '../screens/adverts/adverts_list_screen.dart';
 import '../screens/common/settings_screen.dart';
 import '../screens/volunteer/profile_setup_screen.dart';
-import '../screens/organization/create_job_screen.dart';
-import '../screens/organization/my_jobs_screen.dart';
+import '../screens/organization/create_advert_screen.dart';
+import '../screens/organization/my_adverts_screen.dart';
 import '../state/auth/auth_providers.dart';
-import '../screens/jobs/job_detail_screen.dart';
+import '../screens/adverts/adverts_detail_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final auth = ref.watch(authControllerProvider);
@@ -57,13 +57,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       // Guest jobs listing
       GoRoute(
         path: '/jobs',
-        builder: (context, state) => const JobsListScreen(),
+        builder: (context, state) => const AdvertsListScreen(),
       ),
       GoRoute(
         path: '/jobs/:id',
         builder: (context, state) {
           final id = int.parse(state.pathParameters['id']!);
-          return JobDetailScreen(id: id);
+          return AdvertsDetailScreen(id: id);
         },
       ),
       // Volunteer app shell
@@ -72,7 +72,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(
             path: '/v/jobs',
-            builder: (context, state) => const JobsListScreen(),
+            builder: (context, state) => const AdvertsListScreen(),
           ),
           GoRoute(
             path: '/v/profile-setup',
@@ -98,7 +98,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/o/create-job',
-            builder: (context, state) => const CreateJobScreen(),
+            builder: (context, state) => const CreateAdvertScreen(),
           ),
           GoRoute(
             path: '/o/settings',

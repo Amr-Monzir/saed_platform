@@ -49,8 +49,8 @@ class OneOffAdvertDetails {
 }
 
 @JsonSerializable()
-class AdvertResponse {
-  AdvertResponse({
+class Advert {
+  Advert({
     required this.id,
     required this.title,
     required this.description,
@@ -99,8 +99,8 @@ class AdvertResponse {
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
 
-  factory AdvertResponse.fromJson(Map<String, dynamic> json) => _$AdvertResponseFromJson(json);
-  Map<String, dynamic> toJson() => _$AdvertResponseToJson(this);
+  factory Advert.fromJson(Map<String, dynamic> json) => _$AdvertFromJson(json);
+  Map<String, dynamic> toJson() => _$AdvertToJson(this);
 }
 
 

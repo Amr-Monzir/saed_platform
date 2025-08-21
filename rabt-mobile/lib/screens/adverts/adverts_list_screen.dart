@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../state/jobs/jobs_providers.dart';
-import '../../state/auth/auth_providers.dart';
-import 'jobs_filters_sheet.dart';
-import '../../widgets/app_button.dart';
-import '../../state/applications/applications_repository.dart';
-import '../../widgets/job_card.dart';
+import 'package:rabt_mobile/state/auth/auth_providers.dart';
+import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
+import 'package:rabt_mobile/widgets/app_button.dart';
+import 'package:rabt_mobile/widgets/advert_card.dart';
+import 'package:rabt_mobile/state/applications/applications_repository.dart';
+import 'adverts_filters_sheet.dart';
 
-class JobsListScreen extends ConsumerWidget {
-  const JobsListScreen({super.key});
+class AdvertsListScreen extends ConsumerWidget {
+  const AdvertsListScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final jobsAsync = ref.watch(filteredJobsProvider);
+    final jobsAsync = ref.watch(filteredAdvertsProvider);
     final searchCtrl = TextEditingController(text: ref.watch(searchQueryProvider) ?? '');
     return Scaffold(
       appBar: AppBar(title: const Text('Activist Adverts')),
@@ -39,7 +39,7 @@ class JobsListScreen extends ConsumerWidget {
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                       ),
-                      builder: (_) => const JobsFiltersSheet(),
+                      builder: (_) => const AdvertsFiltersSheet(),
                     );
                   },
                   icon: const Icon(Icons.tune_outlined),
@@ -79,8 +79,8 @@ class JobsListScreen extends ConsumerWidget {
                     );
                   }
                   final job = page.items[index];
-                  return JobCard(
-                    job: job,
+                  return AdvertCard(
+                    advert: job,
                     onTap: () => context.push('/jobs/${job.id}'),
                     trailing: AppButton(
                       onPressed: () async {

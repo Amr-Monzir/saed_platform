@@ -46,19 +46,23 @@ class _OrganizerSignupScreenState extends ConsumerState<OrganizerSignupScreen> {
                 label: 'Organisation name',
                 validator: (v) => v == null || v.isEmpty ? 'Required' : null,
               ),
+              const SizedBox(height: 16),
               AppTextField(
                 controller: _emailCtrl,
                 label: 'Email',
                 keyboardType: TextInputType.emailAddress,
                 validator: (v) => v != null && v.contains('@') ? null : 'Enter a valid email',
               ),
+              const SizedBox(height: 16),
               AppTextField(
                 controller: _passCtrl,
                 label: 'Password',
                 obscureText: true,
                 validator: (v) => v != null && v.length >= 6 ? null : 'Min 6 chars',
               ),
+              const SizedBox(height: 16),
               AppTextField(controller: _websiteCtrl, label: 'Website (optional)'),
+              const SizedBox(height: 16),
               AppTextField(controller: _descCtrl, label: 'Description (optional)', maxLines: 3),
               const SizedBox(height: 16),
               AppButton(
@@ -94,7 +98,7 @@ class _OrganizerSignupScreenState extends ConsumerState<OrganizerSignupScreen> {
                           }
                         },
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 16),
               Center(
                 child: TextButton(
                   onPressed: () => context.go('/login/organization'),

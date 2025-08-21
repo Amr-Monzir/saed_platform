@@ -4,9 +4,9 @@ import 'badge_chip.dart';
 import 'app_card.dart';
 import 'icon_tile.dart';
 
-class JobCard extends StatelessWidget {
-  const JobCard({super.key, required this.job, this.onTap, this.trailing});
-  final AdvertResponse job;
+class AdvertCard extends StatelessWidget {
+  const AdvertCard({super.key, required this.advert, this.onTap, this.trailing});
+  final Advert advert;
   final VoidCallback? onTap;
   final Widget? trailing;
 
@@ -24,16 +24,16 @@ class JobCard extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: onTap,
-                  child: Text(job.title, style: Theme.of(context).textTheme.titleMedium),
+                  child: Text(advert.title, style: Theme.of(context).textTheme.titleMedium),
                 ),
                 const SizedBox(height: 6),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    BadgeChip(label: job.category, icon: Icons.category_outlined),
-                    BadgeChip(label: job.frequency.displayName, icon: Icons.schedule_outlined),
-                    BadgeChip(label: job.locationType.displayName, icon: Icons.place_outlined),
+                    BadgeChip(label: advert.category, icon: Icons.category_outlined),
+                    BadgeChip(label: advert.frequency.displayName, icon: Icons.schedule_outlined),
+                    BadgeChip(label: advert.locationType.displayName, icon: Icons.place_outlined),
                   ],
                 ),
               ],

@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../models/advert.dart';
-import '../../widgets/app_button.dart';
-import '../../widgets/app_card.dart';
-import '../../widgets/icon_tile.dart';
-import '../../state/auth/auth_providers.dart';
-import '../../state/jobs/jobs_repository.dart';
-import '../../state/applications/applications_repository.dart';
+import 'package:rabt_mobile/models/advert.dart';
+import 'package:rabt_mobile/state/applications/applications_repository.dart';
+import 'package:rabt_mobile/state/auth/auth_providers.dart';
+import 'package:rabt_mobile/state/jobs/jobs_repository.dart';
+import 'package:rabt_mobile/widgets/app_button.dart';
+import 'package:rabt_mobile/widgets/app_card.dart';
+import 'package:rabt_mobile/widgets/icon_tile.dart';
 
-class JobDetailScreen extends ConsumerWidget {
-  const JobDetailScreen({super.key, required this.id});
+class AdvertsDetailScreen extends ConsumerWidget {
+  const AdvertsDetailScreen({super.key, required this.id});
   final int id;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final repo = ref.watch(advertsRepositoryProvider);
-    return FutureBuilder<AdvertResponse?>(
+    return FutureBuilder<Advert?>(
       future: repo.getById(id),
       builder: (context, snapshot) {
         final job = snapshot.data;

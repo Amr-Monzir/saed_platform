@@ -1,9 +1,7 @@
-import '../../models/advert.dart';
+import 'package:rabt_mobile/models/advert.dart';
 
 class PaginatedAdverts {
   PaginatedAdverts({required this.items, required this.totalPages});
-  final List<AdvertResponse> items;
+  final List<Advert> items;
   final int totalPages;
 }
-
-

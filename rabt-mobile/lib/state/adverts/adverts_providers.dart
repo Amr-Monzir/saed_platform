@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'jobs_repository.dart';
+import 'adverts_repository.dart';
 import '../../models/advert.dart';
 import '../prefs/user_prefs.dart';
 import 'paginated_adverts.dart';
@@ -8,9 +8,9 @@ import '../../models/enums.dart';
 final searchQueryProvider = StateProvider<String?>((ref) => null);
 final pageProvider = StateProvider<int>((ref) => 1);
 
-final jobsProvider = FutureProvider<PaginatedAdverts>((ref) async {
+final advertsProvider = FutureProvider<PaginatedAdverts>((ref) async {
   final repo = ref.watch(advertsRepositoryProvider);
-  final filters = ref.watch(jobsFilterProvider);
+  final filters = ref.watch(advertsFilterProvider);
   final prefs = ref.watch(userPrefsProvider);
   final search = ref.watch(searchQueryProvider);
   final page = ref.watch(pageProvider);
@@ -27,12 +27,12 @@ final jobsProvider = FutureProvider<PaginatedAdverts>((ref) async {
   return repo.fetchAll(query: query.isEmpty ? null : query);
 });
 
-final filteredJobsProvider = Provider<AsyncValue<PaginatedAdverts>>((ref) {
-  return ref.watch(jobsProvider);
+final filteredAdvertsProvider = Provider<AsyncValue<PaginatedAdverts>>((ref) {
+  return ref.watch(advertsProvider);
 });
 
-class JobsFilterState {
-  JobsFilterState({
+class AdvertsFilterState {
+  AdvertsFilterState({
     this.frequency,
     this.category,
     this.skills = const <String>{},
@@ -48,7 +48,7 @@ class JobsFilterState {
   final DayTimePeriod? timeOfDay;
   final int? distanceMiles;
 
-  JobsFilterState copyWith({
+  AdvertsFilterState copyWith({
     FrequencyType? frequency,
     String? category,
     Set<String>? skills,
@@ -56,7 +56,7 @@ class JobsFilterState {
     DayTimePeriod? timeOfDay,
     int? distanceMiles,
   }) {
-    return JobsFilterState(
+    return AdvertsFilterState(
       frequency: frequency ?? this.frequency,
       category: category ?? this.category,
       skills: skills ?? this.skills,
@@ -67,8 +67,8 @@ class JobsFilterState {
   }
 }
 
-class JobsFilterController extends StateNotifier<JobsFilterState> {
-  JobsFilterController() : super(JobsFilterState());
+class AdvertsFilterController extends StateNotifier<AdvertsFilterState> {
+  AdvertsFilterController() : super(AdvertsFilterState());
 
   void setFrequency(FrequencyType? value) => state = state.copyWith(frequency: value);
   void setCategory(String? value) => state = state.copyWith(category: value);
@@ -84,14 +84,14 @@ class JobsFilterController extends StateNotifier<JobsFilterState> {
   void setTimeCommitment(TimeCommitment? value) => state = state.copyWith(timeCommitment: value);
   void setTimeOfDay(DayTimePeriod? value) => state = state.copyWith(timeOfDay: value);
   void setDistance(int? miles) => state = state.copyWith(distanceMiles: miles);
-  void clear() => state = JobsFilterState();
+  void clear() => state = AdvertsFilterState();
 }
 
-final jobsFilterProvider = StateNotifierProvider<JobsFilterController, JobsFilterState>((ref) {
-  return JobsFilterController();
+final advertsFilterProvider = StateNotifierProvider<AdvertsFilterController, AdvertsFilterState>((ref) {
+  return AdvertsFilterController();
 });
 
-final myJobsProvider = FutureProvider<List<AdvertResponse>>((ref) async {
+final myAdvertsProvider = FutureProvider<List<Advert>>((ref) async {
   final repo = ref.watch(advertsRepositoryProvider);
   return repo.fetchMine();
 });

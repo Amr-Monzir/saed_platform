@@ -1,5 +1,5 @@
-class JobItem {
-  JobItem({
+class AdvertItem {
+  AdvertItem({
     required this.id,
     required this.ownerToken,
     required this.title,
@@ -12,7 +12,7 @@ class JobItem {
     this.startDate,
     this.endDate,
     this.description,
-    this.status = JobStatus.published,
+    this.status = AdvertStatus.published,
   });
 
   final String id;
@@ -27,9 +27,9 @@ class JobItem {
   final DateTime? startDate;
   final DateTime? endDate;
   final String? description;
-  final JobStatus status;
+  final AdvertStatus status;
 
-  JobItem copyWith({
+  AdvertItem copyWith({
     String? title,
     String? category,
     String? frequency,
@@ -40,9 +40,9 @@ class JobItem {
     DateTime? startDate,
     DateTime? endDate,
     String? description,
-    JobStatus? status,
+    AdvertStatus? status,
   }) {
-    return JobItem(
+    return AdvertItem(
       id: id,
       ownerToken: ownerToken,
       title: title ?? this.title,
@@ -60,6 +60,6 @@ class JobItem {
   }
 }
 
-enum JobStatus { draft, published, closed }
+enum AdvertStatus { draft, published, closed }
 
 

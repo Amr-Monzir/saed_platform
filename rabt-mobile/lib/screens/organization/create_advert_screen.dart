@@ -9,14 +9,14 @@ import '../../models/organizer.dart';
 // import '../../state/auth/auth_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CreateJobScreen extends ConsumerStatefulWidget {
-  const CreateJobScreen({super.key});
+class CreateAdvertScreen extends ConsumerStatefulWidget {
+  const CreateAdvertScreen({super.key});
 
   @override
-  ConsumerState<CreateJobScreen> createState() => _CreateJobScreenState();
+  ConsumerState<CreateAdvertScreen> createState() => _CreateAdvertScreenState();
 }
 
-class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
+class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
   final _formKey = GlobalKey<FormState>();
   FrequencyType _frequency = FrequencyType.oneOff;
   String? _category;
