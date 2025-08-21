@@ -49,4 +49,4 @@ class AdvertsRepository {
   }
 }
 
-final advertsRepositoryProvider = Provider<AdvertsRepository>((ref) => AdvertsRepository(ref));
+final advertsRepositoryProvider = Provider((ref) => AdvertsRepository(ref));

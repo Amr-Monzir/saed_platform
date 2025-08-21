@@ -17,4 +17,4 @@ class OrganizerRepository {
   }
 }
 
-final organizerRepositoryProvider = Provider<OrganizerRepository>((ref) => OrganizerRepository(ref));
+final organizerRepositoryProvider = Provider((ref) => OrganizerRepository(ref));

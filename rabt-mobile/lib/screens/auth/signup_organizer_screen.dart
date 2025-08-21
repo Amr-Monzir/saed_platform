@@ -58,48 +58,41 @@ class _OrganizerSignupScreenState extends ConsumerState<OrganizerSignupScreen> {
                 obscureText: true,
                 validator: (v) => v != null && v.length >= 6 ? null : 'Min 6 chars',
               ),
-              AppTextField(
-                controller: _websiteCtrl,
-                label: 'Website (optional)',
-              ),
-              AppTextField(
-                controller: _descCtrl,
-                label: 'Description (optional)',
-                maxLines: 3,
-              ),
+              AppTextField(controller: _websiteCtrl, label: 'Website (optional)'),
+              AppTextField(controller: _descCtrl, label: 'Description (optional)', maxLines: 3),
               const SizedBox(height: 16),
               AppButton(
                 label: _loading ? 'Please wait…' : 'Create account',
-                onPressed: _loading
-                    ? null
-                    : () async {
-                        if (!_formKey.currentState!.validate()) return;
-                        setState(() => _loading = true);
-                        try {
-                          await ApiService.instance.post(
-                            '/api/v1/organizers/register',
-                            {
+                onPressed:
+                    _loading
+                        ? null
+                        : () async {
+                          if (!_formKey.currentState!.validate()) return;
+                          setState(() => _loading = true);
+                          try {
+                            await ApiService.instance.post('/api/v1/organizers/register', {
                               'name': _nameCtrl.text.trim(),
                               'email': _emailCtrl.text.trim(),
                               'password': _passCtrl.text,
                               if (_websiteCtrl.text.trim().isNotEmpty) 'website': _websiteCtrl.text.trim(),
                               if (_descCtrl.text.trim().isNotEmpty) 'description': _descCtrl.text.trim(),
-                            },
-                          );
-                          if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Account created. Please log in.')),
-                          );
-                          context.go('/login/organization');
-                        } catch (e) {
-                          if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Signup failed: $e')),
-                          );
-                        } finally {
-                          if (mounted) setState(() => _loading = false);
-                        }
-                      },
+                            });
+                            if (!mounted) return;
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(
+                                context,
+                              ).showSnackBar(const SnackBar(content: Text('Account created. Please log in.')));
+                              context.go('/login/organization');
+                            }
+                          } catch (e) {
+                            if (!mounted) return;
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Signup failed: $e')));
+                            }
+                          } finally {
+                            if (mounted) setState(() => _loading = false);
+                          }
+                        },
               ),
               const SizedBox(height: 8),
               Center(
@@ -115,5 +108,3 @@ class _OrganizerSignupScreenState extends ConsumerState<OrganizerSignupScreen> {
     );
   }
 }
-
-

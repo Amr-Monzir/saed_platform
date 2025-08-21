@@ -82,7 +82,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                                 context.push('/v/profile-setup');
                               } else if (pending != null) {
                                 await ref.read(authControllerProvider.notifier).setPendingAdvert(null);
-                                context.push('/jobs/$pending');
+                                if (context.mounted) {
+                                  context.push('/jobs/$pending');
+                                }
                               } else {
                                 context.push('/v/jobs');
                               }

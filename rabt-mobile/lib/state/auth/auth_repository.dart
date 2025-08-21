@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../services/api_service.dart';
-import '../../models/user.dart';
+import 'package:rabt_mobile/models/user.dart';
+import 'package:rabt_mobile/services/api_service.dart';
 
 class AuthRepository {
   AuthRepository(this._ref);
@@ -17,6 +17,6 @@ class AuthRepository {
   }
 }
 
-final authRepositoryProvider = Provider<AuthRepository>((ref) => AuthRepository(ref));
+final authRepositoryProvider = Provider((ref) => AuthRepository(ref));
 
 

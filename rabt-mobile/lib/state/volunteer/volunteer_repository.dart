@@ -35,4 +35,4 @@ class VolunteerRepository {
   }
 }
 
-final volunteerRepositoryProvider = Provider<VolunteerRepository>((ref) => VolunteerRepository(ref));
+final volunteerRepositoryProvider = Provider((ref) => VolunteerRepository(ref));
