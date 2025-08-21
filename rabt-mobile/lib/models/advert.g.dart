@@ -22,9 +22,9 @@ Map<String, dynamic> _$RecurringDaysToJson(RecurringDays instance) =>
     };
 
 const _$DayPeriodEnumMap = {
-  DayPeriod.am: 'am',
-  DayPeriod.pm: 'pm',
-  DayPeriod.after5pm: 'after5pm',
+  DayTimePeriod.am: 'am',
+  DayTimePeriod.pm: 'pm',
+  DayTimePeriod.after5pm: 'after5pm',
 };
 
 RecurringAdvertDetails _$RecurringAdvertDetailsFromJson(

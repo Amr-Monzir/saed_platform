@@ -43,9 +43,9 @@ const _$DurationTypeEnumMap = {
 };
 
 const _$DayPeriodEnumMap = {
-  DayPeriod.am: 'am',
-  DayPeriod.pm: 'pm',
-  DayPeriod.after5pm: 'after5pm',
+  DayTimePeriod.am: 'am',
+  DayTimePeriod.pm: 'pm',
+  DayTimePeriod.after5pm: 'after5pm',
 };
 
 const _$ApplicationStatusEnumMap = {

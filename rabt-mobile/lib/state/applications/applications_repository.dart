@@ -2,11 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/application.dart';
-import '../../models/advert.dart';
-import '../../models/organizer.dart';
-import '../../models/enums.dart' as e;
 import '../../services/api_service.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../auth/auth_providers.dart';
 
 abstract class ApplicationsDataSource {

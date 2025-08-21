@@ -4,7 +4,7 @@ import '../../widgets/app_text_field.dart';
 import '../../widgets/app_button.dart';
 import '../../state/jobs/jobs_repository.dart';
 import '../../models/advert.dart';
-import '../../models/enums.dart' as e;
+import '../../models/enums.dart';
 import '../../models/organizer.dart';
 // import '../../state/auth/auth_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,7 +18,7 @@ class CreateJobScreen extends ConsumerStatefulWidget {
 
 class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
   final _formKey = GlobalKey<FormState>();
-  String _frequency = kFrequencies.first;
+  FrequencyType _frequency = FrequencyType.oneOff;
   String? _category;
   final Set<String> _skills = {};
   String? _timeCommitment;
@@ -52,9 +52,9 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
             ),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
-              value: _frequency,
-              items: kFrequencies.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-              onChanged: (v) => setState(() => _frequency = v ?? kFrequencies.first),
+              value: _frequency.name,
+              items: FrequencyType.values.map((e) => DropdownMenuItem(value: e.name, child: Text(e.displayName))).toList(),
+              onChanged: (v) => setState(() => _frequency = v == null ? FrequencyType.oneOff : FrequencyType.values.byName(v)),
               decoration: const InputDecoration(labelText: 'Frequency'),
             ),
             const SizedBox(height: 8),
@@ -69,27 +69,30 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
             const Text('Skills Required'),
             Wrap(
               spacing: 8,
-              children: kSkills.map((s) {
-                final selected = _skills.contains(s);
-                return FilterChip(
-                  label: Text(s),
-                  selected: selected,
-                  onSelected: (v) => setState(() {
-                    if (v) {
-                      _skills.add(s);
-                    } else {
-                      _skills.remove(s);
-                    }
-                  }),
-                );
-              }).toList(),
+              children:
+                  kSkills.map((s) {
+                    final selected = _skills.contains(s);
+                    return FilterChip(
+                      label: Text(s),
+                      selected: selected,
+                      onSelected:
+                          (v) => setState(() {
+                            if (v) {
+                              _skills.add(s);
+                            } else {
+                              _skills.remove(s);
+                            }
+                          }),
+                    );
+                  }).toList(),
             ),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
               value: _timeCommitment,
-              items: (_frequency == 'One-off' ? kTimeCommitmentOneOff : kTimeCommitmentRecurring)
-                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                  .toList(),
+              items:
+                  (_frequency == FrequencyType.oneOff ? kTimeCommitmentOneOff : kTimeCommitmentRecurring)
+                      .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                      .toList(),
               onChanged: (v) => setState(() => _timeCommitment = v),
               decoration: const InputDecoration(labelText: 'Time Commitment'),
             ),
@@ -160,27 +163,31 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
                   title: _titleController.text.trim(),
                   description: _descController.text.trim(),
                   category: _category ?? kCategories.first,
-                  frequency: _frequency == 'One-off' ? e.FrequencyType.oneOff : e.FrequencyType.recurring,
+                  frequency: _frequency,
                   numberOfVolunteers: 1,
-                  locationType: e.LocationType.onSite,
+                  locationType: LocationType.onSite,
                   isActive: true,
                   organizer: OrganizerResponse(id: 1, name: 'Me'),
                   requiredSkills: const [],
-                  oneoffDetails: _frequency == 'One-off'
-                      ? OneOffAdvertDetails(
-                          eventDatetime: _startDate ?? DateTime.now(),
-                          timeCommitment: e.TimeCommitment.oneToTwo,
-                          applicationDeadline: _endDate ?? DateTime.now().add(const Duration(days: 7)),
-                        )
-                      : null,
-                  recurringDetails: _frequency == 'Recurring'
-                      ? RecurringAdvertDetails(
-                          recurrence: e.RecurrenceType.weekly,
-                          timeCommitmentPerSession: e.TimeCommitment.oneToTwo,
-                          duration: e.DurationType.oneMonth,
-                          specificDays: [RecurringDays(day: 'Monday', periods: [e.DayPeriod.am])],
-                        )
-                      : null,
+                  oneoffDetails:
+                      _frequency == FrequencyType.oneOff
+                          ? OneOffAdvertDetails(
+                            eventDatetime: _startDate ?? DateTime.now(),
+                            timeCommitment: TimeCommitment.oneToTwo,
+                            applicationDeadline: _endDate ?? DateTime.now().add(const Duration(days: 7)),
+                          )
+                          : null,
+                  recurringDetails:
+                      _frequency == FrequencyType.recurring
+                          ? RecurringAdvertDetails(
+                            recurrence: RecurrenceType.weekly,
+                            timeCommitmentPerSession: TimeCommitment.oneToTwo,
+                            duration: DurationType.oneMonth,
+                            specificDays: [
+                              RecurringDays(day: 'Monday', periods: [DayTimePeriod.am]),
+                            ],
+                          )
+                          : null,
                   createdAt: DateTime.now(),
                 );
                 ref.read(advertsRepositoryProvider).create(advert);
@@ -194,5 +201,3 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
     );
   }
 }
-
-

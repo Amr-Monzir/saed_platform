@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../constants/lookups.dart';
 import '../../state/jobs/jobs_providers.dart';
+import '../../models/enums.dart';
 
 class JobsFiltersBar extends ConsumerWidget {
   const JobsFiltersBar({super.key});
@@ -16,23 +17,20 @@ class JobsFiltersBar extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
         children: [
-          _DropdownChip<String>(
+          _DropdownChip<FrequencyType>(
             label: 'Frequency',
             value: filters.frequency,
-            items: kFrequencies,
+            items: FrequencyType.values,
             onChanged: ctrl.setFrequency,
+            display: (v) => v == null ? 'Any' : v.displayName,
           ),
-          _DropdownChip<String>(
-            label: 'Category',
-            value: filters.category,
-            items: kCategories,
-            onChanged: ctrl.setCategory,
-          ),
-          _DropdownChip<String>(
+          _DropdownChip<String>(label: 'Category', value: filters.category, items: kCategories, onChanged: ctrl.setCategory),
+          _DropdownChip<DayTimePeriod>(
             label: 'Time of day',
             value: filters.timeOfDay,
-            items: kTimesOfDay,
+            items: DayTimePeriod.values,
             onChanged: ctrl.setTimeOfDay,
+            display: (v) => v == null ? 'Any' : v.displayName,
           ),
           _DropdownChip<int>(
             label: 'Distance',
@@ -42,11 +40,7 @@ class JobsFiltersBar extends ConsumerWidget {
             display: (v) => v == null ? 'Any' : '${v}mi',
           ),
           const SizedBox(width: 8),
-          OutlinedButton.icon(
-            onPressed: ctrl.clear,
-            icon: const Icon(Icons.filter_alt_off_outlined),
-            label: const Text('Clear'),
-          ),
+          OutlinedButton.icon(onPressed: ctrl.clear, icon: const Icon(Icons.filter_alt_off_outlined), label: const Text('Clear')),
         ],
       ),
     );
@@ -54,13 +48,7 @@ class JobsFiltersBar extends ConsumerWidget {
 }
 
 class _DropdownChip<T> extends StatelessWidget {
-  const _DropdownChip({
-    required this.label,
-    required this.value,
-    required this.items,
-    required this.onChanged,
-    this.display,
-  });
+  const _DropdownChip({required this.label, required this.value, required this.items, required this.onChanged, this.display});
   final String label;
   final T? value;
   final List<T> items;
@@ -87,5 +75,3 @@ class _DropdownChip<T> extends StatelessWidget {
     );
   }
 }
-
-

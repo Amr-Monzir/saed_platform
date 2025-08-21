@@ -9,7 +9,7 @@ part 'advert.g.dart';
 class RecurringDays {
   RecurringDays({required this.day, required this.periods});
   final String day; // backend uses string day key
-  final List<DayPeriod> periods;
+  final List<DayTimePeriod> periods;
 
   factory RecurringDays.fromJson(Map<String, dynamic> json) => _$RecurringDaysFromJson(json);
   Map<String, dynamic> toJson() => _$RecurringDaysToJson(this);

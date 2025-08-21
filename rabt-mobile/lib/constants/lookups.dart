@@ -1,8 +1,3 @@
-const List<String> kFrequencies = [
-  'One-off',
-  'Recurring',
-];
-
 const List<String> kCategories = [
   'Protest/Rally',
   'Digital Campaign',

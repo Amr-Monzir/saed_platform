@@ -26,6 +26,10 @@ enum FrequencyType {
     FrequencyType.oneOff => 'One-off',
     FrequencyType.recurring => 'Recurring',
   };
+  String get wireValue => switch (this) {
+    FrequencyType.oneOff => 'one-off',
+    FrequencyType.recurring => 'recurring',
+  };
 }
 
 @JsonEnum(alwaysCreate: true)
@@ -56,6 +60,12 @@ enum TimeCommitment {
   tenPlus;
 
   String get displayName => switch (this) {
+    TimeCommitment.oneToTwo => '1-2h',
+    TimeCommitment.threeToFive => '3-5h',
+    TimeCommitment.sixToTen => '6-10h',
+    TimeCommitment.tenPlus => '10+h',
+  };
+  String get wireValue => switch (this) {
     TimeCommitment.oneToTwo => '1-2h',
     TimeCommitment.threeToFive => '3-5h',
     TimeCommitment.sixToTen => '6-10h',
@@ -99,7 +109,7 @@ enum DurationType {
 }
 
 @JsonEnum(alwaysCreate: true)
-enum DayPeriod {
+enum DayTimePeriod {
   @JsonValue('am')
   am,
   @JsonValue('pm')
@@ -108,9 +118,15 @@ enum DayPeriod {
   after5pm;
 
   String get displayName => switch (this) {
-    DayPeriod.am => 'AM',
-    DayPeriod.pm => 'PM',
-    DayPeriod.after5pm => 'After 5pm',
+    DayTimePeriod.am => 'AM',
+    DayTimePeriod.pm => 'PM',
+    DayTimePeriod.after5pm => 'After 5pm',
+  };
+
+  String get wireValue => switch (this) {
+    DayTimePeriod.am => 'am',
+    DayTimePeriod.pm => 'pm',
+    DayTimePeriod.after5pm => 'after5pm',
   };
 }
 

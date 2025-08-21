@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../state/jobs/jobs_providers.dart';
 import '../../state/auth/auth_providers.dart';
-import 'jobs_filters_bar.dart';
+import 'jobs_filters_sheet.dart';
 import '../../widgets/app_button.dart';
 import '../../state/applications/applications_repository.dart';
 import '../../widgets/job_card.dart';
@@ -21,13 +21,33 @@ class JobsListScreen extends ConsumerWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(12.0),
-            child: TextField(
-              controller: searchCtrl,
-              decoration: const InputDecoration(hintText: 'Search'),
-              onSubmitted: (v) => ref.read(searchQueryProvider.notifier).state = v.trim(),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: searchCtrl,
+                    decoration: const InputDecoration(hintText: 'Search'),
+                    onSubmitted: (v) => ref.read(searchQueryProvider.notifier).state = v.trim(),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                OutlinedButton.icon(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                      ),
+                      builder: (_) => const JobsFiltersSheet(),
+                    );
+                  },
+                  icon: const Icon(Icons.tune_outlined),
+                  label: const Text('Filters'),
+                ),
+              ],
             ),
           ),
-          const JobsFiltersBar(),
           Expanded(
             child: jobsAsync.when(
               data: (page) => ListView.builder(
