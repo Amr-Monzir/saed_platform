@@ -17,6 +17,7 @@ router = APIRouter(prefix="/auth", tags=["authentication"])
 async def login(
     form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
+    print(form_data.username)
     user = db.query(User).filter(User.email == form_data.username).first()
 
     if not user or not verify_password(form_data.password, user.password_hash):

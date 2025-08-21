@@ -40,72 +40,8 @@ class ApplicationsApiDataSource implements ApplicationsDataSource {
   }
 }
 
-class ApplicationsMockDataSource implements ApplicationsDataSource {
-  int _seq = 1;
-  @override
-  Future<ApplicationResponse> create({required int advertId, String? coverMessage}) async {
-    return ApplicationResponse(
-      id: _seq++,
-      advertId: advertId,
-      coverMessage: coverMessage,
-      status: e.ApplicationStatus.pending,
-      appliedAt: DateTime.now(),
-      advert: AdvertResponse(
-        id: advertId,
-        title: 'Mock',
-        description: 'Mock',
-        category: 'Mock',
-        frequency: e.FrequencyType.oneOff,
-        numberOfVolunteers: 1,
-        locationType: e.LocationType.remote,
-        isActive: true,
-        organizer: OrganizerResponse(id: 1, name: 'Mock'),
-        requiredSkills: const [],
-        oneoffDetails: OneOffAdvertDetails(
-          eventDatetime: DateTime.now(),
-          timeCommitment: e.TimeCommitment.oneToTwo,
-          applicationDeadline: DateTime.now().add(const Duration(days: 7)),
-        ),
-        createdAt: DateTime.now(),
-      ),
-      volunteer: null,
-    );
-  }
-
-  @override
-  Future<ApplicationResponse> updateStatus(int id, String status, {String? organizerMessage}) async {
-    return ApplicationResponse(
-      id: id,
-      advertId: 1,
-      coverMessage: organizerMessage,
-      status: e.ApplicationStatus.accepted,
-      appliedAt: DateTime.now(),
-      advert: AdvertResponse(
-        id: 1,
-        title: 'Mock',
-        description: 'Mock',
-        category: 'Mock',
-        frequency: e.FrequencyType.oneOff,
-        numberOfVolunteers: 1,
-        locationType: e.LocationType.remote,
-        isActive: true,
-        organizer: OrganizerResponse(id: 1, name: 'Mock'),
-        requiredSkills: const [],
-        oneoffDetails: OneOffAdvertDetails(
-          eventDatetime: DateTime.now(),
-          timeCommitment: e.TimeCommitment.oneToTwo,
-          applicationDeadline: DateTime.now().add(const Duration(days: 7)),
-        ),
-        createdAt: DateTime.now(),
-      ),
-      volunteer: null,
-    );
-  }
-}
-
 class ApplicationsRepository {
-  ApplicationsRepository(this._ref)
-    : _ds = dotenv.env['ENV'] == 'local' ? ApplicationsMockDataSource() : ApplicationsApiDataSource(_ref, ApiService.instance);
+  ApplicationsRepository(this._ref) : _ds = ApplicationsApiDataSource(_ref, ApiService.instance);
 
   final Ref _ref;
   final ApplicationsDataSource _ds;

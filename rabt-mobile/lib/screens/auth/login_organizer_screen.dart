@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import '../../state/auth/auth_providers.dart';
 import '../../widgets/app_button.dart';
 import '../../state/organizer/organizer_repository.dart';
+import '../../widgets/app_password_field.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class OrganizerLoginScreen extends ConsumerWidget {
   const OrganizerLoginScreen({super.key});
@@ -27,14 +29,20 @@ class OrganizerLoginScreen extends ConsumerWidget {
             const Spacer(),
             TextField(decoration: const InputDecoration(labelText: 'Email'), controller: emailController),
             const SizedBox(height: 8),
-            TextField(decoration: const InputDecoration(labelText: 'Password'), controller: passController, obscureText: true),
+            AppPasswordField(controller: passController),
             const SizedBox(height: 12),
             AppButton(
               onPressed: () async {
-                final ok = await ref.read(authControllerProvider.notifier).loginWithBackend(
-                      email: emailController.text.trim(),
-                      password: passController.text,
-                    );
+                String email = emailController.text.trim();
+                String password = passController.text;
+                final env = (dotenv.env['ENV'] ?? '').toLowerCase();
+                if ((email.isEmpty || password.isEmpty) && (env == 'local' || env == 'test' || env == 'testing')) {
+                  email = 'organizer1@example.com';
+                  password = email;
+                  emailController.text = email;
+                  passController.text = password;
+                }
+                final ok = await ref.read(authControllerProvider.notifier).loginWithBackend(email: email, password: password);
                 if (!context.mounted) return;
                 if (ok) {
                   try {

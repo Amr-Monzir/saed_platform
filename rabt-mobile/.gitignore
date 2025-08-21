@@ -44,4 +44,4 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 # Flutter and dotenv
-/assets/env/.env.local
+/assets/env/*

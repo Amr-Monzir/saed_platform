@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import '../../state/auth/auth_providers.dart';
 import '../../widgets/app_button.dart';
 import '../../state/volunteer/volunteer_repository.dart';
+import '../../widgets/app_password_field.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
@@ -28,11 +30,21 @@ class LoginScreen extends ConsumerWidget {
             // Volunteer login only (switching to org login via link below)
             TextField(decoration: const InputDecoration(labelText: 'Email'), controller: emailController),
             const SizedBox(height: 8),
-            TextField(decoration: const InputDecoration(labelText: 'Password'), controller: passController, obscureText: true),
+            AppPasswordField(controller: passController),
             const SizedBox(height: 12),
             AppButton(
               onPressed: () async {
-                final ok = await ref.read(authControllerProvider.notifier).loginWithBackend(email: emailController.text.trim(), password: passController.text);
+                // Testing shortcut: if ENV indicates local/test and fields empty, auto-fill default
+                String email = emailController.text.trim();
+                String password = passController.text;
+                final env = (dotenv.env['ENV'] ?? '').toLowerCase();
+                if ((email.isEmpty || password.isEmpty) && (env == 'local' || env == 'test' || env == 'testing')) {
+                  email = 'volunteer1@example.com';
+                  password = email;
+                  emailController.text = email;
+                  passController.text = password;
+                }
+                final ok = await ref.read(authControllerProvider.notifier).loginWithBackend(email: email, password: password);
                 if (!context.mounted) return;
                 if (ok) {
                   final me = await ref.read(volunteerRepositoryProvider).me();

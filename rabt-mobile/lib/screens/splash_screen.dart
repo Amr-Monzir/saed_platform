@@ -20,15 +20,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   Future<void> _navigateNext() async {
     final session = await ref.read(authControllerProvider.notifier).restoreSession();
-    if (session == null) {
-      if (mounted) context.go('/login');
-    } else {
-      if (session.userRole == UserRole.organization) {
-        if (mounted) context.go('/o/my-jobs');
-      } else {
-        if (mounted) context.go('/v/jobs');
-      }
-    }
+    if (!mounted) return;
+    // Let router redirect decide destination to avoid navigation loops
+    context.go('/splash');
   }
 
   @override

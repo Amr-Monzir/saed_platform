@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/organizer.dart';
 import '../../services/api_service.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../auth/auth_providers.dart';
 import 'dart:convert';
 
@@ -22,15 +21,8 @@ class OrganizerApiDataSource implements OrganizerDataSource {
   }
 }
 
-class OrganizerMockDataSource implements OrganizerDataSource {
-  OrganizerResponse _me = OrganizerResponse(id: 1, name: 'Org', logoUrl: null, website: null, description: '');
-  @override
-  Future<OrganizerResponse> me() async => _me;
-}
-
 class OrganizerRepository {
-  OrganizerRepository(this._ref)
-      : _ds = dotenv.env['ENV'] == 'local' ? OrganizerMockDataSource() : OrganizerApiDataSource(_ref, ApiService.instance);
+  OrganizerRepository(this._ref) : _ds = OrganizerApiDataSource(_ref, ApiService.instance);
 
   final Ref _ref;
   final OrganizerDataSource _ds;
@@ -39,5 +31,3 @@ class OrganizerRepository {
 }
 
 final organizerRepositoryProvider = Provider<OrganizerRepository>((ref) => OrganizerRepository(ref));
-
-

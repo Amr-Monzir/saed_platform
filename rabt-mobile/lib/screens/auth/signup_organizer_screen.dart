@@ -76,7 +76,7 @@ class _OrganizerSignupScreenState extends ConsumerState<OrganizerSignupScreen> {
                         if (!_formKey.currentState!.validate()) return;
                         setState(() => _loading = true);
                         try {
-                          final resp = await ApiService.instance.post(
+                          await ApiService.instance.post(
                             '/api/v1/organizers/register',
                             {
                               'name': _nameCtrl.text.trim(),

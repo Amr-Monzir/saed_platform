@@ -154,7 +154,7 @@ class _CreateJobScreenState extends ConsumerState<CreateJobScreen> {
             AppButton(
               onPressed: () {
                 if (!_formKey.currentState!.validate()) return;
-                // Minimal create mirroring response shape for mock
+                // Minimal create mirroring response shape for api
                 final advert = AdvertResponse(
                   id: DateTime.now().millisecondsSinceEpoch,
                   title: _titleController.text.trim(),

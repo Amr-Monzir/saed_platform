@@ -24,6 +24,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       final loggedIn = auth.session != null;
       final isOrg = auth.session?.userRole == UserRole.organization;
       final loggingIn = state.matchedLocation == '/login' || state.matchedLocation == '/signup';
+      if (state.matchedLocation == '/splash') {
+        if (!loggedIn) return '/login';
+        return isOrg ? '/o/my-jobs' : '/v/jobs';
+      }
       if (!loggedIn && state.matchedLocation.startsWith('/v')) return '/login';
       if (!loggedIn && state.matchedLocation.startsWith('/o')) return '/login';
       if (loggedIn && loggingIn) return isOrg ? '/o/my-jobs' : '/v/jobs';
@@ -106,7 +110,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     errorBuilder: (context, state) => Scaffold(
       body: Center(child: Text('Route not found: ${state.uri}')),
     ),
-    debugLogDiagnostics: true,
+    debugLogDiagnostics: false,
   );
 });
 

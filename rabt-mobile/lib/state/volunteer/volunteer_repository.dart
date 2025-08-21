@@ -35,29 +35,8 @@ class VolunteerApiDataSource implements VolunteerDataSource {
   }
 }
 
-class VolunteerMockDataSource implements VolunteerDataSource {
-  VolunteerResponse _me = VolunteerResponse(id: 1, name: 'Volunteer', onboardingCompleted: false, skills: const []);
-  @override
-  Future<VolunteerResponse> me() async => _me;
-
-  @override
-  Future<VolunteerResponse> update({String? name, String? phoneNumber, String? city, String? country, List<int>? skillIds}) async {
-    _me = VolunteerResponse(
-      id: _me.id,
-      name: name ?? _me.name,
-      phoneNumber: phoneNumber ?? _me.phoneNumber,
-      city: city ?? _me.city,
-      country: country ?? _me.country,
-      onboardingCompleted: true,
-      skills: _me.skills,
-    );
-    return _me;
-  }
-}
-
 class VolunteerRepository {
-  VolunteerRepository(this._ref)
-      : _ds = dotenv.env['ENV'] == 'local' ? VolunteerMockDataSource() : VolunteerApiDataSource(_ref, ApiService.instance);
+  VolunteerRepository(this._ref) : _ds = VolunteerApiDataSource(_ref, ApiService.instance);
 
   final Ref _ref;
   final VolunteerDataSource _ds;

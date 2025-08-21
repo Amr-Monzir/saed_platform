@@ -1,6 +1,6 @@
 # Rabt Mobile (Flutter)
 
-A cross‑platform mobile app for activist job adverts. Guests can browse, volunteers can apply, organizations can post/manage adverts. Uses Riverpod, GoRouter, and a centralized API layer with switchable mock/API data sources.
+A cross‑platform mobile app for activist job adverts. Guests can browse, volunteers can apply, organizations can post/manage adverts. Uses Riverpod, GoRouter, and a centralized API layer with API data source.
 
 ## Tech stack
 - Flutter 3.x, Dart null safety
@@ -11,7 +11,6 @@ A cross‑platform mobile app for activist job adverts. Guests can browse, volun
 ## Run
 ```bash
 flutter pub get
-# Local mock data (default in .env.local)
 flutter run
 
 # Switch to real backend (set ENV and API_BASE_URL)
@@ -23,9 +22,6 @@ flutter run
 ## Environments
 - Env files: `assets/env/.env` (prod), `assets/env/.env.local` (local)
 - Loaded in `lib/main.dart` (prefers `.env.local`)
-- Toggle between Mock/API via `ENV`:
-  - `ENV=local` → in-memory mock data sources
-  - anything else → real API (`/api/v1/...`) with bearer token
 
 ## Project structure (high level)
 ```
@@ -37,9 +33,9 @@ lib/
   models/                   # json_serializable data models (aligned with BE)
   state/
     auth/                   # session, login/signup, auth repository
-    jobs/                   # adverts repository (+mock/api), providers, pagination
-    applications/           # applications repository (+mock/api)
-    volunteer/              # volunteer repository (+mock/api)
+    jobs/                   # adverts repository api, providers, pagination
+    applications/           # applications repository api
+    volunteer/              # volunteer repository api
     prefs/                  # user prefs (city, distance)
   screens/
     auth/                   # login, signup
@@ -59,9 +55,9 @@ Defined in `lib/router/app_router.dart` with role‑based shells and guards.
 ## State management (Riverpod)
 Key providers/controllers:
 - `authControllerProvider` → session restore, login (BE), pending advert tracking
-- `advertsRepositoryProvider` → list/fetch/create/close adverts (mock/api)
-- `applicationsRepositoryProvider` → create/update applications (mock/api)
-- `volunteerRepositoryProvider` → profile fetch/update (mock/api)
+- `advertsRepositoryProvider` → list/fetch/create/close adverts api
+- `applicationsRepositoryProvider` → create/update applications api
+- `volunteerRepositoryProvider` → profile fetch/update api
 - `jobsFilterProvider`, `searchQueryProvider`, `pageProvider` → filters/search/pagination
 - `userPrefsProvider` → city & distance preferences
 - `themeControllerProvider` → light/dark mode (persisted)
@@ -71,10 +67,9 @@ Centralized in `lib/services/ApiService`:
 - Helpers: `get`, `post`, `put`, `postForm`, `authHeaders(token)`
 - All API endpoints are prefixed with `/api/v1` (see backend `app/main.py`).
 
-Repositories (mock/api switch via `ENV`):
+Repositories (api):
 - `AdvertsRepository` → `listAll({query})`, `getById`, `create`, `close`
   - API: `/api/v1/adverts` (query params), `/api/v1/adverts/:id`, `/api/v1/adverts/:id/close`
-  - Mock: seeded adverts, supports filtering, search, pagination (pageSize=10)
 - `ApplicationsRepository` → `create`, `updateStatus`
   - API: `/api/v1/applications`
 - `VolunteerRepository` → `me`, `update` (PUT `/api/v1/volunteers/profile`)
@@ -122,9 +117,8 @@ Query params built in `state/jobs/jobs_providers.dart`:
 - Token applied to every request via `Authorization: Bearer <token>`
 - Pending advert id saved to return guests back to intended job after signup
 
-## Mock vs API
-- `ENV=local` → in‑memory mock data (seeded adverts) for instant dev
-- Otherwise, real backend endpoints; ensure `API_BASE_URL` points to server root hosting `/api/v1` routes
+## API
+- real backend endpoints; ensure `API_BASE_URL` points to server root hosting `/api/v1` routes
 
 ## Codegen
 ```bash
