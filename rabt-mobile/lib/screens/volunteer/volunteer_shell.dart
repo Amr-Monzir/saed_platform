@@ -33,7 +33,7 @@ class _VolunteerShellState extends State<VolunteerShell> {
           }
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.work_outline), label: 'Jobs'),
+          BottomNavigationBarItem(icon: Icon(Icons.work_outline), label: 'Adverts'),
           BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
           BottomNavigationBarItem(icon: Icon(Icons.settings_outlined), label: 'Settings'),
         ],

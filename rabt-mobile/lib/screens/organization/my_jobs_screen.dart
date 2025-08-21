@@ -11,7 +11,7 @@ class MyJobsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final mine = ref.watch(myJobsProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('My Jobs')),
+      appBar: AppBar(title: const Text('My Adverts')),
       body: mine.when(
         data: (items) => ListView.builder(
           itemCount: items.length,
