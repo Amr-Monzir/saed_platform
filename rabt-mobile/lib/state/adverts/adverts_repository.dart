@@ -46,33 +46,15 @@ class AdvertsRepository {
 
   Future<Advert?> create(Advert advert, {File? imageFile}) async {
     final token = _ref.read(authControllerProvider).session?.token;
-    
+    final advertData = advert.toJson();
+
     if (imageFile != null) {
-      // Use generic image upload endpoint for advert images
-      final imageUrl = await _imageService.uploadImageWithCategory(
-        imageFile,
-        category: 'adverts',
-        token: token,
-      );
-      
-      if (imageUrl != null) {
-        // Add image URL to advert data
-        final advertData = advert.toJson();
-        advertData['advert_image_url'] = imageUrl;
-        
-        // Create advert with image URL
-        final resp = await _api.post('/api/v1/adverts', advertData, headers: _api.authHeaders(token));
-        return Advert.fromJson(jsonDecode(resp.body));
-      } else {
-        // Image upload failed, create advert without image
-        final resp = await _api.post('/api/v1/adverts', advert.toJson(), headers: _api.authHeaders(token));
-        return Advert.fromJson(jsonDecode(resp.body));
-      }
-    } else {
-      // Use regular JSON endpoint for advert without image
-      final resp = await _api.post('/api/v1/adverts', advert.toJson(), headers: _api.authHeaders(token));
-      return Advert.fromJson(jsonDecode(resp.body));
+      final imageUrl = await _imageService.uploadImageWithCategory(imageFile, category: 'adverts', token: token);
+      if (imageUrl != null) advertData['advert_image_url'] = imageUrl;
     }
+
+    final resp = await _api.post('/api/v1/adverts', advertData, headers: _api.authHeaders(token));
+    return Advert.fromJson(jsonDecode(resp.body));
   }
 
   Future<void> close(int id) async {
