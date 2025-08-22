@@ -6,6 +6,7 @@ from app.database.connection import get_db
 from app.database.models import Organizer, User
 from app.schemas.organizer import OrganizerCreate, OrganizerResponse, OrganizerUpdate
 from app.services.user_service import UserService
+from app.utils.file_utils import save_image
 
 router = APIRouter(prefix="/organizers", tags=["Organizers"])
 
@@ -42,14 +43,22 @@ def update_organizer_profile(
 
 @router.post("/upload-logo")
 async def upload_logo(
-    file: UploadFile = File(...), current_user: User = Depends(require_organizer)
+    file: UploadFile = File(...),
+    current_user: User = Depends(require_organizer),
+    db: Session = Depends(get_db),
 ):
-    # In a real app, this would upload to a CDN or file storage
-    # and save the URL to the organizer's profile.
-    return {
-        "message": "Logo uploaded successfully",
-        "logo_url": f"https://cdn.rabt.com/logos/{current_user.organizer.id}.jpg",
-    }
+    relative_path = save_image(file=file, category="logos", entity_id=current_user.organizer.id)
+    # Store as "/uploads/<relative_path>" since app mounts uploads at /uploads
+    logo_url = f"/uploads/{relative_path}"
+
+    organizer = (
+        db.query(Organizer).filter(Organizer.id == current_user.organizer.id).first()
+    )
+    organizer.logo_url = logo_url
+    db.commit()
+    db.refresh(organizer)
+
+    return {"logo_url": logo_url}
 
 
 @router.get("/{organizer_id}/public", response_model=OrganizerResponse)

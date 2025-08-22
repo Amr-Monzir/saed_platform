@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:io';
 import 'package:rabt_mobile/constants/lookups.dart';
 import 'package:rabt_mobile/models/advert.dart';
 import 'package:rabt_mobile/models/enums.dart';
@@ -7,6 +8,7 @@ import 'package:rabt_mobile/models/organizer.dart';
 import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
 import 'package:rabt_mobile/widgets/app_button.dart';
 import 'package:rabt_mobile/widgets/app_text_field.dart';
+import '../../services/image_upload_service.dart';
 
 class CreateAdvertScreen extends ConsumerStatefulWidget {
   const CreateAdvertScreen({super.key});
@@ -29,12 +31,22 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
   DateTime? _endDate;
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
+  File? _selectedImage;
 
   @override
   void dispose() {
     _titleController.dispose();
     _descController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImage({bool fromCamera = false}) async {
+    final image = await ImageUploadService().pickImage(fromCamera: fromCamera);
+    if (image != null) {
+      setState(() {
+        _selectedImage = image;
+      });
+    }
   }
 
   @override
@@ -48,6 +60,56 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            // Image selection section
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Advert Image (Optional)',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 12),
+                    if (_selectedImage != null)
+                      Container(
+                        height: 120,
+                        width: 120,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.file(_selectedImage!, fit: BoxFit.cover),
+                        ),
+                      ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () => _pickImage(fromCamera: false),
+                            icon: const Icon(Icons.photo_library),
+                            label: const Text('Gallery'),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () => _pickImage(fromCamera: true),
+                            icon: const Icon(Icons.camera_alt),
+                            label: const Text('Camera'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
             AppTextField(
               controller: _titleController,
               label: 'Title',
@@ -196,7 +258,10 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
                 );
                 
                 // Create advert using state notifier
-                ref.read(createAdvertControllerProvider.notifier).createAdvert(advert);
+                ref.read(createAdvertControllerProvider.notifier).createAdvert(
+                  advert,
+                  imageFile: _selectedImage,
+                );
               },
               label: createAdvertState.isLoading ? 'Creating...' : 'Create Advert',
             ),

@@ -53,7 +53,7 @@ class _OrganizerSignupScreenState extends ConsumerState<OrganizerSignupScreen> {
 
     setState(() => _loading = true);
     try {
-      final imageUrl = await ImageUploadService().uploadImage(_selectedImage!);
+      final imageUrl = await ref.read(organizerRepositoryProvider).uploadLogo(_selectedImage!);
       if (!mounted) return;
       
       if (imageUrl != null) {

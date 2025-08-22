@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:io';
 import '../../models/organizer.dart';
 import '../../services/api_service.dart';
+import '../../services/image_upload_service.dart';
 import '../auth/auth_providers.dart';
 import 'dart:convert';
 
@@ -9,6 +11,7 @@ class OrganizerRepository {
 
   final Ref _ref;
   final ApiService _api = ApiService.instance;
+  final ImageUploadService _imageService = ImageUploadService();
 
   Future<OrganizerProfile> fetchOrganizerProfile() async {
     final token = _ref.read(authControllerProvider).session?.token;
@@ -42,6 +45,16 @@ class OrganizerRepository {
     }
 
     await _api.post('/api/v1/organizers/register', data);
+  }
+
+  /// Upload organizer logo using the generic image upload endpoint
+  Future<String?> uploadLogo(File logoFile) async {
+    final token = _ref.read(authControllerProvider).session?.token;
+    return await _imageService.uploadImageWithCategory(
+      logoFile,
+      category: 'logos',
+      token: token,
+    );
   }
 }
 

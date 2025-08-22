@@ -43,7 +43,7 @@ class AdvertService:
 
         # Handle image upload
         if image_file:
-            image_url = save_image(file=image_file, advert_id=advert.id)
+            image_url = save_image(file=image_file, category="adverts", entity_id=advert.id)
             advert.advert_image_url = image_url
 
         # Add details based on frequency
@@ -99,7 +99,7 @@ class AdvertService:
             advert.required_skills = skills
 
         if image_file:
-            image_url = save_image(file=image_file, advert_id=advert.id)
+            image_url = save_image(file=image_file, category="adverts", entity_id=advert.id)
             advert.advert_image_url = image_url
 
         # We assume frequency does not change. If it could, the logic would be more complex.
