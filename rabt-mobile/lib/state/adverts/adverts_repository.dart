@@ -24,11 +24,15 @@ class AdvertsRepository {
     return PaginatedAdverts(items: data, totalPages: totalPages);
   }
 
-  Future<List<Advert>> fetchMine() async {
+  Future<PaginatedAdverts> fetchMine() async {
     final token = _ref.read(authControllerProvider).session?.token ?? '';
     final resp = await _api.get('/api/v1/adverts?owner=me', headers: _api.authHeaders(token));
-    final data = jsonDecode(resp.body) as List<dynamic>;
-    return data.map((e) => Advert.fromJson(e as Map<String, dynamic>)).toList();
+    final json = jsonDecode(resp.body) as Map<String, dynamic>;
+    List<Advert> data;
+    int totalPages;
+    data = (json['items'] as List<dynamic>).map((e) => Advert.fromJson(e as Map<String, dynamic>)).toList();
+    totalPages = (json['total_pages'] as num).toInt();
+    return PaginatedAdverts(items: data, totalPages: totalPages);
   }
 
   Future<Advert?> getById(int id) async {

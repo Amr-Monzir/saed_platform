@@ -1,9 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rabt_mobile/models/enums.dart';
+import 'package:rabt_mobile/state/prefs/user_prefs.dart';
 import 'adverts_repository.dart';
-import '../../models/advert.dart';
-import '../prefs/user_prefs.dart';
 import 'paginated_adverts.dart';
-import '../../models/enums.dart';
 
 final searchQueryProvider = StateProvider<String?>((ref) => null);
 final pageProvider = StateProvider<int>((ref) => 1);
@@ -91,9 +90,37 @@ final advertsFilterProvider = StateNotifierProvider<AdvertsFilterController, Adv
   return AdvertsFilterController();
 });
 
-final myAdvertsProvider = FutureProvider<List<Advert>>((ref) async {
+final myAdvertsProvider = FutureProvider<PaginatedAdverts>((ref) async {
   final repo = ref.watch(advertsRepositoryProvider);
   return repo.fetchMine();
+});
+
+class MyAdvertsSearchController extends StateNotifier<String?> {
+  MyAdvertsSearchController() : super(null);
+
+  void setQuery(String value) {
+    final trimmed = value.trim();
+    state = trimmed.isEmpty ? null : trimmed;
+  }
+
+  void clear() => state = null;
+}
+
+final myAdvertsSearchControllerProvider =
+    StateNotifierProvider<MyAdvertsSearchController, String?>((ref) => MyAdvertsSearchController());
+
+final filteredMyAdvertsProvider = Provider<AsyncValue<PaginatedAdverts>>((ref) {
+  final search = (ref.watch(myAdvertsSearchControllerProvider) ?? '').trim().toLowerCase();
+  final mine = ref.watch(myAdvertsProvider);
+  return mine.whenData((page) {
+    if (search.isEmpty) return page;
+    final filtered = page.items.where((a) {
+      final title = a.title.toLowerCase();
+      final category = a.category.toLowerCase();
+      return title.contains(search) || category.contains(search);
+    }).toList();
+    return PaginatedAdverts(items: filtered, totalPages: page.totalPages);
+  });
 });
 
 
