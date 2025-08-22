@@ -47,7 +47,9 @@ class OrganizerLoginScreen extends ConsumerWidget {
                   emailController.text = email;
                   passController.text = password;
                 }
-                final ok = await ref.read(authControllerProvider.notifier).loginWithBackend(email: email, password: password, role: UserRole.organization);
+                final ok = await ref
+                    .read(authControllerProvider.notifier)
+                    .loginWithBackend(email: email, password: password, role: UserRole.organization);
                 if (!context.mounted) return;
                 if (ok) {
                   try {
@@ -55,9 +57,9 @@ class OrganizerLoginScreen extends ConsumerWidget {
                     if (!context.mounted) return;
                     context.go(MyAdvertsScreen.path);
                   } catch (_) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('This account is not an organization')),
-                    );
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(const SnackBar(content: Text('This account is not an organization')));
                   }
                 }
               },
@@ -71,17 +73,10 @@ class OrganizerLoginScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 8),
-            Center(
-              child: TextButton(
-                onPressed: () => context.go(LoginScreen.path),
-                child: const Text('Login as Volunteer'),
-              ),
-            ),
+            Center(child: TextButton(onPressed: () => context.go(LoginScreen.path), child: const Text('Login as Volunteer'))),
           ],
         ),
       ),
     );
   }
 }
-
-

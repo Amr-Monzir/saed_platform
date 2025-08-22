@@ -30,4 +30,31 @@ class ApplicationsRepository {
   }
 }
 
-final applicationsRepositoryProvider = Provider((ref) => ApplicationsRepository(ref));
+final applicationsRepositoryProvider = Provider<ApplicationsRepository>((ref) => ApplicationsRepository(ref));
+
+class CreateApplicationController extends StateNotifier<AsyncValue<Application?>> {
+  CreateApplicationController(this._ref) : super(const AsyncValue.data(null));
+  
+  final Ref _ref;
+  
+  Future<void> createApplication({required int advertId, String? coverMessage}) async {
+    state = const AsyncValue.loading();
+    try {
+      final result = await _ref.read(applicationsRepositoryProvider).create(
+        advertId: advertId,
+        coverMessage: coverMessage,
+      );
+      state = AsyncValue.data(result);
+    } catch (error, stackTrace) {
+      state = AsyncValue.error(error, stackTrace);
+    }
+  }
+  
+  void reset() {
+    state = const AsyncValue.data(null);
+  }
+}
+
+final createApplicationControllerProvider = StateNotifierProvider<CreateApplicationController, AsyncValue<Application?>>((ref) {
+  return CreateApplicationController(ref);
+});

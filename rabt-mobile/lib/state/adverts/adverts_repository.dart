@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/advert.dart';
 import 'package:http/http.dart' as http;
 import '../../services/api_service.dart';
+import '../../services/image_upload_service.dart';
 import '../auth/auth_providers.dart';
 import 'paginated_adverts.dart';
 
@@ -11,6 +13,7 @@ class AdvertsRepository {
 
   final Ref _ref;
   final ApiService _api = ApiService.instance;
+  final ImageUploadService _imageService = ImageUploadService();
 
   Future<PaginatedAdverts> fetchAll({Map<String, String>? query}) async {
     final token = _ref.read(authControllerProvider).session?.token;
@@ -41,10 +44,22 @@ class AdvertsRepository {
     return Advert.fromJson(jsonDecode(resp.body));
   }
 
-  Future<Advert> create(Advert advert) async {
+  Future<Advert?> create(Advert advert, {File? imageFile}) async {
     final token = _ref.read(authControllerProvider).session?.token;
-    final resp = await _api.post('/api/v1/adverts', advert.toJson(), headers: _api.authHeaders(token));
-    return Advert.fromJson(jsonDecode(resp.body));
+
+    if (imageFile != null) {
+      // Use multipart endpoint for image upload
+      final result = await _imageService.uploadImage(imageFile, token: token);
+
+      if (result != null) {
+        return Advert.fromJson(advert.toJson()..['image_url'] = result);
+      }
+      return null;
+    } else {
+      // Use regular JSON endpoint for advert without image
+      final resp = await _api.post('/api/v1/adverts', advert.toJson(), headers: _api.authHeaders(token));
+      return Advert.fromJson(jsonDecode(resp.body));
+    }
   }
 
   Future<void> close(int id) async {

@@ -4,7 +4,7 @@ import 'package:rabt_mobile/constants/lookups.dart';
 import 'package:rabt_mobile/models/advert.dart';
 import 'package:rabt_mobile/models/enums.dart';
 import 'package:rabt_mobile/models/organizer.dart';
-import 'package:rabt_mobile/state/adverts/adverts_repository.dart';
+import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
 import 'package:rabt_mobile/widgets/app_button.dart';
 import 'package:rabt_mobile/widgets/app_text_field.dart';
 
@@ -39,6 +39,8 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final createAdvertState = ref.watch(createAdvertControllerProvider);
+    
     return Scaffold(
       appBar: AppBar(title: const Text('Create Advert')),
       body: Form(
@@ -51,14 +53,14 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
               label: 'Title',
               validator: (v) => v == null || v.isEmpty ? 'Required' : null,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             DropdownButtonFormField<String>(
               value: _frequency.name,
               items: FrequencyType.values.map((e) => DropdownMenuItem(value: e.name, child: Text(e.displayName))).toList(),
               onChanged: (v) => setState(() => _frequency = v == null ? FrequencyType.oneOff : FrequencyType.values.byName(v)),
               decoration: const InputDecoration(labelText: 'Frequency'),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             DropdownButtonFormField<String>(
               value: _category,
               items: kCategories.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
@@ -66,7 +68,7 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
               decoration: const InputDecoration(labelText: 'Category'),
               validator: (v) => v == null ? 'Required' : null,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             const Text('Skills Required'),
             Wrap(
               spacing: 8,
@@ -87,7 +89,7 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
                     );
                   }).toList(),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             DropdownButtonFormField<String>(
               value: _timeCommitment,
               items:
@@ -97,21 +99,21 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
               onChanged: (v) => setState(() => _timeCommitment = v),
               decoration: const InputDecoration(labelText: 'Time Commitment'),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             DropdownButtonFormField<String>(
               value: _timeOfDay,
               items: kTimesOfDay.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
               onChanged: (v) => setState(() => _timeOfDay = v),
               decoration: const InputDecoration(labelText: 'Time of Day'),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             DropdownButtonFormField<int>(
               value: _distance,
               items: kDistancesMiles.map((e) => DropdownMenuItem(value: e, child: Text('$e miles'))).toList(),
               onChanged: (v) => setState(() => _distance = v),
               decoration: const InputDecoration(labelText: 'Distance From User'),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
@@ -147,7 +149,7 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             AppTextField(
               controller: _descController,
               maxLines: 4,
@@ -156,9 +158,10 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
             ),
             const SizedBox(height: 16),
             AppButton(
-              onPressed: () {
+              onPressed: createAdvertState.isLoading ? null : () {
                 if (!_formKey.currentState!.validate()) return;
-                // Minimal create mirroring response shape for api
+                
+                // Create advert object
                 final advert = Advert(
                   id: DateTime.now().millisecondsSinceEpoch,
                   title: _titleController.text.trim(),
@@ -191,11 +194,30 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
                           : null,
                   createdAt: DateTime.now(),
                 );
-                ref.read(advertsRepositoryProvider).create(advert);
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Advert created')));
+                
+                // Create advert using state notifier
+                ref.read(createAdvertControllerProvider.notifier).createAdvert(advert);
               },
-              label: 'Create Advert',
+              label: createAdvertState.isLoading ? 'Creating...' : 'Create Advert',
             ),
+            // Show error if creation failed
+            if (createAdvertState.hasError)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(
+                  'Error: ${createAdvertState.error}',
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+            // Show success message
+            if (createAdvertState.value != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(
+                  'Advert created successfully!',
+                  style: const TextStyle(color: Colors.green),
+                ),
+              ),
           ],
         ),
       ),

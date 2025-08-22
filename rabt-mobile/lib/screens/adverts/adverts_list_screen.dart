@@ -96,11 +96,27 @@ class AdvertsListScreen extends ConsumerWidget {
                           context.push(SignupScreen.path);
                           return;
                         }
-                        await ref.read(applicationsRepositoryProvider).create(advertId: advert.id);
-                        if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Application submitted')),
+                        
+                        // Use state notifier for application creation
+                        await ref.read(createApplicationControllerProvider.notifier).createApplication(
+                          advertId: advert.id,
                         );
+                        
+                        if (!context.mounted) return;
+                        
+                        // Check if application was successful
+                        final applicationState = ref.read(createApplicationControllerProvider);
+                        if (applicationState.hasError) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Application failed: ${applicationState.error}')),
+                          );
+                        } else if (applicationState.value != null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Application submitted')),
+                          );
+                          // Reset the state
+                          ref.read(createApplicationControllerProvider.notifier).reset();
+                        }
                       },
                       label: 'Apply',
                     ),

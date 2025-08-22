@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rabt_mobile/models/enums.dart';
 import 'package:rabt_mobile/state/prefs/user_prefs.dart';
+import 'dart:io';
+import '../../models/advert.dart';
 import 'adverts_repository.dart';
 import 'paginated_adverts.dart';
 
@@ -121,6 +123,32 @@ final filteredMyAdvertsProvider = Provider<AsyncValue<PaginatedAdverts>>((ref) {
     }).toList();
     return PaginatedAdverts(items: filtered, totalPages: page.totalPages);
   });
+});
+
+final advertsRepositoryProvider = Provider((ref) => AdvertsRepository(ref));
+
+class CreateAdvertController extends StateNotifier<AsyncValue<Advert?>> {
+  CreateAdvertController(this._ref) : super(const AsyncValue.data(null));
+  
+  final Ref _ref;
+  
+  Future<void> createAdvert(Advert advert, {File? imageFile}) async {
+    state = const AsyncValue.loading();
+    try {
+      final result = await _ref.read(advertsRepositoryProvider).create(advert, imageFile: imageFile);
+      state = AsyncValue.data(result);
+    } catch (error, stackTrace) {
+      state = AsyncValue.error(error, stackTrace);
+    }
+  }
+  
+  void reset() {
+    state = const AsyncValue.data(null);
+  }
+}
+
+final createAdvertControllerProvider = StateNotifierProvider<CreateAdvertController, AsyncValue<Advert?>>((ref) {
+  return CreateAdvertController(ref);
 });
 
 
