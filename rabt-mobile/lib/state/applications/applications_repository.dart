@@ -6,26 +6,25 @@ import 'package:rabt_mobile/services/api_service.dart';
 import 'package:rabt_mobile/state/auth/auth_providers.dart';
 
 class ApplicationsRepository {
-  ApplicationsRepository(this._ref);
+  ApplicationsRepository(this.ref);
 
-  final Ref _ref;
-  final ApiService _api = ApiService.instance;
+  final Ref ref;
 
   Future<Application> create({required int advertId, String? coverMessage}) async {
-    final token = _ref.read(authControllerProvider).session?.token;
-    final resp = await _api.post('/api/v1/applications', {
+    final token = ref.read(authControllerProvider).session?.token;
+    final resp = await ref.read(apiServiceProvider).post('/api/v1/applications', {
       'advert_id': advertId,
       'cover_message': coverMessage,
-    }, headers: _api.authHeaders(token));
+    }, headers: ref.read(apiServiceProvider).authHeaders(token));
     return Application.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
   }
 
   Future<Application> updateStatus(int id, String status, {String? organizerMessage}) async {
-    final token = _ref.read(authControllerProvider).session?.token;
-    final resp = await _api.post('/api/v1/applications/$id', {
+    final token = ref.read(authControllerProvider).session?.token;
+    final resp = await ref.read(apiServiceProvider).post('/api/v1/applications/$id', {
       'status': status,
       'organizer_message': organizerMessage,
-    }, headers: _api.authHeaders(token));
+    }, headers: ref.read(apiServiceProvider).authHeaders(token));
     return Application.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
   }
 }
@@ -33,14 +32,14 @@ class ApplicationsRepository {
 final applicationsRepositoryProvider = Provider<ApplicationsRepository>((ref) => ApplicationsRepository(ref));
 
 class CreateApplicationController extends StateNotifier<AsyncValue<Application?>> {
-  CreateApplicationController(this._ref) : super(const AsyncValue.data(null));
+  CreateApplicationController(this.ref) : super(const AsyncValue.data(null));
   
-  final Ref _ref;
+  final Ref ref;
   
   Future<void> createApplication({required int advertId, String? coverMessage}) async {
     state = const AsyncValue.loading();
     try {
-      final result = await _ref.read(applicationsRepositoryProvider).create(
+      final result = await ref.read(applicationsRepositoryProvider).create(
         advertId: advertId,
         coverMessage: coverMessage,
       );

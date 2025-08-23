@@ -8,11 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // try {
-  //   await dotenv.load(fileName: 'assets/env/.env.local');
-  // } catch (_) {
-    await dotenv.load(fileName: 'assets/env/.env');
-  // }
+  await dotenv.load(fileName: 'assets/env/.env');
   final prefs = await SharedPreferences.getInstance();
   runApp(ProviderScope(overrides: [sharedPrefsProvider.overrideWithValue(prefs)], child: const MyApp()));
 }

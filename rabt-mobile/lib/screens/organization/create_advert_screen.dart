@@ -56,7 +56,7 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
   }
 
   Future<void> _pickImage({bool fromCamera = false}) async {
-    final image = await ImageUploadService().pickImage(fromCamera: fromCamera);
+    final image = await ref.read(imageUploadServiceProvider).pickImage(fromCamera: fromCamera);
     if (image != null) {
       setState(() {
         _selectedImage = image;

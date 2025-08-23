@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rabt_mobile/state/auth/auth_providers.dart';
-import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
+import 'package:rabt_mobile/state/adverts/adverts_repository.dart';
 import 'package:rabt_mobile/widgets/app_button.dart';
 import 'package:rabt_mobile/widgets/advert_card.dart';
 import 'package:rabt_mobile/state/applications/applications_repository.dart';
@@ -18,7 +18,7 @@ class AdvertsListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final advertsAsync = ref.watch(filteredAdvertsProvider);
+    final advertsAsync = ref.watch(advertsProvider);
     final searchCtrl = TextEditingController(text: ref.watch(searchQueryProvider) ?? '');
     return Scaffold(
       appBar: AppBar(title: const Text('Activist Adverts')),

@@ -1,12 +1,11 @@
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
 enum ApiEnvironment { local, production }
 
 class ApiService {
-  ApiService._();
-  static final ApiService instance = ApiService._();
 
   String get baseUrl => dotenv.env['API_BASE_URL'] ?? 'http://10.0.2.2:8000';
   ApiEnvironment get env => (dotenv.env['ENV'] == 'local') ? ApiEnvironment.local : ApiEnvironment.production;
@@ -66,4 +65,4 @@ class ApiService {
   }
 }
 
-
+final apiServiceProvider = Provider((ref) => ApiService());

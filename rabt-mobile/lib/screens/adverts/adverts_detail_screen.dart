@@ -19,7 +19,7 @@ class AdvertsDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final repo = ref.watch(advertsRepositoryProvider);
+    final repo = ref.watch(advertsRepositoryProvider.notifier);
     return FutureBuilder<Advert?>(
       future: repo.getById(id),
       builder: (context, snapshot) {

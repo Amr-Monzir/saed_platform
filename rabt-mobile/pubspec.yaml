@@ -21,6 +21,7 @@ dependencies:
   json_annotation: ^4.9.0
   google_fonts: ^6.3.0
   image_picker: ^1.0.7
+  riverpod_annotation: ^2.6.1
 
 dev_dependencies:
   flutter_test:
@@ -29,6 +30,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   build_runner: ^2.5.4
   json_serializable: ^6.9.5
+  riverpod_generator: ^2.6.1
 
 flutter:
 

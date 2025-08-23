@@ -1,21 +1,20 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rabt_mobile/models/organizer.dart';
+import 'package:rabt_mobile/services/api_service.dart';
+import 'package:rabt_mobile/services/image_upload_service.dart';
 import 'dart:io';
-import '../../models/organizer.dart';
-import '../../services/api_service.dart';
-import '../../services/image_upload_service.dart';
-import '../auth/auth_providers.dart';
 import 'dart:convert';
 
-class OrganizerRepository {
-  OrganizerRepository(this._ref);
+import 'package:rabt_mobile/state/auth/auth_providers.dart';
 
-  final Ref _ref;
-  final ApiService _api = ApiService.instance;
-  final ImageUploadService _imageService = ImageUploadService();
+class OrganizerRepository {
+  OrganizerRepository(this.ref);
+
+  final Ref ref;
 
   Future<OrganizerProfile> fetchOrganizerProfile() async {
-    final token = _ref.read(authControllerProvider).session?.token;
-    final resp = await _api.get('/api/v1/organizers/profile', headers: _api.authHeaders(token));
+    final token = ref.read(authControllerProvider).session?.token;
+    final resp = await ref.read(apiServiceProvider).get('/api/v1/organizers/profile', headers: ref.read(apiServiceProvider).authHeaders(token));
     return OrganizerProfile.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
   }
 
@@ -44,13 +43,13 @@ class OrganizerRepository {
       data['logo_url'] = logoUrl;
     }
 
-    await _api.post('/api/v1/organizers/register', data);
+    await ref.read(apiServiceProvider).post('/api/v1/organizers/register', data);
   }
 
   /// Upload organizer logo using the generic image upload endpoint
   Future<String?> uploadLogo(File logoFile) async {
-    final token = _ref.read(authControllerProvider).session?.token;
-    return await _imageService.uploadImageWithCategory(
+    final token = ref.read(authControllerProvider).session?.token;
+    return await ref.read(imageUploadServiceProvider).uploadImageWithCategory(
       logoFile,
       category: 'logos',
       token: token,
