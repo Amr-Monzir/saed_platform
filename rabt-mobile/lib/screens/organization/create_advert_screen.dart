@@ -5,6 +5,7 @@ import 'package:rabt_mobile/constants/lookups.dart';
 import 'package:rabt_mobile/models/advert.dart';
 import 'package:rabt_mobile/models/enums.dart';
 import 'package:rabt_mobile/models/organizer.dart';
+import 'package:rabt_mobile/models/skill.dart';
 import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
 import 'package:rabt_mobile/widgets/app_button.dart';
 import 'package:rabt_mobile/widgets/app_text_field.dart';
@@ -24,19 +25,33 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
   FrequencyType _frequency = FrequencyType.oneOff;
   String? _category;
   final Set<String> _skills = {};
-  String? _timeCommitment;
-  String? _timeOfDay;
-  int? _distance;
-  DateTime? _startDate;
-  DateTime? _endDate;
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
+  final _addressController = TextEditingController();
+  final _postcodeController = TextEditingController();
   File? _selectedImage;
+  
+  // Required fields
+  int _numberOfVolunteers = 1;
+  LocationType _locationType = LocationType.onSite;
+  
+  // One-off specific fields
+  DateTime? _eventDateTime;
+  TimeCommitment _oneOffTimeCommitment = TimeCommitment.oneToTwo;
+  DateTime? _applicationDeadline;
+  
+  // Recurring specific fields
+  RecurrenceType _recurrence = RecurrenceType.weekly;
+  TimeCommitment _recurringTimeCommitment = TimeCommitment.oneToTwo;
+  DurationType _duration = DurationType.oneMonth;
+  final Map<String, List<DayTimePeriod>> _specificDays = {};
 
   @override
   void dispose() {
     _titleController.dispose();
     _descController.dispose();
+    _addressController.dispose();
+    _postcodeController.dispose();
     super.dispose();
   }
 
@@ -47,6 +62,19 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
         _selectedImage = image;
       });
     }
+  }
+
+  void _toggleDayPeriod(String day, DayTimePeriod period) {
+    setState(() {
+      if (_specificDays[day]?.contains(period) == true) {
+        _specificDays[day]!.remove(period);
+        if (_specificDays[day]!.isEmpty) {
+          _specificDays.remove(day);
+        }
+      } else {
+        _specificDays.putIfAbsent(day, () => []).add(period);
+      }
+    });
   }
 
   @override
@@ -110,150 +138,320 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            AppTextField(
-              controller: _titleController,
-              label: 'Title',
-              validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+            
+            // Basic Information
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Basic Information',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 16),
+                    AppTextField(
+                      controller: _titleController,
+                      label: 'Title *',
+                      validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                    ),
+                    const SizedBox(height: 16),
+                    AppTextField(
+                      controller: _descController,
+                      label: 'Description *',
+                      maxLines: 4,
+                      validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                    ),
+                    const SizedBox(height: 16),
+                    DropdownButtonFormField<String>(
+                      value: _category,
+                      items: kCategories.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                      onChanged: (v) => setState(() => _category = v),
+                      decoration: const InputDecoration(labelText: 'Category *'),
+                      validator: (v) => v == null ? 'Required' : null,
+                    ),
+                    const SizedBox(height: 16),
+                    DropdownButtonFormField<FrequencyType>(
+                      value: _frequency,
+                      items: FrequencyType.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
+                      onChanged: (v) => setState(() => _frequency = v ?? FrequencyType.oneOff),
+                      decoration: const InputDecoration(labelText: 'Frequency *'),
+                    ),
+                    const SizedBox(height: 16),
+                    DropdownButtonFormField<int>(
+                      value: _numberOfVolunteers,
+                      items: List.generate(10, (i) => i + 1).map((e) => DropdownMenuItem(value: e, child: Text('$e volunteer${e > 1 ? 's' : ''}'))).toList(),
+                      onChanged: (v) => setState(() => _numberOfVolunteers = v ?? 1),
+                      decoration: const InputDecoration(labelText: 'Number of Volunteers *'),
+                    ),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              value: _frequency.name,
-              items: FrequencyType.values.map((e) => DropdownMenuItem(value: e.name, child: Text(e.displayName))).toList(),
-              onChanged: (v) => setState(() => _frequency = v == null ? FrequencyType.oneOff : FrequencyType.values.byName(v)),
-              decoration: const InputDecoration(labelText: 'Frequency'),
+            
+            // Location Information
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Location',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 16),
+                    DropdownButtonFormField<LocationType>(
+                      value: _locationType,
+                      items: LocationType.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
+                      onChanged: (v) => setState(() => _locationType = v ?? LocationType.onSite),
+                      decoration: const InputDecoration(labelText: 'Location Type *'),
+                    ),
+                    if (_locationType != LocationType.remote) ...[
+                      const SizedBox(height: 16),
+                      AppTextField(
+                        controller: _addressController,
+                        label: 'Address',
+                        maxLines: 2,
+                      ),
+                      const SizedBox(height: 16),
+                      AppTextField(
+                        controller: _postcodeController,
+                        label: 'Postcode',
+                      ),
+                    ],
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              value: _category,
-              items: kCategories.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-              onChanged: (v) => setState(() => _category = v),
-              decoration: const InputDecoration(labelText: 'Category'),
-              validator: (v) => v == null ? 'Required' : null,
-            ),
-            const SizedBox(height: 16),
-            const Text('Skills Required'),
-            Wrap(
-              spacing: 8,
-              children:
-                  kSkills.map((s) {
-                    final selected = _skills.contains(s);
-                    return FilterChip(
-                      label: Text(s),
-                      selected: selected,
-                      onSelected:
-                          (v) => setState(() {
+            
+            // Skills Required
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Skills Required',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      children: kSkills.map((s) {
+                        final selected = _skills.contains(s);
+                        return FilterChip(
+                          label: Text(s),
+                          selected: selected,
+                          onSelected: (v) => setState(() {
                             if (v) {
                               _skills.add(s);
                             } else {
                               _skills.remove(s);
                             }
                           }),
-                    );
-                  }).toList(),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              value: _timeCommitment,
-              items:
-                  (_frequency == FrequencyType.oneOff ? kTimeCommitmentOneOff : kTimeCommitmentRecurring)
-                      .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                      .toList(),
-              onChanged: (v) => setState(() => _timeCommitment = v),
-              decoration: const InputDecoration(labelText: 'Time Commitment'),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              value: _timeOfDay,
-              items: kTimesOfDay.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-              onChanged: (v) => setState(() => _timeOfDay = v),
-              decoration: const InputDecoration(labelText: 'Time of Day'),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<int>(
-              value: _distance,
-              items: kDistancesMiles.map((e) => DropdownMenuItem(value: e, child: Text('$e miles'))).toList(),
-              onChanged: (v) => setState(() => _distance = v),
-              decoration: const InputDecoration(labelText: 'Distance From User'),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () async {
-                      final now = DateTime.now();
-                      final picked = await showDatePicker(
-                        context: context,
-                        firstDate: now.subtract(const Duration(days: 0)),
-                        lastDate: now.add(const Duration(days: 365 * 2)),
-                        initialDate: _startDate ?? now,
-                      );
-                      if (picked != null) setState(() => _startDate = picked);
-                    },
-                    child: Text('Start: ${_startDate == null ? 'Pick' : _startDate!.toLocal().toString().split(' ').first}'),
+            
+            // Frequency-specific details
+            if (_frequency == FrequencyType.oneOff) ...[
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'One-off Event Details',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 16),
+                      ListTile(
+                        title: Text('Event Date & Time: ${_eventDateTime?.toString().split('.')[0] ?? 'Not set'}'),
+                        trailing: const Icon(Icons.calendar_today),
+                        onTap: () async {
+                          final date = await showDatePicker(
+                            context: context,
+                            initialDate: _eventDateTime ?? DateTime.now(),
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.now().add(const Duration(days: 365)),
+                          );
+                          if (date != null && context.mounted) {
+                            final time = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.now(),
+                            );
+                            if (time != null && context.mounted) {
+                              setState(() {
+                                _eventDateTime = DateTime(
+                                  date.year,
+                                  date.month,
+                                  date.day,
+                                  time.hour,
+                                  time.minute,
+                                );
+                              });
+                            }
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<TimeCommitment>(
+                        value: _oneOffTimeCommitment,
+                        items: TimeCommitment.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
+                        onChanged: (v) => setState(() => _oneOffTimeCommitment = v ?? TimeCommitment.oneToTwo),
+                        decoration: const InputDecoration(labelText: 'Time Commitment'),
+                      ),
+                      const SizedBox(height: 16),
+                      ListTile(
+                        title: Text('Application Deadline: ${_applicationDeadline?.toString().split(' ')[0] ?? 'Not set'}'),
+                        trailing: const Icon(Icons.calendar_today),
+                        onTap: () async {
+                          final date = await showDatePicker(
+                            context: context,
+                            initialDate: _applicationDeadline ?? DateTime.now(),
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.now().add(const Duration(days: 365)),
+                          );
+                          if (date != null) {
+                            setState(() {
+                              _applicationDeadline = date;
+                            });
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () async {
-                      final now = DateTime.now();
-                      final picked = await showDatePicker(
-                        context: context,
-                        firstDate: now.subtract(const Duration(days: 0)),
-                        lastDate: now.add(const Duration(days: 365 * 2)),
-                        initialDate: _endDate ?? now,
-                      );
-                      if (picked != null) setState(() => _endDate = picked);
-                    },
-                    child: Text('End: ${_endDate == null ? 'Pick' : _endDate!.toLocal().toString().split(' ').first}'),
+              ),
+            ] else ...[
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Recurring Event Details',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<RecurrenceType>(
+                        value: _recurrence,
+                        items: RecurrenceType.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
+                        onChanged: (v) => setState(() => _recurrence = v ?? RecurrenceType.weekly),
+                        decoration: const InputDecoration(labelText: 'Recurrence'),
+                      ),
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<TimeCommitment>(
+                        value: _recurringTimeCommitment,
+                        items: TimeCommitment.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
+                        onChanged: (v) => setState(() => _recurringTimeCommitment = v ?? TimeCommitment.oneToTwo),
+                        decoration: const InputDecoration(labelText: 'Time Commitment per Session'),
+                      ),
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<DurationType>(
+                        value: _duration,
+                        items: DurationType.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
+                        onChanged: (v) => setState(() => _duration = v ?? DurationType.oneMonth),
+                        decoration: const InputDecoration(labelText: 'Duration'),
+                      ),
+                      const SizedBox(height: 16),
+                      const Text('Specific Days & Times:'),
+                      const SizedBox(height: 8),
+                      ...['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) {
+                        return ExpansionTile(
+                          title: Text(day),
+                          children: [
+                            Wrap(
+                              spacing: 8,
+                              children: DayTimePeriod.values.map((period) {
+                                final isSelected = _specificDays[day]?.contains(period) == true;
+                                return FilterChip(
+                                  label: Text(period.displayName),
+                                  selected: isSelected,
+                                  onSelected: (v) => _toggleDayPeriod(day, period),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        );
+                      }),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
             const SizedBox(height: 16),
-            AppTextField(
-              controller: _descController,
-              maxLines: 4,
-              label: 'Description',
-              validator: (v) => v == null || v.isEmpty ? 'Required' : null,
-            ),
-            const SizedBox(height: 16),
+            
             AppButton(
               onPressed: createAdvertState.isLoading ? null : () {
                 if (!_formKey.currentState!.validate()) return;
+                
+                // Validate required fields
+                if (_category == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please select a category')),
+                  );
+                  return;
+                }
+                
+                if (_frequency == FrequencyType.oneOff) {
+                  if (_eventDateTime == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Please set event date and time')),
+                    );
+                    return;
+                  }
+                  if (_applicationDeadline == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Please set application deadline')),
+                    );
+                    return;
+                  }
+                }
                 
                 // Create advert object
                 final advert = Advert(
                   id: DateTime.now().millisecondsSinceEpoch,
                   title: _titleController.text.trim(),
                   description: _descController.text.trim(),
-                  category: _category ?? kCategories.first,
+                  category: _category!,
                   frequency: _frequency,
-                  numberOfVolunteers: 1,
-                  locationType: LocationType.onSite,
+                  numberOfVolunteers: _numberOfVolunteers,
+                  locationType: _locationType,
+                  addressText: _addressController.text.trim().isNotEmpty ? _addressController.text.trim() : null,
+                  postcode: _postcodeController.text.trim().isNotEmpty ? _postcodeController.text.trim() : null,
                   isActive: true,
-                  organizer: OrganizerProfile(id: 1, name: 'Me'),
-                  requiredSkills: const [],
-                  oneoffDetails:
-                      _frequency == FrequencyType.oneOff
-                          ? OneOffAdvertDetails(
-                            eventDatetime: _startDate ?? DateTime.now(),
-                            timeCommitment: TimeCommitment.oneToTwo,
-                            applicationDeadline: _endDate ?? DateTime.now().add(const Duration(days: 7)),
-                          )
-                          : null,
-                  recurringDetails:
-                      _frequency == FrequencyType.recurring
-                          ? RecurringAdvertDetails(
-                            recurrence: RecurrenceType.weekly,
-                            timeCommitmentPerSession: TimeCommitment.oneToTwo,
-                            duration: DurationType.oneMonth,
-                            specificDays: [
-                              RecurringDays(day: 'Monday', periods: [DayTimePeriod.am]),
-                            ],
-                          )
-                          : null,
+                  organizer: OrganizerProfile(id: 1, name: 'Me'), // This should come from auth
+                  requiredSkills: _skills.map((s) => SkillResponse(id: 1, name: s, isPredefined: true)).toList(),
+                  oneoffDetails: _frequency == FrequencyType.oneOff
+                      ? OneOffAdvertDetails(
+                          eventDatetime: _eventDateTime!,
+                          timeCommitment: _oneOffTimeCommitment,
+                          applicationDeadline: _applicationDeadline!,
+                        )
+                      : null,
+                  recurringDetails: _frequency == FrequencyType.recurring
+                      ? RecurringAdvertDetails(
+                          recurrence: _recurrence,
+                          timeCommitmentPerSession: _recurringTimeCommitment,
+                          duration: _duration,
+                          specificDays: _specificDays.entries.map((entry) => 
+                            RecurringDays(day: entry.key, periods: entry.value)
+                          ).toList(),
+                        )
+                      : null,
                   createdAt: DateTime.now(),
                 );
                 

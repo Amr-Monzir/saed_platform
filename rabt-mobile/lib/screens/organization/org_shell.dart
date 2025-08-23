@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'my_adverts_screen.dart';
-import 'create_advert_screen.dart';
+import 'organizer_profile_screen.dart';
 import '../common/settings_screen.dart';
 
 class OrgShell extends StatefulWidget {
@@ -28,16 +28,16 @@ class _OrgShellState extends State<OrgShell> {
               context.go(MyAdvertsScreen.path);
               break;
             case 1:
-              context.go(CreateAdvertScreen.path);
+              context.go(OrganizerProfileScreen.path);
               break;
             case 2:
-              context.go(SettingsScreen.volunteerPath);
+              context.go(SettingsScreen.orgPath);
               break;
           }
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.list_alt_outlined), label: 'My Adverts'),
-          BottomNavigationBarItem(icon: Icon(Icons.add_circle_outline), label: 'Create Advert'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
           BottomNavigationBarItem(icon: Icon(Icons.settings_outlined), label: 'Settings'),
         ],
       ),

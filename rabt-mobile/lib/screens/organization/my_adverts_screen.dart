@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
 import 'package:rabt_mobile/widgets/app_card.dart';
 import 'package:rabt_mobile/widgets/app_button.dart';
+import 'create_advert_wizard.dart';
 
 class MyAdvertsScreen extends ConsumerStatefulWidget {
   const MyAdvertsScreen({super.key});
@@ -34,6 +36,11 @@ class _MyAdvertsScreenState extends ConsumerState<MyAdvertsScreen> {
     final query = ref.watch(myAdvertsSearchControllerProvider) ?? '';
     return Scaffold(
       appBar: AppBar(title: const Text('My Adverts')),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.push(CreateAdvertWizard.path),
+        child: const Icon(Icons.add),
+        tooltip: 'Create Advert',
+      ),
       body: Column(
         children: [
           Padding(

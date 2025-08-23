@@ -8,9 +8,10 @@ import 'package:rabt_mobile/screens/auth/login_screen.dart';
 import 'package:rabt_mobile/screens/auth/signup_organizer_screen.dart';
 import 'package:rabt_mobile/screens/auth/signup_screen.dart';
 import 'package:rabt_mobile/screens/common/settings_screen.dart';
-import 'package:rabt_mobile/screens/organization/create_advert_screen.dart';
+import 'package:rabt_mobile/screens/organization/create_advert_wizard.dart';
 import 'package:rabt_mobile/screens/organization/my_adverts_screen.dart';
 import 'package:rabt_mobile/screens/organization/org_shell.dart';
+import 'package:rabt_mobile/screens/organization/organizer_profile_screen.dart';
 import 'package:rabt_mobile/screens/splash_screen.dart';
 import 'package:rabt_mobile/screens/volunteer/profile_setup_screen.dart';
 import 'package:rabt_mobile/screens/volunteer/volunteer_shell.dart';
@@ -66,6 +67,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           return AdvertsDetailScreen(id: id);
         },
       ),
+      // Create Advert (outside shell)
+      GoRoute(
+        path: CreateAdvertWizard.path,
+        builder: (context, state) => const CreateAdvertWizard(),
+      ),
       // Volunteer app shell
       ShellRoute(
         builder: (context, state, child) => VolunteerShell(child: child),
@@ -97,8 +103,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const MyAdvertsScreen(),
           ),
           GoRoute(
-            path: CreateAdvertScreen.path,
-            builder: (context, state) => const CreateAdvertScreen(),
+            path: OrganizerProfileScreen.path,
+            builder: (context, state) => const OrganizerProfileScreen(),
           ),
           GoRoute(
             path: SettingsScreen.orgPath,
