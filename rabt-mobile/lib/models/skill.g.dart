@@ -11,7 +11,7 @@ _$SkillResponseImpl _$$SkillResponseImplFromJson(Map<String, dynamic> json) =>
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
       category: json['category'] as String?,
-      isPredefined: json['isPredefined'] as bool,
+      isPredefined: json['is_predefined'] as bool,
     );
 
 Map<String, dynamic> _$$SkillResponseImplToJson(_$SkillResponseImpl instance) =>
@@ -19,5 +19,5 @@ Map<String, dynamic> _$$SkillResponseImplToJson(_$SkillResponseImpl instance) =>
       'id': instance.id,
       'name': instance.name,
       'category': instance.category,
-      'isPredefined': instance.isPredefined,
+      'is_predefined': instance.isPredefined,
     };

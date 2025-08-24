@@ -122,7 +122,8 @@ class __$$RecurringDaysImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _$RecurringDaysImpl implements _RecurringDays {
   const _$RecurringDaysImpl({
     required this.day,
@@ -357,7 +358,8 @@ class __$$RecurringAdvertDetailsImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _$RecurringAdvertDetailsImpl implements _RecurringAdvertDetails {
   const _$RecurringAdvertDetailsImpl({
     required this.recurrence,
@@ -597,7 +599,8 @@ class __$$OneOffAdvertDetailsImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _$OneOffAdvertDetailsImpl implements _OneOffAdvertDetails {
   const _$OneOffAdvertDetailsImpl({
     required this.eventDatetime,
@@ -1090,7 +1093,8 @@ class __$$AdvertImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _$AdvertImpl implements _Advert {
   const _$AdvertImpl({
     required this.id,

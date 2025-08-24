@@ -182,7 +182,8 @@ class __$$SessionDataImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _$SessionDataImpl implements _SessionData {
   const _$SessionDataImpl({
     required this.token,

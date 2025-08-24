@@ -5,6 +5,7 @@ part 'skill.g.dart';
 
 @freezed
 class SkillResponse with _$SkillResponse {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory SkillResponse({
     required int id,
     required String name,

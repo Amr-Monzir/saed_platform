@@ -6,6 +6,7 @@ part 'user.g.dart';
 
 @freezed
 class User with _$User {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory User({
     required int id,
     required String email,
@@ -19,6 +20,7 @@ class User with _$User {
 
 @freezed
 class Token with _$Token {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory Token({
     required String accessToken,
     required String tokenType,
@@ -29,6 +31,7 @@ class Token with _$Token {
 
 @freezed
 class TokenData with _$TokenData {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory TokenData({
     String? email,
   }) = _TokenData;

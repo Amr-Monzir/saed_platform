@@ -178,15 +178,16 @@ class __$$OrganizerProfileImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
-class _$OrganizerProfileImpl implements _OrganizerProfile {
-  const _$OrganizerProfileImpl({
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class _$OrganizerProfileImpl extends _OrganizerProfile {
+  _$OrganizerProfileImpl({
     required this.id,
     required this.name,
     this.logoUrl,
     this.website,
     this.description,
-  });
+  }) : super._();
 
   factory _$OrganizerProfileImpl.fromJson(Map<String, dynamic> json) =>
       _$$OrganizerProfileImplFromJson(json);
@@ -242,14 +243,15 @@ class _$OrganizerProfileImpl implements _OrganizerProfile {
   }
 }
 
-abstract class _OrganizerProfile implements OrganizerProfile {
-  const factory _OrganizerProfile({
+abstract class _OrganizerProfile extends OrganizerProfile {
+  factory _OrganizerProfile({
     required final int id,
     required final String name,
     final String? logoUrl,
     final String? website,
     final String? description,
   }) = _$OrganizerProfileImpl;
+  _OrganizerProfile._() : super._();
 
   factory _OrganizerProfile.fromJson(Map<String, dynamic> json) =
       _$OrganizerProfileImpl.fromJson;

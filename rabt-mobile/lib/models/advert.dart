@@ -1,3 +1,4 @@
+// coverage:ignore-file
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'enums.dart';
 import 'skill.dart';
@@ -8,6 +9,7 @@ part 'advert.g.dart';
 
 @freezed
 class RecurringDays with _$RecurringDays {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory RecurringDays({
     required String day, // backend uses string day key
     required List<DayTimePeriod> periods,
@@ -18,6 +20,7 @@ class RecurringDays with _$RecurringDays {
 
 @freezed
 class RecurringAdvertDetails with _$RecurringAdvertDetails {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory RecurringAdvertDetails({
     required RecurrenceType recurrence,
     required TimeCommitment timeCommitmentPerSession,
@@ -30,6 +33,7 @@ class RecurringAdvertDetails with _$RecurringAdvertDetails {
 
 @freezed
 class OneOffAdvertDetails with _$OneOffAdvertDetails {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory OneOffAdvertDetails({
     required DateTime eventDatetime,
     required TimeCommitment timeCommitment,
@@ -41,6 +45,7 @@ class OneOffAdvertDetails with _$OneOffAdvertDetails {
 
 @freezed
 class Advert with _$Advert {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory Advert({
     required int id,
     required String title,

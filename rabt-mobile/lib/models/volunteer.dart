@@ -6,6 +6,7 @@ part 'volunteer.g.dart';
 
 @freezed
 class VolunteerProfile with _$VolunteerProfile {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory VolunteerProfile({
     required int id,
     required String name,

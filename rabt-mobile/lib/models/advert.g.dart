@@ -34,11 +34,11 @@ _$RecurringAdvertDetailsImpl _$$RecurringAdvertDetailsImplFromJson(
   recurrence: $enumDecode(_$RecurrenceTypeEnumMap, json['recurrence']),
   timeCommitmentPerSession: $enumDecode(
     _$TimeCommitmentEnumMap,
-    json['timeCommitmentPerSession'],
+    json['time_commitment_per_session'],
   ),
   duration: $enumDecode(_$DurationTypeEnumMap, json['duration']),
   specificDays:
-      (json['specificDays'] as List<dynamic>)
+      (json['specific_days'] as List<dynamic>)
           .map((e) => RecurringDays.fromJson(e as Map<String, dynamic>))
           .toList(),
 );
@@ -47,10 +47,10 @@ Map<String, dynamic> _$$RecurringAdvertDetailsImplToJson(
   _$RecurringAdvertDetailsImpl instance,
 ) => <String, dynamic>{
   'recurrence': _$RecurrenceTypeEnumMap[instance.recurrence]!,
-  'timeCommitmentPerSession':
+  'time_commitment_per_session':
       _$TimeCommitmentEnumMap[instance.timeCommitmentPerSession]!,
   'duration': _$DurationTypeEnumMap[instance.duration]!,
-  'specificDays': instance.specificDays,
+  'specific_days': instance.specificDays,
 };
 
 const _$RecurrenceTypeEnumMap = {
@@ -76,17 +76,17 @@ const _$DurationTypeEnumMap = {
 _$OneOffAdvertDetailsImpl _$$OneOffAdvertDetailsImplFromJson(
   Map<String, dynamic> json,
 ) => _$OneOffAdvertDetailsImpl(
-  eventDatetime: DateTime.parse(json['eventDatetime'] as String),
-  timeCommitment: $enumDecode(_$TimeCommitmentEnumMap, json['timeCommitment']),
-  applicationDeadline: DateTime.parse(json['applicationDeadline'] as String),
+  eventDatetime: DateTime.parse(json['event_datetime'] as String),
+  timeCommitment: $enumDecode(_$TimeCommitmentEnumMap, json['time_commitment']),
+  applicationDeadline: DateTime.parse(json['application_deadline'] as String),
 );
 
 Map<String, dynamic> _$$OneOffAdvertDetailsImplToJson(
   _$OneOffAdvertDetailsImpl instance,
 ) => <String, dynamic>{
-  'eventDatetime': instance.eventDatetime.toIso8601String(),
-  'timeCommitment': _$TimeCommitmentEnumMap[instance.timeCommitment]!,
-  'applicationDeadline': instance.applicationDeadline.toIso8601String(),
+  'event_datetime': instance.eventDatetime.toIso8601String(),
+  'time_commitment': _$TimeCommitmentEnumMap[instance.timeCommitment]!,
+  'application_deadline': instance.applicationDeadline.toIso8601String(),
 };
 
 _$AdvertImpl _$$AdvertImplFromJson(Map<String, dynamic> json) => _$AdvertImpl(
@@ -95,35 +95,35 @@ _$AdvertImpl _$$AdvertImplFromJson(Map<String, dynamic> json) => _$AdvertImpl(
   description: json['description'] as String,
   category: json['category'] as String,
   frequency: $enumDecode(_$FrequencyTypeEnumMap, json['frequency']),
-  numberOfVolunteers: (json['numberOfVolunteers'] as num).toInt(),
-  locationType: $enumDecode(_$LocationTypeEnumMap, json['locationType']),
-  addressText: json['addressText'] as String?,
+  numberOfVolunteers: (json['number_of_volunteers'] as num).toInt(),
+  locationType: $enumDecode(_$LocationTypeEnumMap, json['location_type']),
+  addressText: json['address_text'] as String?,
   postcode: json['postcode'] as String?,
   latitude: (json['latitude'] as num?)?.toDouble(),
   longitude: (json['longitude'] as num?)?.toDouble(),
-  advertImageUrl: json['advertImageUrl'] as String?,
-  isActive: json['isActive'] as bool,
+  advertImageUrl: json['advert_image_url'] as String?,
+  isActive: json['is_active'] as bool,
   organizer: OrganizerProfile.fromJson(
     json['organizer'] as Map<String, dynamic>,
   ),
   requiredSkills:
-      (json['requiredSkills'] as List<dynamic>?)
+      (json['required_skills'] as List<dynamic>?)
           ?.map((e) => SkillResponse.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const [],
   oneoffDetails:
-      json['oneoffDetails'] == null
+      json['oneoff_details'] == null
           ? null
           : OneOffAdvertDetails.fromJson(
-            json['oneoffDetails'] as Map<String, dynamic>,
+            json['oneoff_details'] as Map<String, dynamic>,
           ),
   recurringDetails:
-      json['recurringDetails'] == null
+      json['recurring_details'] == null
           ? null
           : RecurringAdvertDetails.fromJson(
-            json['recurringDetails'] as Map<String, dynamic>,
+            json['recurring_details'] as Map<String, dynamic>,
           ),
-  createdAt: DateTime.parse(json['createdAt'] as String),
+  createdAt: DateTime.parse(json['created_at'] as String),
 );
 
 Map<String, dynamic> _$$AdvertImplToJson(_$AdvertImpl instance) =>
@@ -133,19 +133,19 @@ Map<String, dynamic> _$$AdvertImplToJson(_$AdvertImpl instance) =>
       'description': instance.description,
       'category': instance.category,
       'frequency': _$FrequencyTypeEnumMap[instance.frequency]!,
-      'numberOfVolunteers': instance.numberOfVolunteers,
-      'locationType': _$LocationTypeEnumMap[instance.locationType]!,
-      'addressText': instance.addressText,
+      'number_of_volunteers': instance.numberOfVolunteers,
+      'location_type': _$LocationTypeEnumMap[instance.locationType]!,
+      'address_text': instance.addressText,
       'postcode': instance.postcode,
       'latitude': instance.latitude,
       'longitude': instance.longitude,
-      'advertImageUrl': instance.advertImageUrl,
-      'isActive': instance.isActive,
+      'advert_image_url': instance.advertImageUrl,
+      'is_active': instance.isActive,
       'organizer': instance.organizer,
-      'requiredSkills': instance.requiredSkills,
-      'oneoffDetails': instance.oneoffDetails,
-      'recurringDetails': instance.recurringDetails,
-      'createdAt': instance.createdAt.toIso8601String(),
+      'required_skills': instance.requiredSkills,
+      'oneoff_details': instance.oneoffDetails,
+      'recurring_details': instance.recurringDetails,
+      'created_at': instance.createdAt.toIso8601String(),
     };
 
 const _$FrequencyTypeEnumMap = {

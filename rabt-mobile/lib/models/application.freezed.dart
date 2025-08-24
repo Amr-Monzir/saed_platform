@@ -240,7 +240,8 @@ class __$$ApplicationImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _$ApplicationImpl implements _Application {
   const _$ApplicationImpl({
     required this.id,

@@ -172,7 +172,8 @@ class __$$UserImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _$UserImpl implements _User {
   const _$UserImpl({
     required this.id,
@@ -367,7 +368,8 @@ class __$$TokenImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _$TokenImpl implements _Token {
   const _$TokenImpl({required this.accessToken, required this.tokenType});
 
@@ -527,7 +529,8 @@ class __$$TokenDataImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _$TokenDataImpl implements _TokenData {
   const _$TokenDataImpl({this.email});
 

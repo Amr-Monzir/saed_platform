@@ -153,7 +153,8 @@ class __$$SkillResponseImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _$SkillResponseImpl implements _SkillResponse {
   const _$SkillResponseImpl({
     required this.id,

@@ -5,8 +5,11 @@ part 'organizer.g.dart';
 
 @freezed
 class OrganizerProfile with _$OrganizerProfile {
-  const factory OrganizerProfile({required int id, required String name, String? logoUrl, String? website, String? description}) =
+@JsonSerializable(fieldRename: FieldRename.snake)
+  factory OrganizerProfile({required int id, required String name, String? logoUrl, String? website, String? description}) =
       _OrganizerProfile;
+
+  OrganizerProfile._();
 
   factory OrganizerProfile.fromJson(Map<String, dynamic> json) => _$OrganizerProfileFromJson(json);
 }

@@ -9,22 +9,22 @@ part of 'session.dart';
 _$SessionDataImpl _$$SessionDataImplFromJson(Map<String, dynamic> json) =>
     _$SessionDataImpl(
       token: json['token'] as String,
-      userType: $enumDecode(_$UserTypeEnumMap, json['userType']),
-      pendingAdvertId: json['pendingAdvertId'] as String?,
+      userType: $enumDecode(_$UserTypeEnumMap, json['user_type']),
+      pendingAdvertId: json['pending_advert_id'] as String?,
       organizerProfile:
-          json['organizerProfile'] == null
+          json['organizer_profile'] == null
               ? null
               : OrganizerProfile.fromJson(
-                json['organizerProfile'] as Map<String, dynamic>,
+                json['organizer_profile'] as Map<String, dynamic>,
               ),
     );
 
 Map<String, dynamic> _$$SessionDataImplToJson(_$SessionDataImpl instance) =>
     <String, dynamic>{
       'token': instance.token,
-      'userType': _$UserTypeEnumMap[instance.userType]!,
-      'pendingAdvertId': instance.pendingAdvertId,
-      'organizerProfile': instance.organizerProfile,
+      'user_type': _$UserTypeEnumMap[instance.userType]!,
+      'pending_advert_id': instance.pendingAdvertId,
+      'organizer_profile': instance.organizerProfile,
     };
 
 const _$UserTypeEnumMap = {

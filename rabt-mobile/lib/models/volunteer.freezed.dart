@@ -208,7 +208,8 @@ class __$$VolunteerProfileImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _$VolunteerProfileImpl implements _VolunteerProfile {
   const _$VolunteerProfileImpl({
     required this.id,

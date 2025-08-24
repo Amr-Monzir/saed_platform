@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'enums.g.dart';
 
-@JsonEnum(alwaysCreate: true)
+@JsonEnum(alwaysCreate: true, fieldRename: FieldRename.snake)
 enum UserType {
   @JsonValue('volunteer')
   volunteer,
@@ -15,7 +15,7 @@ enum UserType {
   };
 }
 
-@JsonEnum(alwaysCreate: true)
+@JsonEnum(alwaysCreate: true, fieldRename: FieldRename.snake)
 enum FrequencyType {
   @JsonValue('one-off')
   oneOff,
@@ -32,7 +32,7 @@ enum FrequencyType {
   };
 }
 
-@JsonEnum(alwaysCreate: true)
+@JsonEnum(alwaysCreate: true, fieldRename: FieldRename.snake)
 enum LocationType {
   @JsonValue('remote')
   remote,
@@ -48,7 +48,7 @@ enum LocationType {
   };
 }
 
-@JsonEnum(alwaysCreate: true)
+@JsonEnum(alwaysCreate: true, fieldRename: FieldRename.snake)
 enum TimeCommitment {
   @JsonValue('1-2h')
   oneToTwo,
@@ -73,7 +73,7 @@ enum TimeCommitment {
   };
 }
 
-@JsonEnum(alwaysCreate: true)
+@JsonEnum(alwaysCreate: true, fieldRename: FieldRename.snake)
 enum RecurrenceType {
   @JsonValue('weekly')
   weekly,
@@ -89,7 +89,7 @@ enum RecurrenceType {
   };
 }
 
-@JsonEnum(alwaysCreate: true)
+@JsonEnum(alwaysCreate: true, fieldRename: FieldRename.snake)
 enum DurationType {
   @JsonValue('1month')
   oneMonth,
@@ -108,7 +108,7 @@ enum DurationType {
   };
 }
 
-@JsonEnum(alwaysCreate: true)
+@JsonEnum(alwaysCreate: true, fieldRename: FieldRename.snake)
 enum DayTimePeriod {
   @JsonValue('am')
   am,
@@ -130,7 +130,7 @@ enum DayTimePeriod {
   };
 }
 
-@JsonEnum(alwaysCreate: true)
+@JsonEnum(alwaysCreate: true, fieldRename: FieldRename.snake)
 enum ApplicationStatus {
   @JsonValue('pending')
   pending,

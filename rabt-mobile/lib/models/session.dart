@@ -7,6 +7,7 @@ part 'session.g.dart';
 
 @freezed
 class SessionData with _$SessionData {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory SessionData({
     required String token,
     required UserType userType,

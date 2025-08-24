@@ -11,10 +11,10 @@ _$VolunteerProfileImpl _$$VolunteerProfileImplFromJson(
 ) => _$VolunteerProfileImpl(
   id: (json['id'] as num).toInt(),
   name: json['name'] as String,
-  phoneNumber: json['phoneNumber'] as String?,
+  phoneNumber: json['phone_number'] as String?,
   city: json['city'] as String?,
   country: json['country'] as String?,
-  onboardingCompleted: json['onboardingCompleted'] as bool,
+  onboardingCompleted: json['onboarding_completed'] as bool,
   skills:
       (json['skills'] as List<dynamic>?)
           ?.map((e) => SkillResponse.fromJson(e as Map<String, dynamic>))
@@ -27,9 +27,9 @@ Map<String, dynamic> _$$VolunteerProfileImplToJson(
 ) => <String, dynamic>{
   'id': instance.id,
   'name': instance.name,
-  'phoneNumber': instance.phoneNumber,
+  'phone_number': instance.phoneNumber,
   'city': instance.city,
   'country': instance.country,
-  'onboardingCompleted': instance.onboardingCompleted,
+  'onboarding_completed': instance.onboardingCompleted,
   'skills': instance.skills,
 };
