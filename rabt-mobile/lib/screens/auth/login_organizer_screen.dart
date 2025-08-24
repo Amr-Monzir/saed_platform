@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rabt_mobile/models/enums.dart';
-import '../../state/auth/auth_providers.dart';
-import '../../widgets/app_button.dart';
-import '../../state/organizer/organizer_repository.dart';
-import '../organization/my_adverts_screen.dart';
-import 'signup_organizer_screen.dart';
-import 'login_screen.dart';
-import '../../widgets/app_password_field.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:rabt_mobile/state/auth/auth_providers.dart';
+import 'package:rabt_mobile/widgets/app_button.dart';
+import 'package:rabt_mobile/widgets/app_password_field.dart';
+import 'package:rabt_mobile/screens/organization/my_adverts_screen.dart';
+import 'package:rabt_mobile/screens/auth/signup_organizer_screen.dart';
+import 'package:rabt_mobile/screens/auth/login_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' ;
 
 class OrganizerLoginScreen extends ConsumerWidget {
   const OrganizerLoginScreen({super.key});
@@ -43,7 +42,7 @@ class OrganizerLoginScreen extends ConsumerWidget {
                 String password = passController.text;
                 final env = (dotenv.env['ENV'] ?? '').toLowerCase();
                 if ((email.isEmpty || password.isEmpty) && (env == 'local' || env == 'test' || env == 'testing')) {
-                  email = 'organizer1@example.com';
+                  email = 'organizer2@example.com';
                   password = email;
                   emailController.text = email;
                   passController.text = password;
