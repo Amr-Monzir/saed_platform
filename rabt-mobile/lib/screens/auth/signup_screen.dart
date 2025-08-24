@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../state/auth/auth_providers.dart';
-import '../../widgets/app_text_field.dart';
-import '../../widgets/app_button.dart';
-import '../../state/volunteer/volunteer_repository.dart';
-import '../organization/my_adverts_screen.dart';
-import '../volunteer/profile_setup_screen.dart';
-import '../adverts/advert_detail_screen.dart';
-import '../adverts/adverts_list_screen.dart';
+import 'package:rabt_mobile/models/enums.dart';
+import 'package:rabt_mobile/screens/adverts/advert_detail_screen.dart';
+import 'package:rabt_mobile/screens/adverts/adverts_list_screen.dart';
+import 'package:rabt_mobile/screens/organization/my_adverts_screen.dart';
+import 'package:rabt_mobile/screens/volunteer/profile_setup_screen.dart';
+import 'package:rabt_mobile/state/auth/auth_providers.dart';
+import 'package:rabt_mobile/state/volunteer/volunteer_repository.dart';
+import 'package:rabt_mobile/widgets/app_button.dart';
+import 'package:rabt_mobile/widgets/app_text_field.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
@@ -23,7 +24,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  UserRole _role = UserRole.volunteer;
+  UserType _type = UserType.volunteer;
 
   @override
   void dispose() {
@@ -44,13 +45,13 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              DropdownButtonFormField<UserRole>(
-                value: _role,
+              DropdownButtonFormField<UserType>(
+                value: _type,
                 items: const [
-                  DropdownMenuItem(value: UserRole.volunteer, child: Text('Volunteer')),
-                  DropdownMenuItem(value: UserRole.organization, child: Text('Organization')),
+                  DropdownMenuItem(value: UserType.volunteer, child: Text('Volunteer')),
+                  DropdownMenuItem(value: UserType.organizer, child: Text('Organization')),
                 ],
-                onChanged: (v) => setState(() => _role = v ?? UserRole.volunteer),
+                onChanged: (v) => setState(() => _type = v ?? UserType.volunteer),
                 decoration: const InputDecoration(labelText: 'Role'),
               ),
               AppTextField(
@@ -74,15 +75,15 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                           if (!_formKey.currentState!.validate()) return;
                           final success = await ref
                               .read(authControllerProvider.notifier)
-                              .signup(email: _emailController.text.trim(), password: _passwordController.text, role: _role);
+                              .signup(email: _emailController.text.trim(), password: _passwordController.text, type: _type);
                           if (!context.mounted) return;
                           if (success) {
-                            if (_role == UserRole.organization) {
+                            if (_type == UserType.organizer) {
                               if (!context.mounted) return;
                               context.go(MyAdvertsScreen.path);
                             } else {
                               final me = await ref.read(volunteerRepositoryProvider).fetchVolunteerProfile();
-                              final pending = ref.read(authControllerProvider).session?.pendingAdvertId;
+                              final pending = ref.read(authControllerProvider).value?.pendingAdvertId;
                               if (!context.mounted) return;
                               if (!me.onboardingCompleted) {
                                 context.push(VolunteerProfileSetupScreen.path);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rabt_mobile/models/enums.dart';
 import '../../state/auth/auth_providers.dart';
 import '../../widgets/app_button.dart';
 import '../../state/volunteer/volunteer_repository.dart';
@@ -50,7 +51,7 @@ class LoginScreen extends ConsumerWidget {
                   emailController.text = email;
                   passController.text = password;
                 }
-                final ok = await ref.read(authControllerProvider.notifier).loginWithBackend(email: email, password: password, role: UserRole.volunteer);
+                final ok = await ref.read(authControllerProvider.notifier).loginWithBackend(email: email, password: password, type: UserType.volunteer);
                 if (!context.mounted) return;
                 if (ok) {
                   final me = await ref.read(volunteerRepositoryProvider).fetchVolunteerProfile();

@@ -5,9 +5,9 @@ import 'package:rabt_mobile/models/advert.dart';
 import 'package:rabt_mobile/models/enums.dart';
 import 'package:rabt_mobile/models/organizer.dart';
 import 'package:rabt_mobile/models/skill.dart';
+import 'package:rabt_mobile/services/image_upload_service.dart';
 import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
 import 'package:rabt_mobile/widgets/app_button.dart';
-import '../../services/image_upload_service.dart';
 import 'steps/basic_info_step.dart';
 import 'steps/location_step.dart';
 import 'steps/skills_step.dart';
@@ -197,6 +197,7 @@ class _CreateAdvertWizardState extends ConsumerState<CreateAdvertWizard> with Au
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final createAdvertState = ref.watch(createAdvertControllerProvider);
 
     return PopScope(

@@ -13,7 +13,7 @@ class OrganizerRepository {
   final Ref ref;
 
   Future<OrganizerProfile> fetchOrganizerProfile() async {
-    final token = ref.read(authControllerProvider).session?.token;
+    final token = ref.read(authControllerProvider).value?.token;
     final resp = await ref.read(apiServiceProvider).get('/api/v1/organizers/profile', headers: ref.read(apiServiceProvider).authHeaders(token));
     return OrganizerProfile.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
   }
@@ -48,7 +48,7 @@ class OrganizerRepository {
 
   /// Upload organizer logo using the generic image upload endpoint
   Future<String?> uploadLogo(File logoFile) async {
-    final token = ref.read(authControllerProvider).session?.token;
+    final token = ref.read(authControllerProvider).value?.token;
     return await ref.read(imageUploadServiceProvider).uploadImageWithCategory(
       logoFile,
       category: 'logos',

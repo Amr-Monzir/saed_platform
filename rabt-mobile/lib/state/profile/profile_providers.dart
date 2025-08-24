@@ -22,7 +22,7 @@ final volunteerProfileControllerProvider = Provider<VolunteerProfileController>(
 });
 
 final volunteerProfileCompletedProvider = Provider<bool>((ref) {
-  final session = ref.watch(authControllerProvider).session;
+  final session = ref.watch(authControllerProvider).value;
   if (session == null) return false;
   final prefs = ref.watch(sharedPrefsProvider);
   final key = 'profile_${session.token}_completed';

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 from app.database.enums import ApplicationStatus
 from app.schemas.advert import AdvertResponse
@@ -29,3 +29,9 @@ class ApplicationResponse(ApplicationBase):
 
     class Config:
         from_attributes = True
+
+
+class ApplicationListResponse(BaseModel):
+    items: List[ApplicationResponse]
+    total_count: int
+    total_pages: int

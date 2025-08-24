@@ -10,8 +10,8 @@ class ApiService {
   String get baseUrl => dotenv.env['API_BASE_URL'] ?? 'http://10.0.2.2:8000';
   ApiEnvironment get env => (dotenv.env['ENV'] == 'local') ? ApiEnvironment.local : ApiEnvironment.production;
 
-  Future<http.Response> post(String path, Map<String, dynamic> data, {Map<String, String>? headers}) async {
-    final uri = Uri.parse('$baseUrl$path');
+  Future<http.Response> post(String path, Map<String, dynamic> data, {Map<String, String>? headers, Map<String, String>? query}) async {
+    final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
     final resp = await http.post(
       uri,
       headers: {'Content-Type': 'application/json', ...?headers},
@@ -21,8 +21,8 @@ class ApiService {
     return resp;
   }
 
-  Future<http.Response> postForm(String path, Map<String, String> fields, {Map<String, String>? headers}) async {
-    final uri = Uri.parse('$baseUrl$path');
+  Future<http.Response> postForm(String path, Map<String, String> fields, {Map<String, String>? headers, Map<String, String>? query}) async {
+    final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
     final resp = await http.post(
       uri,
       headers: {'Content-Type': 'application/x-www-form-urlencoded', ...?headers},
@@ -32,20 +32,27 @@ class ApiService {
     return resp;
   }
 
-  Future<http.Response> get(String path, {Map<String, String>? headers}) async {
-    final uri = Uri.parse('$baseUrl$path');
+  Future<http.Response> get(String path, {Map<String, String>? headers, Map<String, String>? query}) async {
+    final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
     final resp = await http.get(uri, headers: headers);
     _throwOnError(resp);
     return resp;
   }
 
-  Future<http.Response> put(String path, Map<String, dynamic> data, {Map<String, String>? headers}) async {
-    final uri = Uri.parse('$baseUrl$path');
+  Future<http.Response> put(String path, Map<String, dynamic> data, {Map<String, String>? headers, Map<String, String>? query}) async {
+    final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
     final resp = await http.put(
       uri,
       headers: {'Content-Type': 'application/json', ...?headers},
       body: jsonEncode(data),
     );
+    _throwOnError(resp);
+    return resp;
+  }
+
+  Future<http.Response> delete(String path, {Map<String, String>? headers, Map<String, String>? query}) async {
+    final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
+    final resp = await http.delete(uri, headers: headers);
     _throwOnError(resp);
     return resp;
   }

@@ -1,46 +1,43 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rabt_mobile/models/enums.dart';
+import 'package:rabt_mobile/models/user.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'auth_repository.dart';
 
-enum UserRole { volunteer, organization }
+part 'auth_providers.g.dart';
 
 class SessionData {
-  SessionData({required this.token, required this.userRole, this.pendingAdvertId});
+  SessionData({required this.token, required this.userType, this.pendingAdvertId, this.user});
   final String token;
-  final UserRole userRole;
+  final UserType userType;
   final String? pendingAdvertId;
+  final User? user;
 
   Map<String, dynamic> toJson() => {
-        'token': token,
-        'userRole': userRole.name,
-        if (pendingAdvertId != null) 'pendingAdvertId': pendingAdvertId,
-      };
+    'token': token,
+    'usertype': userType.name,
+    if (user != null) 'user': user!.toJson(),
+    if (pendingAdvertId != null) 'pendingAdvertId': pendingAdvertId,
+  };
 
   static SessionData? fromJson(Map<String, dynamic>? json) {
     if (json == null) return null;
-    final roleName = json['userRole'] as String?;
-    final role = roleName == 'organization' ? UserRole.organization : UserRole.volunteer;
+    final typeName = json['usertype'] as String?;
+    final type = typeName == 'organization' ? UserType.organizer : UserType.volunteer;
     final token = json['token'] as String?;
     final pending = json['pendingAdvertId'] as String?;
     if (token == null) return null;
-    return SessionData(token: token, userRole: role, pendingAdvertId: pending);
+    return SessionData(token: token, userType: type, pendingAdvertId: pending);
   }
 }
 
-class AuthState {
-  const AuthState({this.session, this.isLoading = false});
-  final SessionData? session;
-  final bool isLoading;
+@riverpod
+class AuthController extends _$AuthController {
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  AuthState copyWith({SessionData? session, bool? isLoading}) =>
-      AuthState(session: session ?? this.session, isLoading: isLoading ?? this.isLoading);
-}
-
-class AuthController extends StateNotifier<AuthState> {
-  AuthController(this._storage, this._ref) : super(const AuthState());
-  final FlutterSecureStorage _storage;
-  final Ref _ref;
+  @override
+  Future<SessionData?> build() async => await restoreSession();
 
   static const String _sessionKey = 'session';
 
@@ -48,54 +45,42 @@ class AuthController extends StateNotifier<AuthState> {
     final raw = await _storage.read(key: _sessionKey);
     if (raw == null) return null;
     final map = jsonDecode(raw) as Map<String, dynamic>;
-    final s = SessionData.fromJson(map);
-    state = state.copyWith(session: s);
-    return s;
+    final session = SessionData.fromJson(map);
+    state = AsyncData(session);
+    return session;
   }
 
-  Future<bool> signup({required String email, required String password, required UserRole role}) async {
-    state = state.copyWith(isLoading: true);
+  Future<bool> signup({required String email, required String password, required UserType type}) async {
     await Future.delayed(const Duration(milliseconds: 400));
     final fakeToken = 'token_${DateTime.now().millisecondsSinceEpoch}';
-    final session = SessionData(token: fakeToken, userRole: role);
+    final session = SessionData(token: fakeToken, userType: type);
     await _storage.write(key: _sessionKey, value: jsonEncode(session.toJson()));
-    state = AuthState(session: session, isLoading: false);
+    state = AsyncData(session);
     return true;
   }
 
-  Future<bool> loginWithBackend({required String email, required String password, required UserRole role}) async {
-    try {
-      state = state.copyWith(isLoading: true);
-      final token = await _ref.read(authRepositoryProvider).login(email: email, password: password);
-      final session = SessionData(token: token.accessToken, userRole: role);
-      await _storage.write(key: _sessionKey, value: jsonEncode(session.toJson()));
-      state = AuthState(session: session, isLoading: false);
-      return true;
-    } catch (_) {
-      state = state.copyWith(isLoading: false);
-      rethrow;
-    }
+  Future<bool> loginWithBackend({required String email, required String password, required UserType type}) async {
+    final token = await ref.read(authRepositoryProvider).login(email: email, password: password);
+    // final user = await ref.read(authRepositoryProvider).getUser(token.accessToken);
+    final session = SessionData(token: token.accessToken, userType: type);
+    await _storage.write(key: _sessionKey, value: jsonEncode(session.toJson()));
+    state = AsyncData(session);
+    return true;
   }
 
   Future<void> setPendingAdvert(String? advertId) async {
-    final s = state.session;
-    if (s == null) return;
-    final updated = SessionData(token: s.token, userRole: s.userRole, pendingAdvertId: advertId);
+    final session = state.value;
+    if (session == null) return;
+    final updated = SessionData(token: session.token, userType: session.userType, pendingAdvertId: advertId);
     await _storage.write(key: _sessionKey, value: jsonEncode(updated.toJson()));
-    state = state.copyWith(session: updated);
+    state = AsyncData(updated);
   }
 
   Future<void> logout() async {
     await _storage.delete(key: _sessionKey);
-    state = const AuthState(session: null, isLoading: false);
+    state = const AsyncData(null);
   }
 }
 
 final secureStorageProvider = Provider<FlutterSecureStorage>((ref) => const FlutterSecureStorage());
-
-final authControllerProvider = StateNotifierProvider<AuthController, AuthState>((ref) {
-  final storage = ref.watch(secureStorageProvider);
-  return AuthController(storage, ref);
-});
-
 

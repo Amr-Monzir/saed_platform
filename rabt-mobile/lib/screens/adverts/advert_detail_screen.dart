@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rabt_mobile/models/advert.dart';
+import 'package:rabt_mobile/models/enums.dart';
 import 'package:rabt_mobile/screens/auth/signup_screen.dart';
 import 'package:rabt_mobile/state/adverts/adverts_repository.dart';
 import 'package:rabt_mobile/state/applications/applications_repository.dart';
@@ -19,7 +20,7 @@ class AdvertDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final role = ref.watch(authControllerProvider).session?.userRole;
+    final role = ref.watch(authControllerProvider).value?.userType;
     final repo = ref.watch(advertsRepositoryProvider.notifier);
     return FutureBuilder<Advert?>(
       future: repo.getById(id),
@@ -99,34 +100,34 @@ class AdvertDetailScreen extends ConsumerWidget {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      if (role == UserRole.volunteer)
+                      if (role == UserType.volunteer)
                         AppButton(
                           label: 'Apply',
                           onPressed: () async {
-                            final session = ref.read(authControllerProvider).session;
+                            final session = ref.read(authControllerProvider).value;
                             if (session == null) {
                               context.push(SignupScreen.path);
                               return;
                             }
-                            final appRepo = ref.read(applicationsRepositoryProvider);
+                            final appRepo = ref.read(applicationsRepositoryProvider.notifier);
                             await appRepo.create(advertId: advert.id);
                             if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Application submitted')));
                           },
                         ),
-                      if (role == UserRole.organization)
+                      if (role == UserType.organizer)
                         Row(
                           children: [
                             Expanded(
                               child: AppButton(
                                 label: 'Edit',
                                 onPressed: () async {
-                                  final session = ref.read(authControllerProvider).session;
+                                  final session = ref.read(authControllerProvider).value;
                                   if (session == null) {
                                     context.push(SignupScreen.path);
                                     return;
                                   }
-                                  final appRepo = ref.read(applicationsRepositoryProvider);
+                                  final appRepo = ref.read(applicationsRepositoryProvider.notifier);
                                   await appRepo.create(advertId: advert.id);
                                   if (!context.mounted) return;
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Application submitted')));
@@ -139,12 +140,12 @@ class AdvertDetailScreen extends ConsumerWidget {
                                 label: 'Close',
                                 variant: AppButtonVariant.outline,
                                 onPressed: () async {
-                                  final session = ref.read(authControllerProvider).session;
+                                  final session = ref.read(authControllerProvider).value;
                                   if (session == null) {
                                     context.push(SignupScreen.path);
                                     return;
                                   }
-                                  final appRepo = ref.read(applicationsRepositoryProvider);
+                                  final appRepo = ref.read(applicationsRepositoryProvider.notifier);
                                   await appRepo.create(advertId: advert.id);
                                   if (!context.mounted) return;
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Application submitted')));

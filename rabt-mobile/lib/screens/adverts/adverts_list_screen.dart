@@ -89,7 +89,7 @@ class AdvertsListScreen extends ConsumerWidget {
                     onTap: () => context.push(AdvertDetailScreen.pathFor(advert.id)),
                     trailing: AppButton(
                       onPressed: () async {
-                        final session = ref.read(authControllerProvider).session;
+                        final session = ref.read(authControllerProvider).value;
                         if (session == null) {
                           await ref.read(authControllerProvider.notifier).setPendingAdvert(advert.id.toString());
                           if (!context.mounted) return;

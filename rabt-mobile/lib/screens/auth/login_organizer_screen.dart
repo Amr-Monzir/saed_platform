@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rabt_mobile/models/enums.dart';
 import '../../state/auth/auth_providers.dart';
 import '../../widgets/app_button.dart';
 import '../../state/organizer/organizer_repository.dart';
@@ -49,7 +50,7 @@ class OrganizerLoginScreen extends ConsumerWidget {
                 }
                 final ok = await ref
                     .read(authControllerProvider.notifier)
-                    .loginWithBackend(email: email, password: password, role: UserRole.organization);
+                    .loginWithBackend(email: email, password: password, type: UserType.organizer);
                 if (!context.mounted) return;
                 if (ok) {
                   try {

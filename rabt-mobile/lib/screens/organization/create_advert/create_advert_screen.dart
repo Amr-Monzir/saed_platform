@@ -9,7 +9,7 @@ import 'package:rabt_mobile/models/skill.dart';
 import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
 import 'package:rabt_mobile/widgets/app_button.dart';
 import 'package:rabt_mobile/widgets/app_text_field.dart';
-import '../../services/image_upload_service.dart';
+import '../../../services/image_upload_service.dart';
 
 class CreateAdvertScreen extends ConsumerStatefulWidget {
   const CreateAdvertScreen({super.key});

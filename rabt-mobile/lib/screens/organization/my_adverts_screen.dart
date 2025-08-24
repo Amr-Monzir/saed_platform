@@ -4,8 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:rabt_mobile/screens/adverts/advert_detail_screen.dart';
 import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
 import 'package:rabt_mobile/widgets/app_card.dart';
-import 'package:rabt_mobile/widgets/app_button.dart';
-import 'create_advert_wizard.dart';
+import 'create_advert/create_advert_wizard.dart';
 
 class MyAdvertsScreen extends ConsumerStatefulWidget {
   const MyAdvertsScreen({super.key});

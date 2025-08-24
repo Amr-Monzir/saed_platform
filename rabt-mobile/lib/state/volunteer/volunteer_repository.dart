@@ -10,7 +10,7 @@ class VolunteerRepository {
   final Ref ref;
 
   Future<VolunteerProfile> fetchVolunteerProfile() async {
-    final token = ref.read(authControllerProvider).session?.token;
+    final token = ref.read(authControllerProvider).value?.token;
     final resp = await ref
         .read(apiServiceProvider)
         .get('/api/v1/volunteers/profile', headers: ref.read(apiServiceProvider).authHeaders(token));
@@ -18,7 +18,7 @@ class VolunteerRepository {
   }
 
   Future<VolunteerProfile> update({String? name, String? phoneNumber, String? city, String? country, List<int>? skillIds}) async {
-    final token = ref.read(authControllerProvider).session?.token;
+    final token = ref.read(authControllerProvider).value?.token;
     final resp = await ref.read(apiServiceProvider).put('/api/v1/volunteers/profile', {
       if (name != null) 'name': name,
       if (phoneNumber != null) 'phone_number': phoneNumber,

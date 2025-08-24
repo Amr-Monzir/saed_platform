@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 
 from app.database.connection import get_db
 from app.database.models import Application, User, Advert
@@ -8,6 +8,7 @@ from app.schemas.application import (
     ApplicationCreate,
     ApplicationResponse,
     ApplicationUpdate,
+    ApplicationListResponse,
 )
 from app.services.application_service import ApplicationService
 from app.api.dependencies import require_volunteer, require_organizer, get_current_user
@@ -62,6 +63,33 @@ def get_application(
     else:
         application.volunteer = None
         return application
+
+
+@router.get("/organization/{organizer_id}", response_model=ApplicationListResponse)
+def get_organizer_applications(
+    organizer_id: int,
+    advert_id: Optional[int] = Query(None, description="Filter by specific advert ID"),
+    limit: int = Query(20, description="Number of applications per page"),
+    page: int = Query(1, description="Page number"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_organizer),
+):
+    # Ensure the organizer can only access their own applications
+    if current_user.organizer.id != organizer_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to access applications for this organization",
+        )
+    
+    applications, total_count, total_pages = ApplicationService.get_organizer_applications(
+        db, organizer_id, advert_id, limit, page
+    )
+    
+    return ApplicationListResponse(
+        items=applications, 
+        total_count=total_count, 
+        total_pages=total_pages
+    )
 
 
 @router.put("/{application_id}/status", response_model=ApplicationResponse)

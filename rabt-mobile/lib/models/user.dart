@@ -4,8 +4,8 @@ import 'enums.dart';
 part 'user.g.dart';
 
 @JsonSerializable()
-class UserResponse {
-  UserResponse({
+class User {
+  User({
     required this.id,
     required this.email,
     required this.userType,
@@ -22,8 +22,8 @@ class UserResponse {
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
 
-  factory UserResponse.fromJson(Map<String, dynamic> json) => _$UserResponseFromJson(json);
-  Map<String, dynamic> toJson() => _$UserResponseToJson(this);
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 }
 
 @JsonSerializable()

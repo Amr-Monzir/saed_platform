@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from app.database.models import Application, Advert, Volunteer
 from app.schemas.application import ApplicationCreate
+from typing import List, Optional
 
 
 class ApplicationService:
@@ -45,3 +46,36 @@ class ApplicationService:
         db.commit()
         db.refresh(application)
         return application
+
+    @staticmethod
+    def get_organizer_applications(
+        db: Session, 
+        organizer_id: int, 
+        advert_id: Optional[int] = None,
+        limit: int = 20,
+        page: int = 1
+    ) -> tuple[List[Application], int, int]:
+        """
+        Get all applications for an organizer's adverts with pagination.
+        If advert_id is provided, filter by that specific advert.
+        Returns: (applications, total_count, total_pages)
+        """
+        query = (
+            db.query(Application)
+            .join(Advert, Application.advert_id == Advert.id)
+            .filter(Advert.organizer_id == organizer_id)
+        )
+        
+        if advert_id is not None:
+            query = query.filter(Application.advert_id == advert_id)
+        
+        # Get total count for pagination
+        total_count = query.count()
+        total_pages = (total_count + limit - 1) // limit if limit > 0 else 1
+        current_page = max(page, 1)
+        offset = (current_page - 1) * limit
+        
+        # Apply pagination
+        applications = query.limit(limit).offset(offset).all()
+        
+        return applications, total_count, total_pages
