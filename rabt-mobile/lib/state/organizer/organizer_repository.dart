@@ -12,8 +12,7 @@ class OrganizerRepository {
 
   final Ref ref;
 
-  Future<OrganizerProfile> fetchOrganizerProfile() async {
-    final token = ref.read(authControllerProvider).value?.token;
+  Future<OrganizerProfile> fetchOrganizerProfile(String token) async {
     final resp = await ref.read(apiServiceProvider).get('/api/v1/organizers/profile', headers: ref.read(apiServiceProvider).authHeaders(token));
     return OrganizerProfile.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
   }

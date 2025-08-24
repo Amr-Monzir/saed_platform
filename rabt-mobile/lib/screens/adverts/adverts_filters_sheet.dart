@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rabt_mobile/constants/lookups.dart';
 import 'package:rabt_mobile/models/enums.dart';
-import 'package:rabt_mobile/state/adverts/adverts_repository.dart';
+import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
 
 class AdvertsFiltersSheet extends ConsumerWidget {
   const AdvertsFiltersSheet({super.key});

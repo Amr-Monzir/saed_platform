@@ -54,7 +54,6 @@ class OrganizerLoginScreen extends ConsumerWidget {
                 if (!context.mounted) return;
                 if (ok) {
                   try {
-                    await ref.read(organizerRepositoryProvider).fetchOrganizerProfile();
                     if (!context.mounted) return;
                     context.go(MyAdvertsScreen.path);
                   } catch (_) {

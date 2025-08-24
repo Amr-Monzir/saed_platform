@@ -1,24 +1,26 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:rabt_mobile/models/enums.dart';
+import 'package:rabt_mobile/models/organizer.dart';
 import 'package:rabt_mobile/models/user.dart';
+import 'package:rabt_mobile/state/organizer/organizer_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'auth_repository.dart';
 
 part 'auth_providers.g.dart';
 
 class SessionData {
-  SessionData({required this.token, required this.userType, this.pendingAdvertId, this.user});
+  SessionData({required this.token, required this.userType, this.pendingAdvertId, this.organizerProfile});
   final String token;
   final UserType userType;
   final String? pendingAdvertId;
-  final User? user;
+  final OrganizerProfile? organizerProfile;
 
   Map<String, dynamic> toJson() => {
     'token': token,
     'usertype': userType.name,
-    if (user != null) 'user': user!.toJson(),
     if (pendingAdvertId != null) 'pendingAdvertId': pendingAdvertId,
+    if (organizerProfile != null) 'organizerProfile': organizerProfile!.toJson(),
   };
 
   static SessionData? fromJson(Map<String, dynamic>? json) {
@@ -27,8 +29,14 @@ class SessionData {
     final type = typeName == 'organization' ? UserType.organizer : UserType.volunteer;
     final token = json['token'] as String?;
     final pending = json['pendingAdvertId'] as String?;
+    final organizer = json['organizerProfile'] as Map<String, dynamic>?;
     if (token == null) return null;
-    return SessionData(token: token, userType: type, pendingAdvertId: pending);
+    return SessionData(
+      token: token,
+      userType: type,
+      pendingAdvertId: pending,
+      organizerProfile: organizer != null ? OrganizerProfile.fromJson(organizer) : null,
+    );
   }
 }
 
@@ -61,8 +69,13 @@ class AuthController extends _$AuthController {
 
   Future<bool> loginWithBackend({required String email, required String password, required UserType type}) async {
     final token = await ref.read(authRepositoryProvider).login(email: email, password: password);
-    // final user = await ref.read(authRepositoryProvider).getUser(token.accessToken);
-    final session = SessionData(token: token.accessToken, userType: type);
+
+    var session = SessionData(token: token.accessToken, userType: type);
+    if (type == UserType.organizer) {
+      final profile = await ref.read(organizerRepositoryProvider).fetchOrganizerProfile(token.accessToken);
+      session = SessionData(token: token.accessToken, userType: UserType.organizer, organizerProfile: profile);
+    }
+
     await _storage.write(key: _sessionKey, value: jsonEncode(session.toJson()));
     state = AsyncData(session);
     return true;
@@ -83,4 +96,3 @@ class AuthController extends _$AuthController {
 }
 
 final secureStorageProvider = Provider<FlutterSecureStorage>((ref) => const FlutterSecureStorage());
-
