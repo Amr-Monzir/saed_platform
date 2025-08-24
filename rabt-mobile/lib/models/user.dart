@@ -1,50 +1,39 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'enums.dart';
 
+part 'user.freezed.dart';
 part 'user.g.dart';
 
-@JsonSerializable()
-class User {
-  User({
-    required this.id,
-    required this.email,
-    required this.userType,
-    required this.isActive,
-    required this.createdAt,
-  });
-
-  final int id;
-  final String email;
-  @JsonKey(name: 'user_type')
-  final UserType userType;
-  @JsonKey(name: 'is_active')
-  final bool isActive;
-  @JsonKey(name: 'created_at')
-  final DateTime createdAt;
+@freezed
+class User with _$User {
+  const factory User({
+    required int id,
+    required String email,
+    required UserType userType,
+    required bool isActive,
+    required DateTime createdAt,
+  }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
-  Map<String, dynamic> toJson() => _$UserToJson(this);
 }
 
-@JsonSerializable()
-class Token {
-  Token({required this.accessToken, required this.tokenType});
-  @JsonKey(name: 'access_token')
-  final String accessToken;
-  @JsonKey(name: 'token_type')
-  final String tokenType;
+@freezed
+class Token with _$Token {
+  const factory Token({
+    required String accessToken,
+    required String tokenType,
+  }) = _Token;
 
   factory Token.fromJson(Map<String, dynamic> json) => _$TokenFromJson(json);
-  Map<String, dynamic> toJson() => _$TokenToJson(this);
 }
 
-@JsonSerializable()
-class TokenData {
-  TokenData({this.email});
-  final String? email;
+@freezed
+class TokenData with _$TokenData {
+  const factory TokenData({
+    String? email,
+  }) = _TokenData;
 
   factory TokenData.fromJson(Map<String, dynamic> json) => _$TokenDataFromJson(json);
-  Map<String, dynamic> toJson() => _$TokenDataToJson(this);
 }
 
 

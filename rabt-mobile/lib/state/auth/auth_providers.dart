@@ -1,44 +1,12 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:rabt_mobile/models/enums.dart';
-import 'package:rabt_mobile/models/organizer.dart';
-import 'package:rabt_mobile/models/user.dart';
+import 'package:rabt_mobile/models/session.dart';
 import 'package:rabt_mobile/state/organizer/organizer_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'auth_repository.dart';
 
 part 'auth_providers.g.dart';
-
-class SessionData {
-  SessionData({required this.token, required this.userType, this.pendingAdvertId, this.organizerProfile});
-  final String token;
-  final UserType userType;
-  final String? pendingAdvertId;
-  final OrganizerProfile? organizerProfile;
-
-  Map<String, dynamic> toJson() => {
-    'token': token,
-    'usertype': userType.name,
-    if (pendingAdvertId != null) 'pendingAdvertId': pendingAdvertId,
-    if (organizerProfile != null) 'organizerProfile': organizerProfile!.toJson(),
-  };
-
-  static SessionData? fromJson(Map<String, dynamic>? json) {
-    if (json == null) return null;
-    final typeName = json['usertype'] as String?;
-    final type = typeName == 'organization' ? UserType.organizer : UserType.volunteer;
-    final token = json['token'] as String?;
-    final pending = json['pendingAdvertId'] as String?;
-    final organizer = json['organizerProfile'] as Map<String, dynamic>?;
-    if (token == null) return null;
-    return SessionData(
-      token: token,
-      userType: type,
-      pendingAdvertId: pending,
-      organizerProfile: organizer != null ? OrganizerProfile.fromJson(organizer) : null,
-    );
-  }
-}
 
 @riverpod
 class AuthController extends _$AuthController {

@@ -6,28 +6,29 @@ part of 'application.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Application _$ApplicationFromJson(Map<String, dynamic> json) => Application(
-  id: (json['id'] as num).toInt(),
-  advertId: (json['advert_id'] as num).toInt(),
-  coverMessage: json['cover_message'] as String?,
-  status: $enumDecode(_$ApplicationStatusEnumMap, json['status']),
-  appliedAt: DateTime.parse(json['applied_at'] as String),
-  advert: Advert.fromJson(json['advert'] as Map<String, dynamic>),
-  volunteer:
-      json['volunteer'] == null
-          ? null
-          : VolunteerProfile.fromJson(
-            json['volunteer'] as Map<String, dynamic>,
-          ),
-);
+_$ApplicationImpl _$$ApplicationImplFromJson(Map<String, dynamic> json) =>
+    _$ApplicationImpl(
+      id: (json['id'] as num).toInt(),
+      advertId: (json['advertId'] as num).toInt(),
+      coverMessage: json['coverMessage'] as String?,
+      status: $enumDecode(_$ApplicationStatusEnumMap, json['status']),
+      appliedAt: DateTime.parse(json['appliedAt'] as String),
+      advert: Advert.fromJson(json['advert'] as Map<String, dynamic>),
+      volunteer:
+          json['volunteer'] == null
+              ? null
+              : VolunteerProfile.fromJson(
+                json['volunteer'] as Map<String, dynamic>,
+              ),
+    );
 
-Map<String, dynamic> _$ApplicationToJson(Application instance) =>
+Map<String, dynamic> _$$ApplicationImplToJson(_$ApplicationImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'advert_id': instance.advertId,
-      'cover_message': instance.coverMessage,
+      'advertId': instance.advertId,
+      'coverMessage': instance.coverMessage,
       'status': _$ApplicationStatusEnumMap[instance.status]!,
-      'applied_at': instance.appliedAt.toIso8601String(),
+      'appliedAt': instance.appliedAt.toIso8601String(),
       'advert': instance.advert,
       'volunteer': instance.volunteer,
     };

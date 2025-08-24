@@ -1,106 +1,68 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'enums.dart';
 import 'skill.dart';
 import 'organizer.dart';
 
+part 'advert.freezed.dart';
 part 'advert.g.dart';
 
-@JsonSerializable()
-class RecurringDays {
-  RecurringDays({required this.day, required this.periods});
-  final String day; // backend uses string day key
-  final List<DayTimePeriod> periods;
+@freezed
+class RecurringDays with _$RecurringDays {
+  const factory RecurringDays({
+    required String day, // backend uses string day key
+    required List<DayTimePeriod> periods,
+  }) = _RecurringDays;
 
   factory RecurringDays.fromJson(Map<String, dynamic> json) => _$RecurringDaysFromJson(json);
-  Map<String, dynamic> toJson() => _$RecurringDaysToJson(this);
 }
 
-@JsonSerializable()
-class RecurringAdvertDetails {
-  RecurringAdvertDetails({
-    required this.recurrence,
-    required this.timeCommitmentPerSession,
-    required this.duration,
-    required this.specificDays,
-  });
-  final RecurrenceType recurrence;
-  @JsonKey(name: 'time_commitment_per_session')
-  final TimeCommitment timeCommitmentPerSession;
-  final DurationType duration;
-  @JsonKey(name: 'specific_days')
-  final List<RecurringDays> specificDays;
+@freezed
+class RecurringAdvertDetails with _$RecurringAdvertDetails {
+  const factory RecurringAdvertDetails({
+    required RecurrenceType recurrence,
+    required TimeCommitment timeCommitmentPerSession,
+    required DurationType duration,
+    required List<RecurringDays> specificDays,
+  }) = _RecurringAdvertDetails;
 
   factory RecurringAdvertDetails.fromJson(Map<String, dynamic> json) => _$RecurringAdvertDetailsFromJson(json);
-  Map<String, dynamic> toJson() => _$RecurringAdvertDetailsToJson(this);
 }
 
-@JsonSerializable()
-class OneOffAdvertDetails {
-  OneOffAdvertDetails({required this.eventDatetime, required this.timeCommitment, required this.applicationDeadline});
-  @JsonKey(name: 'event_datetime')
-  final DateTime eventDatetime;
-  @JsonKey(name: 'time_commitment')
-  final TimeCommitment timeCommitment;
-  @JsonKey(name: 'application_deadline')
-  final DateTime applicationDeadline;
+@freezed
+class OneOffAdvertDetails with _$OneOffAdvertDetails {
+  const factory OneOffAdvertDetails({
+    required DateTime eventDatetime,
+    required TimeCommitment timeCommitment,
+    required DateTime applicationDeadline,
+  }) = _OneOffAdvertDetails;
 
   factory OneOffAdvertDetails.fromJson(Map<String, dynamic> json) => _$OneOffAdvertDetailsFromJson(json);
-  Map<String, dynamic> toJson() => _$OneOffAdvertDetailsToJson(this);
 }
 
-@JsonSerializable()
-class Advert {
-  Advert({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.category,
-    required this.frequency,
-    required this.numberOfVolunteers,
-    required this.locationType,
-    this.addressText,
-    this.postcode,
-    this.latitude,
-    this.longitude,
-    this.advertImageUrl,
-    required this.isActive,
-    required this.organizer,
-    this.requiredSkills = const [],
-    this.oneoffDetails,
-    this.recurringDetails,
-    required this.createdAt,
-  });
-
-  final int id;
-  final String title;
-  final String description;
-  final String category;
-  final FrequencyType frequency;
-  @JsonKey(name: 'number_of_volunteers')
-  final int numberOfVolunteers;
-  @JsonKey(name: 'location_type')
-  final LocationType locationType;
-  @JsonKey(name: 'address_text')
-  final String? addressText;
-  final String? postcode;
-  final double? latitude;
-  final double? longitude;
-  @JsonKey(name: 'advert_image_url')
-  final String? advertImageUrl;
-  @JsonKey(name: 'is_active')
-  final bool isActive;
-  final OrganizerProfile organizer;
-  @JsonKey(name: 'required_skills')
-  final List<SkillResponse> requiredSkills;
-  @JsonKey(name: 'oneoff_details')
-  final OneOffAdvertDetails? oneoffDetails;
-  @JsonKey(name: 'recurring_details')
-  final RecurringAdvertDetails? recurringDetails;
-  @JsonKey(name: 'created_at')
-  final DateTime createdAt;
+@freezed
+class Advert with _$Advert {
+  const factory Advert({
+    required int id,
+    required String title,
+    required String description,
+    required String category,
+    required FrequencyType frequency,
+    required int numberOfVolunteers,
+    required LocationType locationType,
+    String? addressText,
+    String? postcode,
+    double? latitude,
+    double? longitude,
+    String? advertImageUrl,
+    required bool isActive,
+    required OrganizerProfile organizer,
+    @Default([]) List<SkillResponse> requiredSkills,
+    OneOffAdvertDetails? oneoffDetails,
+    RecurringAdvertDetails? recurringDetails,
+    required DateTime createdAt,
+  }) = _Advert;
 
   factory Advert.fromJson(Map<String, dynamic> json) => _$AdvertFromJson(json);
-  Map<String, dynamic> toJson() => _$AdvertToJson(this);
 }
 
 

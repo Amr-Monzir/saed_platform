@@ -1,19 +1,18 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'skill.freezed.dart';
 part 'skill.g.dart';
 
-@JsonSerializable()
-class SkillResponse {
-  SkillResponse({required this.id, required this.name, this.category, required this.isPredefined});
-
-  final int id;
-  final String name;
-  final String? category;
-  @JsonKey(name: 'is_predefined')
-  final bool isPredefined;
+@freezed
+class SkillResponse with _$SkillResponse {
+  const factory SkillResponse({
+    required int id,
+    required String name,
+    String? category,
+    required bool isPredefined,
+  }) = _SkillResponse;
 
   factory SkillResponse.fromJson(Map<String, dynamic> json) => _$SkillResponseFromJson(json);
-  Map<String, dynamic> toJson() => _$SkillResponseToJson(this);
 }
 
 
