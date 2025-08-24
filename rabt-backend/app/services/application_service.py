@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
+from app.database.enums import ApplicationStatus
 from app.database.models import Application, Advert, Volunteer
 from app.schemas.application import ApplicationCreate
 from typing import List, Optional
@@ -48,7 +49,7 @@ class ApplicationService:
         return application
 
     @staticmethod
-    def get_organizer_applications(
+    def get_organizer_pending_applications(
         db: Session, 
         organizer_id: int, 
         advert_id: Optional[int] = None,
@@ -63,7 +64,7 @@ class ApplicationService:
         query = (
             db.query(Application)
             .join(Advert, Application.advert_id == Advert.id)
-            .filter(Advert.organizer_id == organizer_id)
+            .filter(Advert.organizer_id == organizer_id, Application.status == ApplicationStatus.PENDING)
         )
         
         if advert_id is not None:

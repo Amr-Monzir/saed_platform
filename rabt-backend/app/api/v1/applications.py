@@ -81,7 +81,7 @@ def get_organizer_applications(
             detail="Not authorized to access applications for this organization",
         )
     
-    applications, total_count, total_pages = ApplicationService.get_organizer_applications(
+    applications, total_count, total_pages = ApplicationService.get_organizer_pending_applications(
         db, organizer_id, advert_id, limit, page
     )
     

@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
 from app.database.enums import ApplicationStatus
-from app.schemas.advert import AdvertResponse
+from app.schemas.advert import AdvertResponseForApplications
 from app.schemas.volunteer import VolunteerResponse
 
 
@@ -24,7 +24,7 @@ class ApplicationResponse(ApplicationBase):
     id: int
     status: ApplicationStatus
     applied_at: datetime
-    advert: AdvertResponse
+    advert: AdvertResponseForApplications
     volunteer: Optional[VolunteerResponse] = None  # Only for organizers
 
     class Config:

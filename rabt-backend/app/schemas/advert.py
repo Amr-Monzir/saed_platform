@@ -70,6 +70,17 @@ class AdvertResponse(AdvertBase):
         from_attributes = True
 
 
+class AdvertResponseForApplications(AdvertBase):
+    id: int
+    is_active: bool
+    organizer: OrganizerResponse
+    required_skills: List[SkillResponse] = []
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
 class AdvertListResponse(BaseModel):
     items: List[AdvertResponse]
     total_pages: int
