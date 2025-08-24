@@ -13,6 +13,7 @@ class AdvertCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppCard(
+      onTap: onTap,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -22,10 +23,7 @@ class AdvertCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                GestureDetector(
-                  onTap: onTap,
-                  child: Text(advert.title, style: Theme.of(context).textTheme.titleMedium),
-                ),
+                Text(advert.title, style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 6),
                 Wrap(
                   spacing: 8,

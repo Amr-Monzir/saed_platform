@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rabt_mobile/screens/adverts/adverts_detail_screen.dart';
+import 'package:rabt_mobile/screens/adverts/advert_detail_screen.dart';
 import 'package:rabt_mobile/screens/adverts/adverts_list_screen.dart';
 import 'package:rabt_mobile/screens/auth/login_organizer_screen.dart';
 import 'package:rabt_mobile/screens/auth/login_screen.dart';
@@ -61,10 +61,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const AdvertsListScreen(),
       ),
       GoRoute(
-        path: AdvertsDetailScreen.guestPathTemplate,
+        path: AdvertDetailScreen.guestPathTemplate,
         builder: (context, state) {
           final id = int.parse(state.pathParameters['id']!);
-          return AdvertsDetailScreen(id: id);
+          return AdvertDetailScreen(id: id);
         },
       ),
       // Create Advert (outside shell)

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rabt_mobile/screens/adverts/advert_detail_screen.dart';
 import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
 import 'package:rabt_mobile/widgets/app_card.dart';
 import 'package:rabt_mobile/widgets/app_button.dart';
@@ -38,8 +39,8 @@ class _MyAdvertsScreenState extends ConsumerState<MyAdvertsScreen> {
       appBar: AppBar(title: const Text('My Adverts')),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.push(CreateAdvertWizard.path),
-        child: const Icon(Icons.add),
         tooltip: 'Create Advert',
+        child: const Icon(Icons.add),
       ),
       body: Column(
         children: [
@@ -75,6 +76,7 @@ class _MyAdvertsScreenState extends ConsumerState<MyAdvertsScreen> {
                     itemBuilder: (context, i) {
                       final advert = page.items[i];
                       return AppCard(
+                        onTap: () => context.push(AdvertDetailScreen.pathFor(advert.id)),
                         child: Row(
                           children: [
                             Expanded(
@@ -89,8 +91,6 @@ class _MyAdvertsScreenState extends ConsumerState<MyAdvertsScreen> {
                                 ],
                               ),
                             ),
-                            const SizedBox(width: 12),
-                            AppButton(label: 'Close', variant: AppButtonVariant.outline, onPressed: () {}),
                           ],
                         ),
                       );

@@ -7,7 +7,7 @@ import '../../widgets/app_button.dart';
 import '../../state/volunteer/volunteer_repository.dart';
 import '../organization/my_adverts_screen.dart';
 import '../volunteer/profile_setup_screen.dart';
-import '../adverts/adverts_detail_screen.dart';
+import '../adverts/advert_detail_screen.dart';
 import '../adverts/adverts_list_screen.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
@@ -89,7 +89,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                               } else if (pending != null) {
                                 await ref.read(authControllerProvider.notifier).setPendingAdvert(null);
                                 if (context.mounted) {
-                                  context.push(AdvertsDetailScreen.pathFor(int.parse(pending)));
+                                  context.push(AdvertDetailScreen.pathFor(int.parse(pending)));
                                 }
                               } else {
                                 context.push(AdvertsListScreen.volunteerPath);
