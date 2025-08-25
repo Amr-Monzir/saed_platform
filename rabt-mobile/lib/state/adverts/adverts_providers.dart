@@ -34,8 +34,8 @@ final advertsProvider = FutureProvider<PaginatedAdverts>((ref) async {
 });
 
 @riverpod
-Future<Advert?> advertById(AdvertByIdRef ref, int id) async {
-  final repo = ref.watch(advertsRepositoryProvider);
+Future<Advert?> advertById(Ref ref, int id) async {
+  final repo = ref.read(advertsRepositoryProvider);
   return repo.getById(id);
 }
 

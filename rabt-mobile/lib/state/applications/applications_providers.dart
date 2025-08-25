@@ -11,8 +11,7 @@ part 'applications_providers.g.dart';
 @riverpod
 Future<PaginatedResponse<Application>?> applicationsList(
   Ref ref, {
-  String? organizerId,
-  String? advertId,
+  int? advertId,
   int? page,
   int? limit,
 }) async {
@@ -23,7 +22,6 @@ Future<PaginatedResponse<Application>?> applicationsList(
   
   final repository = ref.watch(applicationsRepositoryProvider);
   return repository.fetchOrganizerApplications(
-    organizerId: organizerId,
     advertId: advertId,
     page: page,
     limit: limit,
