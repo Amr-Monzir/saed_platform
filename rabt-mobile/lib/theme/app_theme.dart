@@ -92,7 +92,7 @@ ThemeData buildLightTheme() {
     titleTextStyle: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
   );
 
-  final cardTheme = CardTheme(
+  final cardTheme = CardThemeData(
     color: Colors.white,
     elevation: 0,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -192,7 +192,7 @@ ThemeData buildDarkTheme() {
     titleTextStyle: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
   );
 
-  final cardTheme = CardTheme(
+  final cardTheme = CardThemeData(
     color: darkCard,
     elevation: 0,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),

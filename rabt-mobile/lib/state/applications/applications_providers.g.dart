@@ -6,7 +6,7 @@ part of 'applications_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$applicationsListHash() => r'f880cd5b31b64ad83324d5c378f056a920ffed20';
+String _$applicationsListHash() => r'87428d2bef8aa106879edfa3e752bb0598c9c1d8';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -40,14 +40,8 @@ class ApplicationsListFamily
   const ApplicationsListFamily();
 
   /// See also [applicationsList].
-  ApplicationsListProvider call({
-    String? organizerId,
-    String? advertId,
-    int? page,
-    int? limit,
-  }) {
+  ApplicationsListProvider call({int? advertId, int? page, int? limit}) {
     return ApplicationsListProvider(
-      organizerId: organizerId,
       advertId: advertId,
       page: page,
       limit: limit,
@@ -59,7 +53,6 @@ class ApplicationsListFamily
     covariant ApplicationsListProvider provider,
   ) {
     return call(
-      organizerId: provider.organizerId,
       advertId: provider.advertId,
       page: provider.page,
       limit: provider.limit,
@@ -85,33 +78,27 @@ class ApplicationsListFamily
 class ApplicationsListProvider
     extends AutoDisposeFutureProvider<PaginatedResponse<Application>?> {
   /// See also [applicationsList].
-  ApplicationsListProvider({
-    String? organizerId,
-    String? advertId,
-    int? page,
-    int? limit,
-  }) : this._internal(
-         (ref) => applicationsList(
-           ref as ApplicationsListRef,
-           organizerId: organizerId,
-           advertId: advertId,
-           page: page,
-           limit: limit,
-         ),
-         from: applicationsListProvider,
-         name: r'applicationsListProvider',
-         debugGetCreateSourceHash:
-             const bool.fromEnvironment('dart.vm.product')
-                 ? null
-                 : _$applicationsListHash,
-         dependencies: ApplicationsListFamily._dependencies,
-         allTransitiveDependencies:
-             ApplicationsListFamily._allTransitiveDependencies,
-         organizerId: organizerId,
-         advertId: advertId,
-         page: page,
-         limit: limit,
-       );
+  ApplicationsListProvider({int? advertId, int? page, int? limit})
+    : this._internal(
+        (ref) => applicationsList(
+          ref as ApplicationsListRef,
+          advertId: advertId,
+          page: page,
+          limit: limit,
+        ),
+        from: applicationsListProvider,
+        name: r'applicationsListProvider',
+        debugGetCreateSourceHash:
+            const bool.fromEnvironment('dart.vm.product')
+                ? null
+                : _$applicationsListHash,
+        dependencies: ApplicationsListFamily._dependencies,
+        allTransitiveDependencies:
+            ApplicationsListFamily._allTransitiveDependencies,
+        advertId: advertId,
+        page: page,
+        limit: limit,
+      );
 
   ApplicationsListProvider._internal(
     super._createNotifier, {
@@ -120,14 +107,12 @@ class ApplicationsListProvider
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.organizerId,
     required this.advertId,
     required this.page,
     required this.limit,
   }) : super.internal();
 
-  final String? organizerId;
-  final String? advertId;
+  final int? advertId;
   final int? page;
   final int? limit;
 
@@ -147,7 +132,6 @@ class ApplicationsListProvider
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        organizerId: organizerId,
         advertId: advertId,
         page: page,
         limit: limit,
@@ -164,7 +148,6 @@ class ApplicationsListProvider
   @override
   bool operator ==(Object other) {
     return other is ApplicationsListProvider &&
-        other.organizerId == organizerId &&
         other.advertId == advertId &&
         other.page == page &&
         other.limit == limit;
@@ -173,7 +156,6 @@ class ApplicationsListProvider
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, organizerId.hashCode);
     hash = _SystemHash.combine(hash, advertId.hashCode);
     hash = _SystemHash.combine(hash, page.hashCode);
     hash = _SystemHash.combine(hash, limit.hashCode);
@@ -186,11 +168,8 @@ class ApplicationsListProvider
 // ignore: unused_element
 mixin ApplicationsListRef
     on AutoDisposeFutureProviderRef<PaginatedResponse<Application>?> {
-  /// The parameter `organizerId` of this provider.
-  String? get organizerId;
-
   /// The parameter `advertId` of this provider.
-  String? get advertId;
+  int? get advertId;
 
   /// The parameter `page` of this provider.
   int? get page;
@@ -205,9 +184,7 @@ class _ApplicationsListProviderElement
   _ApplicationsListProviderElement(super.provider);
 
   @override
-  String? get organizerId => (origin as ApplicationsListProvider).organizerId;
-  @override
-  String? get advertId => (origin as ApplicationsListProvider).advertId;
+  int? get advertId => (origin as ApplicationsListProvider).advertId;
   @override
   int? get page => (origin as ApplicationsListProvider).page;
   @override

@@ -55,7 +55,7 @@ class BasicInfoStep extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
-              value: category,
+              initialValue: category,
               items: kCategories.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
               onChanged: onCategoryChanged,
               decoration: const InputDecoration(labelText: 'Category *'),
@@ -63,14 +63,14 @@ class BasicInfoStep extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<FrequencyType>(
-              value: frequency,
+              initialValue: frequency,
               items: FrequencyType.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
               onChanged: onFrequencyChanged,
               decoration: const InputDecoration(labelText: 'Frequency *'),
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<int>(
-              value: numberOfVolunteers,
+              initialValue: numberOfVolunteers,
               items: List.generate(10, (i) => i + 1).map((e) => DropdownMenuItem(value: e, child: Text('$e volunteer${e > 1 ? 's' : ''}'))).toList(),
               onChanged: onVolunteersChanged,
               decoration: const InputDecoration(labelText: 'Number of Volunteers *'),

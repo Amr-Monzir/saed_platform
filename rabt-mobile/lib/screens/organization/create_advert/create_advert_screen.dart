@@ -118,7 +118,7 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
                       children: [
                         Expanded(
                           child: OutlinedButton.icon(
-                            onPressed: () => _pickImage(fromCamera: false),
+                            onPressed: () => _pickImage(),
                             icon: const Icon(Icons.photo_library),
                             label: const Text('Gallery'),
                           ),
@@ -165,7 +165,7 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
                     ),
                     const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
-                      value: _category,
+                      initialValue: _category,
                       items: kCategories.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
                       onChanged: (v) => setState(() => _category = v),
                       decoration: const InputDecoration(labelText: 'Category *'),
@@ -173,14 +173,14 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
                     ),
                     const SizedBox(height: 16),
                     DropdownButtonFormField<FrequencyType>(
-                      value: _frequency,
+                      initialValue: _frequency,
                       items: FrequencyType.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
                       onChanged: (v) => setState(() => _frequency = v ?? FrequencyType.oneOff),
                       decoration: const InputDecoration(labelText: 'Frequency *'),
                     ),
                     const SizedBox(height: 16),
                     DropdownButtonFormField<int>(
-                      value: _numberOfVolunteers,
+                      initialValue: _numberOfVolunteers,
                       items: List.generate(10, (i) => i + 1).map((e) => DropdownMenuItem(value: e, child: Text('$e volunteer${e > 1 ? 's' : ''}'))).toList(),
                       onChanged: (v) => setState(() => _numberOfVolunteers = v ?? 1),
                       decoration: const InputDecoration(labelText: 'Number of Volunteers *'),
@@ -204,7 +204,7 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
                     ),
                     const SizedBox(height: 16),
                     DropdownButtonFormField<LocationType>(
-                      value: _locationType,
+                      initialValue: _locationType,
                       items: LocationType.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
                       onChanged: (v) => setState(() => _locationType = v ?? LocationType.onSite),
                       decoration: const InputDecoration(labelText: 'Location Type *'),
@@ -307,7 +307,7 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
                       ),
                       const SizedBox(height: 16),
                       DropdownButtonFormField<TimeCommitment>(
-                        value: _oneOffTimeCommitment,
+                        initialValue: _oneOffTimeCommitment,
                         items: TimeCommitment.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
                         onChanged: (v) => setState(() => _oneOffTimeCommitment = v ?? TimeCommitment.oneToTwo),
                         decoration: const InputDecoration(labelText: 'Time Commitment'),
@@ -347,21 +347,21 @@ class _CreateAdvertScreenState extends ConsumerState<CreateAdvertScreen> {
                       ),
                       const SizedBox(height: 16),
                       DropdownButtonFormField<RecurrenceType>(
-                        value: _recurrence,
+                        initialValue: _recurrence,
                         items: RecurrenceType.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
                         onChanged: (v) => setState(() => _recurrence = v ?? RecurrenceType.weekly),
                         decoration: const InputDecoration(labelText: 'Recurrence'),
                       ),
                       const SizedBox(height: 16),
                       DropdownButtonFormField<TimeCommitment>(
-                        value: _recurringTimeCommitment,
+                        initialValue: _recurringTimeCommitment,
                         items: TimeCommitment.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
                         onChanged: (v) => setState(() => _recurringTimeCommitment = v ?? TimeCommitment.oneToTwo),
                         decoration: const InputDecoration(labelText: 'Time Commitment per Session'),
                       ),
                       const SizedBox(height: 16),
                       DropdownButtonFormField<DurationType>(
-                        value: _duration,
+                        initialValue: _duration,
                         items: DurationType.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
                         onChanged: (v) => setState(() => _duration = v ?? DurationType.oneMonth),
                         decoration: const InputDecoration(labelText: 'Duration'),

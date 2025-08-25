@@ -80,7 +80,7 @@ class DetailsStep extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         DropdownButtonFormField<TimeCommitment>(
-          value: oneOffTimeCommitment,
+          initialValue: oneOffTimeCommitment,
           items: TimeCommitment.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
           onChanged: onOneOffTimeCommitmentChanged,
           decoration: const InputDecoration(labelText: 'Time Commitment'),
@@ -99,21 +99,21 @@ class DetailsStep extends StatelessWidget {
     return Column(
       children: [
         DropdownButtonFormField<RecurrenceType>(
-          value: recurrence,
+          initialValue: recurrence,
           items: RecurrenceType.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
           onChanged: onRecurrenceChanged,
           decoration: const InputDecoration(labelText: 'Recurrence'),
         ),
         const SizedBox(height: 16),
         DropdownButtonFormField<TimeCommitment>(
-          value: recurringTimeCommitment,
+          initialValue: recurringTimeCommitment,
           items: TimeCommitment.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
           onChanged: onRecurringTimeCommitmentChanged,
           decoration: const InputDecoration(labelText: 'Time Commitment per Session'),
         ),
         const SizedBox(height: 16),
         DropdownButtonFormField<DurationType>(
-          value: duration,
+          initialValue: duration,
           items: DurationType.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
           onChanged: onDurationChanged,
           decoration: const InputDecoration(labelText: 'Duration'),

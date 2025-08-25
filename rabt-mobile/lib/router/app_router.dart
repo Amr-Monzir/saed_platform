@@ -13,6 +13,7 @@ import 'package:rabt_mobile/screens/organization/create_advert/create_advert_wiz
 import 'package:rabt_mobile/screens/organization/my_adverts_screen.dart';
 import 'package:rabt_mobile/screens/organization/org_shell.dart';
 import 'package:rabt_mobile/screens/organization/organizer_profile_screen.dart';
+import 'package:rabt_mobile/screens/organization/received_applications/advert_received_applications.dart';
 import 'package:rabt_mobile/screens/organization/received_applications/organizer_received_applications.dart';
 import 'package:rabt_mobile/screens/splash_screen.dart';
 import 'package:rabt_mobile/screens/volunteer/profile_setup_screen.dart';
@@ -45,7 +46,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       // Guest adverts listing
       GoRoute(path: AdvertsListScreen.guestPath, builder: (context, state) => const AdvertsListScreen()),
       GoRoute(
-        path: AdvertDetailScreen.guestPathTemplate,
+        path: AdvertDetailScreen.pathTemplate,
         builder: (context, state) {
           final id = int.parse(state.pathParameters['id']!);
           return AdvertDetailScreen(id: id);
@@ -69,6 +70,20 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(path: MyAdvertsScreen.path, builder: (context, state) => const MyAdvertsScreen()),
           GoRoute(path: OrganizerReceivedApplications.path, builder: (context, state) => const OrganizerReceivedApplications()),
+          GoRoute(
+            path: AdvertDetailScreen.pathTemplateOrg,
+            builder: (context, state) {
+              final id = int.parse(state.pathParameters['id']!);
+              return AdvertDetailScreen(id: id);
+            },
+          ),
+          GoRoute(
+            path: AdvertReceivedApplications.pathTemplate,
+            builder: (context, state) {
+              final advertId = int.parse(state.pathParameters['id']!);
+              return AdvertReceivedApplications(id: advertId);
+            },
+          ),
           GoRoute(path: OrganizerProfileScreen.path, builder: (context, state) => const OrganizerProfileScreen()),
           GoRoute(path: SettingsScreen.orgPath, builder: (context, state) => const SettingsScreen()),
         ],

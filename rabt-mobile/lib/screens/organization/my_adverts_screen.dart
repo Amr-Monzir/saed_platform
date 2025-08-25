@@ -50,16 +50,17 @@ class _MyAdvertsScreenState extends ConsumerState<MyAdvertsScreen> {
               decoration: InputDecoration(
                 hintText: 'Search my adverts',
                 prefixIcon: Icon(Icons.search),
-                suffixIcon: query.isEmpty
-                    ? null
-                    : IconButton(
-                        icon: Icon(Icons.clear),
-                        onPressed: () {
-                          _searchCtrl.clear();
-                          ref.read(myAdvertsSearchControllerProvider.notifier).clear();
-                          FocusScope.of(context).unfocus();
-                        },
-                      ),
+                suffixIcon:
+                    query.isEmpty
+                        ? null
+                        : IconButton(
+                          icon: Icon(Icons.clear),
+                          onPressed: () {
+                            _searchCtrl.clear();
+                            ref.read(myAdvertsSearchControllerProvider.notifier).clear();
+                            FocusScope.of(context).unfocus();
+                          },
+                        ),
               ),
               onChanged: (v) {
                 ref.read(myAdvertsSearchControllerProvider.notifier).setQuery(v);
@@ -75,7 +76,7 @@ class _MyAdvertsScreenState extends ConsumerState<MyAdvertsScreen> {
                     itemBuilder: (context, i) {
                       final advert = page.items[i];
                       return AppCard(
-                        onTap: () => context.push(AdvertDetailScreen.pathFor(advert.id)),
+                        onTap: () => context.go(AdvertDetailScreen.pathForOrg(advert.id)),
                         child: Row(
                           children: [
                             Expanded(
