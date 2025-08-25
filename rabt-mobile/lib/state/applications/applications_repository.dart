@@ -9,7 +9,7 @@ class ApplicationsRepository {
   ApplicationsRepository(this.ref);
   final Ref ref;
 
-  Future<PaginatedResponse<Application>> fetchOrganizerApplications({String? organizerId, String? advertId, int? page, int? limit}) async {
+  Future<PaginatedResponse<Application>> fetchOrganizerApplications({int? advertId, int? page, int? limit}) async {
     if (ref.read(authControllerProvider).value?.userType != UserType.organizer) {
       throw Exception('Only organizations can fetch applications');
     }
@@ -17,12 +17,10 @@ class ApplicationsRepository {
     final query = <String, String>{};
     if (page != null) query['page'] = page.toString();
     if (limit != null) query['limit'] = limit.toString();
-    if (advertId != null) query['advert_id'] = advertId;
-    final resp = await ref.read(apiServiceProvider).get(
-          organizerId == null ? '/api/v1/applications/organization/' : '/api/v1/applications/organization/$organizerId',
-          query: query,
-          headers: ref.read(apiServiceProvider).authHeaders(token),
-        );
+    if (advertId != null) query['advert_id'] = advertId.toString();
+    final resp = await ref
+        .read(apiServiceProvider)
+        .get('/api/v1/applications/organization', query: query, headers: ref.read(apiServiceProvider).authHeaders(token));
     return parsePaginated(resp, (e) => Application.fromJson(e));
   }
 

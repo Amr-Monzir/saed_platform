@@ -135,7 +135,7 @@ class _OrganizerSignupScreenState extends ConsumerState<OrganizerSignupScreen> {
                         children: [
                           Expanded(
                             child: OutlinedButton.icon(
-                              onPressed: _loading ? null : () => _pickImage(fromCamera: false),
+                              onPressed: _loading ? null : () => _pickImage(),
                               icon: const Icon(Icons.photo_library),
                               label: const Text('Gallery'),
                             ),

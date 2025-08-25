@@ -274,6 +274,9 @@ Token _$TokenFromJson(Map<String, dynamic> json) {
 mixin _$Token {
   String get accessToken => throw _privateConstructorUsedError;
   String get tokenType => throw _privateConstructorUsedError;
+  String? get refreshToken =>
+      throw _privateConstructorUsedError; // Add refresh token
+  int? get expiresIn => throw _privateConstructorUsedError;
 
   /// Serializes this Token to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -289,7 +292,12 @@ abstract class $TokenCopyWith<$Res> {
   factory $TokenCopyWith(Token value, $Res Function(Token) then) =
       _$TokenCopyWithImpl<$Res, Token>;
   @useResult
-  $Res call({String accessToken, String tokenType});
+  $Res call({
+    String accessToken,
+    String tokenType,
+    String? refreshToken,
+    int? expiresIn,
+  });
 }
 
 /// @nodoc
@@ -306,7 +314,12 @@ class _$TokenCopyWithImpl<$Res, $Val extends Token>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? accessToken = null, Object? tokenType = null}) {
+  $Res call({
+    Object? accessToken = null,
+    Object? tokenType = null,
+    Object? refreshToken = freezed,
+    Object? expiresIn = freezed,
+  }) {
     return _then(
       _value.copyWith(
             accessToken:
@@ -319,6 +332,16 @@ class _$TokenCopyWithImpl<$Res, $Val extends Token>
                     ? _value.tokenType
                     : tokenType // ignore: cast_nullable_to_non_nullable
                         as String,
+            refreshToken:
+                freezed == refreshToken
+                    ? _value.refreshToken
+                    : refreshToken // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            expiresIn:
+                freezed == expiresIn
+                    ? _value.expiresIn
+                    : expiresIn // ignore: cast_nullable_to_non_nullable
+                        as int?,
           )
           as $Val,
     );
@@ -333,7 +356,12 @@ abstract class _$$TokenImplCopyWith<$Res> implements $TokenCopyWith<$Res> {
   ) = __$$TokenImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String accessToken, String tokenType});
+  $Res call({
+    String accessToken,
+    String tokenType,
+    String? refreshToken,
+    int? expiresIn,
+  });
 }
 
 /// @nodoc
@@ -349,7 +377,12 @@ class __$$TokenImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? accessToken = null, Object? tokenType = null}) {
+  $Res call({
+    Object? accessToken = null,
+    Object? tokenType = null,
+    Object? refreshToken = freezed,
+    Object? expiresIn = freezed,
+  }) {
     return _then(
       _$TokenImpl(
         accessToken:
@@ -362,6 +395,16 @@ class __$$TokenImplCopyWithImpl<$Res>
                 ? _value.tokenType
                 : tokenType // ignore: cast_nullable_to_non_nullable
                     as String,
+        refreshToken:
+            freezed == refreshToken
+                ? _value.refreshToken
+                : refreshToken // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        expiresIn:
+            freezed == expiresIn
+                ? _value.expiresIn
+                : expiresIn // ignore: cast_nullable_to_non_nullable
+                    as int?,
       ),
     );
   }
@@ -371,7 +414,12 @@ class __$$TokenImplCopyWithImpl<$Res>
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _$TokenImpl implements _Token {
-  const _$TokenImpl({required this.accessToken, required this.tokenType});
+  const _$TokenImpl({
+    required this.accessToken,
+    required this.tokenType,
+    this.refreshToken,
+    this.expiresIn,
+  });
 
   factory _$TokenImpl.fromJson(Map<String, dynamic> json) =>
       _$$TokenImplFromJson(json);
@@ -380,10 +428,15 @@ class _$TokenImpl implements _Token {
   final String accessToken;
   @override
   final String tokenType;
+  @override
+  final String? refreshToken;
+  // Add refresh token
+  @override
+  final int? expiresIn;
 
   @override
   String toString() {
-    return 'Token(accessToken: $accessToken, tokenType: $tokenType)';
+    return 'Token(accessToken: $accessToken, tokenType: $tokenType, refreshToken: $refreshToken, expiresIn: $expiresIn)';
   }
 
   @override
@@ -394,12 +447,17 @@ class _$TokenImpl implements _Token {
             (identical(other.accessToken, accessToken) ||
                 other.accessToken == accessToken) &&
             (identical(other.tokenType, tokenType) ||
-                other.tokenType == tokenType));
+                other.tokenType == tokenType) &&
+            (identical(other.refreshToken, refreshToken) ||
+                other.refreshToken == refreshToken) &&
+            (identical(other.expiresIn, expiresIn) ||
+                other.expiresIn == expiresIn));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, accessToken, tokenType);
+  int get hashCode =>
+      Object.hash(runtimeType, accessToken, tokenType, refreshToken, expiresIn);
 
   /// Create a copy of Token
   /// with the given fields replaced by the non-null parameter values.
@@ -419,6 +477,8 @@ abstract class _Token implements Token {
   const factory _Token({
     required final String accessToken,
     required final String tokenType,
+    final String? refreshToken,
+    final int? expiresIn,
   }) = _$TokenImpl;
 
   factory _Token.fromJson(Map<String, dynamic> json) = _$TokenImpl.fromJson;
@@ -427,6 +487,10 @@ abstract class _Token implements Token {
   String get accessToken;
   @override
   String get tokenType;
+  @override
+  String? get refreshToken; // Add refresh token
+  @override
+  int? get expiresIn;
 
   /// Create a copy of Token
   /// with the given fields replaced by the non-null parameter values.

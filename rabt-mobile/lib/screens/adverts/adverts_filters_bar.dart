@@ -66,7 +66,7 @@ class _DropdownChip<T> extends StatelessWidget {
             hint: Text(label),
             onChanged: onChanged,
             items: [
-              DropdownMenuItem<T>(value: null, child: const Text('Any')),
+              DropdownMenuItem<T>(child: const Text('Any')),
               ...items.map((e) => DropdownMenuItem<T>(value: e, child: Text(display?.call(e) ?? e.toString()))),
             ],
           ),

@@ -37,9 +37,9 @@ class AdvertsFiltersSheet extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             DropdownButtonFormField<FrequencyType>(
-              value: filters.frequency,
+              initialValue: filters.frequency,
               items: [
-                const DropdownMenuItem(value: null, child: Text('Any')),
+                const DropdownMenuItem(child: Text('Any')),
                 ...FrequencyType.values.map((x) => DropdownMenuItem(value: x, child: Text(x.displayName))),
               ],
               onChanged: (v) => ctrl.setFrequency(v),
@@ -47,9 +47,9 @@ class AdvertsFiltersSheet extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
-              value: filters.category,
+              initialValue: filters.category,
               items: [
-                const DropdownMenuItem(value: null, child: Text('Any')),
+                const DropdownMenuItem(child: Text('Any')),
                 ...kCategories.map((e) => DropdownMenuItem(value: e, child: Text(e))),
               ],
               onChanged: (v) => ctrl.setCategory(v),
@@ -57,9 +57,9 @@ class AdvertsFiltersSheet extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<TimeCommitment>(
-              value: filters.timeCommitment,
+              initialValue: filters.timeCommitment,
               items: [
-                const DropdownMenuItem(value: null, child: Text('Any')),
+                const DropdownMenuItem(child: Text('Any')),
                 ...commitments.map((label) => DropdownMenuItem(value: TimeCommitment.values.byName(label), child: Text(label))),
               ],
               onChanged: (v) => ctrl.setTimeCommitment(v),
@@ -67,9 +67,9 @@ class AdvertsFiltersSheet extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<DayTimePeriod>(
-              value: filters.timeOfDay,
+              initialValue: filters.timeOfDay,
               items: [
-                const DropdownMenuItem(value: null, child: Text('Any')),
+                const DropdownMenuItem(child: Text('Any')),
                 ...DayTimePeriod.values.map((x) => DropdownMenuItem(value: x, child: Text(x.displayName))),
               ],
               onChanged: (v) => ctrl.setTimeOfDay(v),

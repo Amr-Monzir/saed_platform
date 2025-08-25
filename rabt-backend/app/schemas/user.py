@@ -24,8 +24,14 @@ class UserResponse(UserBase):
 
 class Token(BaseModel):
     access_token: str
+    refresh_token: str
+    expires_in: int
     token_type: str
 
 
 class TokenData(BaseModel):
     email: Optional[str] = None
+
+
+class RefreshRequest(BaseModel):
+    refresh_token: str

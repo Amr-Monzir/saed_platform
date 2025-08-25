@@ -38,15 +38,59 @@ class AuthController extends _$AuthController {
   Future<bool> loginWithBackend({required String email, required String password, required UserType type}) async {
     final token = await ref.read(authRepositoryProvider).login(email: email, password: password);
 
-    var session = SessionData(token: token.accessToken, userType: type);
+    var session = SessionData(token: token.accessToken, userType: type, refreshToken: token.refreshToken);
     if (type == UserType.organizer) {
       final profile = await ref.read(organizerRepositoryProvider).fetchOrganizerProfile(token.accessToken);
-      session = SessionData(token: token.accessToken, userType: UserType.organizer, organizerProfile: profile);
+      session = SessionData(
+        token: token.accessToken, 
+        userType: UserType.organizer, 
+        organizerProfile: profile,
+        refreshToken: token.refreshToken,
+      );
     }
 
     await _storage.write(key: _sessionKey, value: jsonEncode(session.toJson()));
     state = AsyncData(session);
     return true;
+  }
+
+  Future<bool> refreshToken() async {
+    final currentSession = state.value;
+    if (currentSession?.refreshToken == null) return false;
+
+    try {
+      final newToken = await ref.read(authRepositoryProvider).refreshToken(
+        refreshToken: currentSession!.refreshToken!,
+      );
+
+      // Create new session with refreshed token
+      var newSession = SessionData(
+        token: newToken.accessToken,
+        userType: currentSession.userType,
+        refreshToken: newToken.refreshToken ?? currentSession.refreshToken,
+        pendingAdvertId: currentSession.pendingAdvertId,
+      );
+
+      // If organizer, fetch profile again
+      if (currentSession.userType == UserType.organizer) {
+        final profile = await ref.read(organizerRepositoryProvider).fetchOrganizerProfile(newToken.accessToken);
+        newSession = SessionData(
+          token: newToken.accessToken,
+          userType: UserType.organizer,
+          organizerProfile: profile,
+          refreshToken: newToken.refreshToken ?? currentSession.refreshToken,
+          pendingAdvertId: currentSession.pendingAdvertId,
+        );
+      }
+
+      await _storage.write(key: _sessionKey, value: jsonEncode(newSession.toJson()));
+      state = AsyncData(newSession);
+      return true;
+    } catch (e) {
+      // Refresh failed, clear session
+      await logout();
+      return false;
+    }
   }
 
   Future<void> setPendingAdvert(String? advertId) async {

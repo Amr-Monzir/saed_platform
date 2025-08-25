@@ -17,6 +17,7 @@ _$SessionDataImpl _$$SessionDataImplFromJson(Map<String, dynamic> json) =>
               : OrganizerProfile.fromJson(
                 json['organizer_profile'] as Map<String, dynamic>,
               ),
+      refreshToken: json['refresh_token'] as String?,
     );
 
 Map<String, dynamic> _$$SessionDataImplToJson(_$SessionDataImpl instance) =>
@@ -25,6 +26,7 @@ Map<String, dynamic> _$$SessionDataImplToJson(_$SessionDataImpl instance) =>
       'user_type': _$UserTypeEnumMap[instance.userType]!,
       'pending_advert_id': instance.pendingAdvertId,
       'organizer_profile': instance.organizerProfile,
+      'refresh_token': instance.refreshToken,
     };
 
 const _$UserTypeEnumMap = {

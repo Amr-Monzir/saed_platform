@@ -13,6 +13,7 @@ class SessionData with _$SessionData {
     required UserType userType,
     String? pendingAdvertId,
     OrganizerProfile? organizerProfile,
+    String? refreshToken, // Add refresh token field
   }) = _SessionData;
 
   factory SessionData.fromJson(Map<String, dynamic> json) => _$SessionDataFromJson(json);
