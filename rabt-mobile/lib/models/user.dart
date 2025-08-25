@@ -24,6 +24,8 @@ class Token with _$Token {
   const factory Token({
     required String accessToken,
     required String tokenType,
+    String? refreshToken, // Add refresh token
+    int? expiresIn, // Add expiration time in seconds
   }) = _Token;
 
   factory Token.fromJson(Map<String, dynamic> json) => _$TokenFromJson(json);

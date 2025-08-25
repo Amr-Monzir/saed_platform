@@ -25,6 +25,7 @@ mixin _$SessionData {
   UserType get userType => throw _privateConstructorUsedError;
   String? get pendingAdvertId => throw _privateConstructorUsedError;
   OrganizerProfile? get organizerProfile => throw _privateConstructorUsedError;
+  String? get refreshToken => throw _privateConstructorUsedError;
 
   /// Serializes this SessionData to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -48,6 +49,7 @@ abstract class $SessionDataCopyWith<$Res> {
     UserType userType,
     String? pendingAdvertId,
     OrganizerProfile? organizerProfile,
+    String? refreshToken,
   });
 
   $OrganizerProfileCopyWith<$Res>? get organizerProfile;
@@ -72,6 +74,7 @@ class _$SessionDataCopyWithImpl<$Res, $Val extends SessionData>
     Object? userType = null,
     Object? pendingAdvertId = freezed,
     Object? organizerProfile = freezed,
+    Object? refreshToken = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -95,6 +98,11 @@ class _$SessionDataCopyWithImpl<$Res, $Val extends SessionData>
                     ? _value.organizerProfile
                     : organizerProfile // ignore: cast_nullable_to_non_nullable
                         as OrganizerProfile?,
+            refreshToken:
+                freezed == refreshToken
+                    ? _value.refreshToken
+                    : refreshToken // ignore: cast_nullable_to_non_nullable
+                        as String?,
           )
           as $Val,
     );
@@ -129,6 +137,7 @@ abstract class _$$SessionDataImplCopyWith<$Res>
     UserType userType,
     String? pendingAdvertId,
     OrganizerProfile? organizerProfile,
+    String? refreshToken,
   });
 
   @override
@@ -153,6 +162,7 @@ class __$$SessionDataImplCopyWithImpl<$Res>
     Object? userType = null,
     Object? pendingAdvertId = freezed,
     Object? organizerProfile = freezed,
+    Object? refreshToken = freezed,
   }) {
     return _then(
       _$SessionDataImpl(
@@ -176,6 +186,11 @@ class __$$SessionDataImplCopyWithImpl<$Res>
                 ? _value.organizerProfile
                 : organizerProfile // ignore: cast_nullable_to_non_nullable
                     as OrganizerProfile?,
+        refreshToken:
+            freezed == refreshToken
+                ? _value.refreshToken
+                : refreshToken // ignore: cast_nullable_to_non_nullable
+                    as String?,
       ),
     );
   }
@@ -190,6 +205,7 @@ class _$SessionDataImpl implements _SessionData {
     required this.userType,
     this.pendingAdvertId,
     this.organizerProfile,
+    this.refreshToken,
   });
 
   factory _$SessionDataImpl.fromJson(Map<String, dynamic> json) =>
@@ -203,10 +219,12 @@ class _$SessionDataImpl implements _SessionData {
   final String? pendingAdvertId;
   @override
   final OrganizerProfile? organizerProfile;
+  @override
+  final String? refreshToken;
 
   @override
   String toString() {
-    return 'SessionData(token: $token, userType: $userType, pendingAdvertId: $pendingAdvertId, organizerProfile: $organizerProfile)';
+    return 'SessionData(token: $token, userType: $userType, pendingAdvertId: $pendingAdvertId, organizerProfile: $organizerProfile, refreshToken: $refreshToken)';
   }
 
   @override
@@ -220,7 +238,9 @@ class _$SessionDataImpl implements _SessionData {
             (identical(other.pendingAdvertId, pendingAdvertId) ||
                 other.pendingAdvertId == pendingAdvertId) &&
             (identical(other.organizerProfile, organizerProfile) ||
-                other.organizerProfile == organizerProfile));
+                other.organizerProfile == organizerProfile) &&
+            (identical(other.refreshToken, refreshToken) ||
+                other.refreshToken == refreshToken));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -231,6 +251,7 @@ class _$SessionDataImpl implements _SessionData {
     userType,
     pendingAdvertId,
     organizerProfile,
+    refreshToken,
   );
 
   /// Create a copy of SessionData
@@ -253,6 +274,7 @@ abstract class _SessionData implements SessionData {
     required final UserType userType,
     final String? pendingAdvertId,
     final OrganizerProfile? organizerProfile,
+    final String? refreshToken,
   }) = _$SessionDataImpl;
 
   factory _SessionData.fromJson(Map<String, dynamic> json) =
@@ -266,6 +288,8 @@ abstract class _SessionData implements SessionData {
   String? get pendingAdvertId;
   @override
   OrganizerProfile? get organizerProfile;
+  @override
+  String? get refreshToken;
 
   /// Create a copy of SessionData
   /// with the given fields replaced by the non-null parameter values.

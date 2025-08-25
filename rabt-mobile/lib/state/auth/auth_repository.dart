@@ -14,6 +14,13 @@ class AuthRepository {
     });
     return Token.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
   }
+
+  Future<Token> refreshToken({required String refreshToken}) async {
+    final resp = await ref.read(apiServiceProvider).postForm('/api/v1/auth/refresh', {
+      'refresh_token': refreshToken,
+    });
+    return Token.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
+  }
 }
 
 final authRepositoryProvider = Provider((ref) => AuthRepository(ref));
