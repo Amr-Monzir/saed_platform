@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rabt_mobile/models/advert.dart';
 import 'package:rabt_mobile/services/api_service.dart';
-import 'package:rabt_mobile/services/image_upload_service.dart';
 import 'package:rabt_mobile/state/auth/auth_providers.dart';
 import 'package:rabt_mobile/util/parse_helpers.dart';
 import 'paginated_adverts.dart';

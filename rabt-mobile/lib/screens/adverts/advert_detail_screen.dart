@@ -16,7 +16,13 @@ class AdvertDetailScreen extends ConsumerWidget {
   const AdvertDetailScreen({super.key, required this.id});
 
   static const String guestPathTemplate = '/adverts/:id';
+  static String guestFullPathFor(int id) => '/adverts/$id';
+
+  static const String volunteerPathTemplate = ':id';
+  static String volunteerFullPathFor(int id) => '/v/adverts/$id';
+
   static const String orgPathTemplate = ':id';
+  static String orgFullPathFor(int id) => '/o/my-adverts/$id';
 
   final int id;
 

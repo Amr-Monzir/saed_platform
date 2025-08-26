@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rabt_mobile/models/enums.dart';
-import 'package:rabt_mobile/screens/adverts/advert_detail_screen.dart';
 import 'package:rabt_mobile/screens/adverts/adverts_list_screen.dart';
 import 'package:rabt_mobile/screens/organization/my_adverts_screen.dart';
 import 'package:rabt_mobile/screens/volunteer/profile_setup_screen.dart';
@@ -90,7 +89,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                               } else if (pending != null) {
                                 await ref.read(authControllerProvider.notifier).setPendingAdvert(null);
                                 if (context.mounted) {
-                                  context.go('o/my-adverts');
+                                  context.go(MyAdvertsScreen.path);
                                 }
                               } else {
                                 context.push(AdvertsListScreen.volunteerPath);

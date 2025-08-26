@@ -56,7 +56,19 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ShellRoute(
         builder: (context, state, child) => VolunteerShell(child: child),
         routes: [
-          GoRoute(path: AdvertsListScreen.volunteerPath, builder: (context, state) => const AdvertsListScreen()),
+          GoRoute(
+            path: AdvertsListScreen.volunteerPath,
+            builder: (context, state) => const AdvertsListScreen(),
+            routes: [
+              GoRoute(
+                path: AdvertDetailScreen.volunteerPathTemplate,
+                builder: (context, state) {
+                  final id = int.parse(state.pathParameters['id']!);
+                  return AdvertDetailScreen(id: id);
+                },
+              ),
+            ],
+          ),
           GoRoute(path: VolunteerProfileSetupScreen.path, builder: (context, state) => const VolunteerProfileSetupScreen()),
           GoRoute(path: SettingsScreen.volunteerPath, builder: (context, state) => const SettingsScreen()),
           GoRoute(path: VolunteerShell.profilePath, builder: (context, state) => const PlaceholderScreen(title: 'Profile')),

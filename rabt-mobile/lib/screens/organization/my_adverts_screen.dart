@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rabt_mobile/screens/adverts/advert_detail_screen.dart';
 import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
 import 'package:rabt_mobile/widgets/app_card.dart';
 import 'create_advert/create_advert_wizard.dart';
@@ -76,7 +77,7 @@ class _MyAdvertsScreenState extends ConsumerState<MyAdvertsScreen> {
                     itemBuilder: (context, i) {
                       final advert = page.items[i];
                       return AppCard(
-                        onTap: () => context.go('/o/my-adverts/${advert.id}'),
+                        onTap: () => context.go(AdvertDetailScreen.orgFullPathFor(advert.id)),
                         child: Row(
                           children: [
                             Expanded(

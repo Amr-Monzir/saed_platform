@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rabt_mobile/models/enums.dart';
+import 'package:rabt_mobile/screens/adverts/advert_detail_screen.dart';
 import 'package:rabt_mobile/screens/auth/signup_screen.dart';
 import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
 import 'package:rabt_mobile/state/applications/applications_providers.dart';
@@ -8,7 +10,6 @@ import 'package:rabt_mobile/state/auth/auth_providers.dart';
 import 'package:rabt_mobile/widgets/app_button.dart';
 import 'package:rabt_mobile/widgets/advert_card.dart';
 import 'adverts_filters_sheet.dart';
-import 'advert_detail_screen.dart';
 
 class AdvertsListScreen extends ConsumerWidget {
   const AdvertsListScreen({super.key});
@@ -41,9 +42,7 @@ class AdvertsListScreen extends ConsumerWidget {
                     showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                      ),
+                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
                       builder: (_) => const AdvertsFiltersSheet(),
                     );
                   },
@@ -55,74 +54,73 @@ class AdvertsListScreen extends ConsumerWidget {
           ),
           Expanded(
             child: advertsAsync.when(
-              data: (page) => ListView.builder(
-                itemCount: page.items.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == page.items.length) {
-                    final current = ref.read(pageProvider);
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          AppButton(
-                            label: 'Prev',
-                            variant: AppButtonVariant.outline,
-                            onPressed: current > 1
-                                ? () => ref.read(pageProvider.notifier).state = current - 1
-                                : null,
+              data:
+                  (page) => ListView.builder(
+                    itemCount: page.items.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index == page.items.length) {
+                        final current = ref.read(pageProvider);
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              AppButton(
+                                label: 'Prev',
+                                variant: AppButtonVariant.outline,
+                                onPressed: current > 1 ? () => ref.read(pageProvider.notifier).state = current - 1 : null,
+                              ),
+                              Text('Page $current of ${page.totalPages}'),
+                              AppButton(
+                                label: 'Next',
+                                onPressed:
+                                    current < page.totalPages ? () => ref.read(pageProvider.notifier).state = current + 1 : null,
+                              ),
+                            ],
                           ),
-                          Text('Page $current of ${page.totalPages}'),
-                          AppButton(
-                            label: 'Next',
-                            onPressed: current < page.totalPages
-                                ? () => ref.read(pageProvider.notifier).state = current + 1
-                                : null,
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  final advert = page.items[index];
-                  return AdvertCard(
-                    advert: advert,
-                    onTap: () => context.go('o/my-adverts/${advert.id}'),
-                    trailing: AppButton(
-                      onPressed: () async {
-                        final session = ref.read(authControllerProvider).value;
-                        if (session == null) {
-                          await ref.read(authControllerProvider.notifier).setPendingAdvert(advert.id.toString());
-                          if (!context.mounted) return;
-                          context.push(SignupScreen.path);
-                          return;
-                        }
-                        
-                        // Use state notifier for application creation
-                        await ref.read(createApplicationControllerProvider.notifier).createApplication(
-                          advertId: advert.id,
                         );
-                        
-                        if (!context.mounted) return;
-                        
-                        // Check if application was successful
-                        final applicationState = ref.read(createApplicationControllerProvider);
-                        if (applicationState.hasError) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Application failed: ${applicationState.error}')),
-                          );
-                        } else if (applicationState.value != null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Application submitted')),
-                          );
-                          // Reset the state
-                          ref.read(createApplicationControllerProvider.notifier).reset();
-                        }
-                      },
-                      label: 'Apply',
-                    ),
-                  );
-                },
-              ),
+                      }
+                      final advert = page.items[index];
+                      return AdvertCard(
+                        advert: advert,
+                        onTap:
+                            () => context.go(
+                              ref.read(authControllerProvider).value?.userType == UserType.volunteer
+                                  ? AdvertDetailScreen.volunteerFullPathFor(advert.id)
+                                  : AdvertDetailScreen.guestFullPathFor(advert.id),
+                            ),
+                        trailing: AppButton(
+                          onPressed: () async {
+                            final session = ref.read(authControllerProvider).value;
+                            if (session == null) {
+                              await ref.read(authControllerProvider.notifier).setPendingAdvert(advert.id.toString());
+                              if (!context.mounted) return;
+                              context.push(SignupScreen.path);
+                              return;
+                            }
+
+                            // Use state notifier for application creation
+                            await ref.read(createApplicationControllerProvider.notifier).createApplication(advertId: advert.id);
+
+                            if (!context.mounted) return;
+
+                            // Check if application was successful
+                            final applicationState = ref.read(createApplicationControllerProvider);
+                            if (applicationState.hasError) {
+                              ScaffoldMessenger.of(
+                                context,
+                              ).showSnackBar(SnackBar(content: Text('Application failed: ${applicationState.error}')));
+                            } else if (applicationState.value != null) {
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Application submitted')));
+                              // Reset the state
+                              ref.read(createApplicationControllerProvider.notifier).reset();
+                            }
+                          },
+                          label: 'Apply',
+                        ),
+                      );
+                    },
+                  ),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, st) => Center(child: Text('Error: $e')),
             ),
@@ -132,5 +130,3 @@ class AdvertsListScreen extends ConsumerWidget {
     );
   }
 }
-
-
