@@ -64,7 +64,7 @@ class _VolunteerProfileSetupScreenState extends ConsumerState<VolunteerProfileSe
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
-                  await ref.read(volunteerRepositoryProvider).update(name: 'Volunteer', phoneNumber: null, city: null, country: null, skillIds: const []);
+                  await ref.read(volunteerRepositoryProvider).update(name: 'Volunteer', skillIds: const []);
                   if (!context.mounted) return;
                   context.go(AdvertsListScreen.volunteerPath);
                 },

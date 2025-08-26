@@ -11,6 +11,15 @@ class ApplicationDetailSheet extends ConsumerStatefulWidget {
 
   final Application application;
 
+  static void showApplicationDetail(BuildContext context, Application application) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => ApplicationDetailSheet(application: application),
+    );
+  }
+
   @override
   ConsumerState<ApplicationDetailSheet> createState() => _ApplicationDetailSheetState();
 }
@@ -40,7 +49,7 @@ class _ApplicationDetailSheetState extends ConsumerState<ApplicationDetailSheet>
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: theme.colorScheme.onSurface.withOpacity(0.3),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -56,7 +65,7 @@ class _ApplicationDetailSheetState extends ConsumerState<ApplicationDetailSheet>
                     children: [
                       CircleAvatar(
                         radius: 32,
-                        backgroundColor: theme.colorScheme.primary.withOpacity(0.1),
+                        backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.1),
                         child: Text(
                           (volunteer?.name ?? 'A').substring(0, 1).toUpperCase(),
                           style: theme.textTheme.headlineSmall?.copyWith(
@@ -78,12 +87,12 @@ class _ApplicationDetailSheetState extends ConsumerState<ApplicationDetailSheet>
                               const SizedBox(height: 4),
                               Row(
                                 children: [
-                                  Icon(Icons.location_on, size: 16, color: theme.colorScheme.onSurface.withOpacity(0.6)),
+                                  Icon(Icons.location_on, size: 16, color: theme.colorScheme.onSurface.withValues(alpha: 0.6)),
                                   const SizedBox(width: 4),
                                   Text(
                                     volunteer!.city!,
                                     style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                                     ),
                                   ),
                                 ],
@@ -142,14 +151,12 @@ class _ApplicationDetailSheetState extends ConsumerState<ApplicationDetailSheet>
 
                   // Action buttons (only for pending applications  )
                   if (application.status == ApplicationStatus.pending) ...[
-
                     Row(
                       children: [
                         Expanded(
                           child: AppButton(
                             label: 'Accept',
                             onPressed: _isUpdating ? null : () => _updateStatus(ApplicationStatus.accepted),
-                            variant: AppButtonVariant.primary,
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -168,9 +175,9 @@ class _ApplicationDetailSheetState extends ConsumerState<ApplicationDetailSheet>
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.1),
+                        color: Colors.green.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.green.withOpacity(0.3)),
+                        border: Border.all(color: Colors.green.withValues(alpha: 0.3)),
                       ),
                       child: Row(
                         children: [
@@ -191,9 +198,9 @@ class _ApplicationDetailSheetState extends ConsumerState<ApplicationDetailSheet>
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.red.withOpacity(0.1),
+                        color: Colors.red.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.red.withOpacity(0.3)),
+                        border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
                       ),
                       child: Row(
                         children: [

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 
 from app.database.connection import get_db
-from app.database.models import Application, User, Advert
+from app.database.models import Application, User
 from app.schemas.application import (
     ApplicationCreate,
     ApplicationResponse,
@@ -28,6 +28,23 @@ def apply_for_advert(
         db, application_data, current_user.volunteer.id
     )
     return application
+
+@router.get("/organization", response_model=ApplicationListResponse)
+def get_organizer_applications(
+    advert_id: Optional[int] = Query(None, description="Filter by specific advert ID"),
+    limit: int = Query(20, description="Number of applications per page"),
+    page: int = Query(1, description="Page number"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_organizer),
+):
+    applications, total_count, total_pages = ApplicationService.get_organizer_pending_applications(
+        db, current_user.organizer.id, advert_id, limit, page
+    )
+    return ApplicationListResponse(
+        items=applications, 
+        total_count=total_count, 
+        total_pages=total_pages
+    )
 
 
 @router.get("/{application_id}", response_model=ApplicationResponse)
@@ -63,33 +80,6 @@ def get_application(
     else:
         application.volunteer = None
         return application
-
-
-@router.get("/organization/{organizer_id}", response_model=ApplicationListResponse)
-def get_organizer_applications(
-    organizer_id: int,
-    advert_id: Optional[int] = Query(None, description="Filter by specific advert ID"),
-    limit: int = Query(20, description="Number of applications per page"),
-    page: int = Query(1, description="Page number"),
-    db: Session = Depends(get_db),
-    current_user: User = Depends(require_organizer),
-):
-    # Ensure the organizer can only access their own applications
-    if current_user.organizer.id != organizer_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Not authorized to access applications for this organization",
-        )
-    
-    applications, total_count, total_pages = ApplicationService.get_organizer_pending_applications(
-        db, organizer_id, advert_id, limit, page
-    )
-    
-    return ApplicationListResponse(
-        items=applications, 
-        total_count=total_count, 
-        total_pages=total_pages
-    )
 
 
 @router.put("/{application_id}/status", response_model=ApplicationResponse)
