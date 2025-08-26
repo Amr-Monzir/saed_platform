@@ -8,17 +8,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'applications_providers.g.dart';
 
-// @riverpod
-// Future<PaginatedResponse<Application>?> applicationsList(Ref ref, {int? advertId, int? page, int? limit}) async {
-//   final session = ref.watch(authControllerProvider).value;
-//   if (session?.userType != UserType.organizer) {
-//     return null;
-//   }
-
-//   final repository = ref.watch(applicationsRepositoryProvider);
-//   return repository.fetchOrganizerApplications(advertId: advertId, page: page, limit: limit);
-// }
-
 @riverpod
 class ApplicationsList extends _$ApplicationsList {
   @override

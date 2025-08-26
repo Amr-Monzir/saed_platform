@@ -24,7 +24,7 @@ class OrganizerReceivedApplications extends ConsumerWidget {
             return Center(child: Text(snapshot.error.toString()));
           } else if (snapshot.hasData) {
             final data = snapshot.data;
-            data == null || data.items.isEmpty
+            return data == null || data.items.isEmpty
                 ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

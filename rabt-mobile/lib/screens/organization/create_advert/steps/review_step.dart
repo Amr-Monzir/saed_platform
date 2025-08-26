@@ -55,14 +55,16 @@ class ReviewStep extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen(createAdvertControllerProvider, (previous, next) async {
       if (next.hasError) {
-        await ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error creating advert: ${next.error}'))).closed;
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error creating advert: ${next.error}')));
+        }
       }
       if (next.hasValue) {
         if (context.mounted) {
-          await ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Advert created successfully!'))).closed;
-          if (context.mounted) {
-            ref.read(createAdvertControllerProvider.notifier).reset();
+          ref.read(createAdvertControllerProvider.notifier).reset();
+          if (context.canPop()) {
             context.pop();
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Advert created successfully!')));
           }
         }
       }
