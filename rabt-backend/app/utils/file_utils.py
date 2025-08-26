@@ -3,7 +3,7 @@ import uuid
 from fastapi import UploadFile, HTTPException
 from app.config import settings
 
-ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif"]
+ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/gif"]
 
 
 def save_image(file: UploadFile, category: str, entity_id: int) -> str:
