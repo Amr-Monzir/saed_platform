@@ -17,7 +17,8 @@ import 'steps/review_step.dart';
 class CreateAdvertWizard extends ConsumerStatefulWidget {
   const CreateAdvertWizard({super.key});
 
-  static const String path = '/o/create-advert';
+  static const String fullPath = '/o/my-adverts/create-advert';
+  static const String pathTemplate = 'create-advert';
 
   @override
   ConsumerState<CreateAdvertWizard> createState() => _CreateAdvertWizardState();
@@ -115,29 +116,21 @@ class _CreateAdvertWizardState extends ConsumerState<CreateAdvertWizard> with Au
   void _nextStep() {
     if (_currentStep < _totalSteps - 1) {
       setState(() => _currentStep++);
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
+      _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     }
   }
 
   void _previousStep() {
     if (_currentStep > 0) {
       setState(() => _currentStep--);
-      _pageController.previousPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
+      _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     }
   }
 
   bool _validateCurrentStep() {
     switch (_currentStep) {
       case 0: // Basic Info
-        return _titleController.text.trim().isNotEmpty && 
-               _descController.text.trim().isNotEmpty && 
-               _category != null;
+        return _titleController.text.trim().isNotEmpty && _descController.text.trim().isNotEmpty && _category != null;
       case 1: // Location
         return true; // Location is always valid (optional fields)
       case 2: // Skills
@@ -169,30 +162,27 @@ class _CreateAdvertWizardState extends ConsumerState<CreateAdvertWizard> with Au
       isActive: true,
       organizer: OrganizerProfile(id: 1, name: 'Me'),
       requiredSkills: _skills.map((s) => SkillResponse(id: 1, name: s, isPredefined: true)).toList(),
-      oneoffDetails: _frequency == FrequencyType.oneOff
-          ? OneOffAdvertDetails(
-              eventDatetime: _eventDateTime!,
-              timeCommitment: _oneOffTimeCommitment,
-              applicationDeadline: _applicationDeadline!,
-            )
-          : null,
-      recurringDetails: _frequency == FrequencyType.recurring
-          ? RecurringAdvertDetails(
-              recurrence: _recurrence,
-              timeCommitmentPerSession: _recurringTimeCommitment,
-              duration: _duration,
-              specificDays: _specificDays.entries.map((entry) => 
-                RecurringDays(day: entry.key, periods: entry.value)
-              ).toList(),
-            )
-          : null,
+      oneoffDetails:
+          _frequency == FrequencyType.oneOff
+              ? OneOffAdvertDetails(
+                eventDatetime: _eventDateTime!,
+                timeCommitment: _oneOffTimeCommitment,
+                applicationDeadline: _applicationDeadline!,
+              )
+              : null,
+      recurringDetails:
+          _frequency == FrequencyType.recurring
+              ? RecurringAdvertDetails(
+                recurrence: _recurrence,
+                timeCommitmentPerSession: _recurringTimeCommitment,
+                duration: _duration,
+                specificDays: _specificDays.entries.map((entry) => RecurringDays(day: entry.key, periods: entry.value)).toList(),
+              )
+              : null,
       createdAt: DateTime.now(),
     );
 
-    ref.read(createAdvertControllerProvider.notifier).createAdvert(
-      advert,
-      imageFile: _selectedImage,
-    );
+    ref.read(createAdvertControllerProvider.notifier).createAdvert(advert, imageFile: _selectedImage);
   }
 
   @override
@@ -212,9 +202,7 @@ class _CreateAdvertWizardState extends ConsumerState<CreateAdvertWizard> with Au
           title: Text('Create Advert - Step ${_currentStep + 1} of $_totalSteps'),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(4.0),
-            child: LinearProgressIndicator(
-              value: (_currentStep + 1) / _totalSteps,
-            ),
+            child: LinearProgressIndicator(value: (_currentStep + 1) / _totalSteps),
           ),
         ),
         body: PageView(
@@ -243,13 +231,14 @@ class _CreateAdvertWizardState extends ConsumerState<CreateAdvertWizard> with Au
             ),
             SkillsStep(
               selectedSkills: _skills,
-              onSkillToggled: (skill) => setState(() {
-                if (_skills.contains(skill)) {
-                  _skills.remove(skill);
-                } else {
-                  _skills.add(skill);
-                }
-              }),
+              onSkillToggled:
+                  (skill) => setState(() {
+                    if (_skills.contains(skill)) {
+                      _skills.remove(skill);
+                    } else {
+                      _skills.add(skill);
+                    }
+                  }),
             ),
             DetailsStep(
               formKey: _detailsFormKey,
@@ -300,18 +289,11 @@ class _CreateAdvertWizardState extends ConsumerState<CreateAdvertWizard> with Au
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               if (_currentStep > 0)
-                AppButton(
-                  onPressed: _previousStep,
-                  label: 'Previous',
-                  variant: AppButtonVariant.outline,
-                )
+                AppButton(onPressed: _previousStep, label: 'Previous', variant: AppButtonVariant.outline)
               else
                 const SizedBox(),
               if (_currentStep < _totalSteps - 1)
-                AppButton(
-                  onPressed: _validateCurrentStep() ? _nextStep : null,
-                  label: 'Next',
-                )
+                AppButton(onPressed: _validateCurrentStep() ? _nextStep : null, label: 'Next')
               else
                 AppButton(
                   onPressed: createAdvertState.isLoading ? null : _submitAdvert,
@@ -323,10 +305,4 @@ class _CreateAdvertWizardState extends ConsumerState<CreateAdvertWizard> with Au
       ),
     );
   }
-
-
-
-
-
-
 }

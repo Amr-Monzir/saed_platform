@@ -37,7 +37,8 @@ class _MyAdvertsScreenState extends ConsumerState<MyAdvertsScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('My Adverts')),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.push(CreateAdvertWizard.path),
+        onPressed: () => context.go(CreateAdvertWizard.fullPath),
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         tooltip: 'Create Advert',
         child: const Icon(Icons.add),
       ),
@@ -76,7 +77,7 @@ class _MyAdvertsScreenState extends ConsumerState<MyAdvertsScreen> {
                     itemBuilder: (context, i) {
                       final advert = page.items[i];
                       return AppCard(
-                        onTap: () => context.go(AdvertDetailScreen.pathForOrg(advert.id)),
+                        onTap: () => context.go(AdvertDetailScreen.orgFullPathFor(advert.id)),
                         child: Row(
                           children: [
                             Expanded(
