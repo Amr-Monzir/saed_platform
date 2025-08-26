@@ -46,14 +46,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       // Guest adverts listing
       GoRoute(path: AdvertsListScreen.guestPath, builder: (context, state) => const AdvertsListScreen()),
       GoRoute(
-        path: AdvertDetailScreen.pathTemplate,
+        path: AdvertDetailScreen.guestPathTemplate,
         builder: (context, state) {
           final id = int.parse(state.pathParameters['id']!);
           return AdvertDetailScreen(id: id);
         },
       ),
-      // Create Advert (outside shell)
-      GoRoute(path: CreateAdvertWizard.path, builder: (context, state) => const CreateAdvertWizard()),
       // Volunteer app shell
       ShellRoute(
         builder: (context, state, child) => VolunteerShell(child: child),
@@ -68,22 +66,33 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ShellRoute(
         builder: (context, state, child) => OrgShell(child: child),
         routes: [
-          GoRoute(path: MyAdvertsScreen.path, builder: (context, state) => const MyAdvertsScreen()),
+          GoRoute(
+            path: MyAdvertsScreen.path,
+            builder: (context, state) => const MyAdvertsScreen(),
+            routes: [
+              GoRoute(path: CreateAdvertWizard.pathTemplate, builder: (context, state) => const CreateAdvertWizard()),
+              GoRoute(
+                path: AdvertDetailScreen.orgPathTemplate,
+                builder: (context, state) {
+                  final advertId = int.tryParse(state.pathParameters['id']!);
+                  if (advertId == null) {
+                    return const Scaffold(body: Center(child: Text('Advert not found')));
+                  }
+                  return AdvertDetailScreen(id: advertId);
+                },
+                routes: [
+                  GoRoute(
+                    path: AdvertReceivedApplications.pathTemplate,
+                    builder: (context, state) {
+                      final advertId = int.parse(state.pathParameters['id']!);
+                      return AdvertReceivedApplications(id: advertId);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
           GoRoute(path: OrganizerReceivedApplications.path, builder: (context, state) => const OrganizerReceivedApplications()),
-          GoRoute(
-            path: AdvertDetailScreen.pathTemplateOrg,
-            builder: (context, state) {
-              final id = int.parse(state.pathParameters['id']!);
-              return AdvertDetailScreen(id: id);
-            },
-          ),
-          GoRoute(
-            path: AdvertReceivedApplications.pathTemplate,
-            builder: (context, state) {
-              final advertId = int.parse(state.pathParameters['id']!);
-              return AdvertReceivedApplications(id: advertId);
-            },
-          ),
           GoRoute(path: OrganizerProfileScreen.path, builder: (context, state) => const OrganizerProfileScreen()),
           GoRoute(path: SettingsScreen.orgPath, builder: (context, state) => const SettingsScreen()),
         ],

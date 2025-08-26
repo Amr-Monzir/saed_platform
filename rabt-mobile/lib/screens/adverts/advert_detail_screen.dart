@@ -14,12 +14,11 @@ import 'package:rabt_mobile/widgets/icon_tile.dart';
 
 class AdvertDetailScreen extends ConsumerWidget {
   const AdvertDetailScreen({super.key, required this.id});
-  final int id;
 
-  static const String pathTemplate = '/adverts/:id';
-  static const String pathTemplateOrg = '/o/adverts/:id';
-  static String pathFor(int id) => '/adverts/$id';
-  static String pathForOrg(int id) => '/o/adverts/$id';
+  static const String guestPathTemplate = '/adverts/:id';
+  static const String orgPathTemplate = ':id';
+
+  final int id;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -129,7 +128,7 @@ class AdvertDetailScreen extends ConsumerWidget {
                                   AppButton(
                                     label: 'View applications',
                                     variant: AppButtonVariant.outline,
-                                    onPressed: () => context.go(AdvertReceivedApplications.pathFor(advert.id)),
+                                    onPressed: () => context.go(AdvertReceivedApplications.fullPathFor(advert.id)),
                                   ),
                                   const SizedBox(height: 12),
                                   Row(

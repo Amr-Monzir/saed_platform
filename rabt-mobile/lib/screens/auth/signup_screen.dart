@@ -90,7 +90,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                               } else if (pending != null) {
                                 await ref.read(authControllerProvider.notifier).setPendingAdvert(null);
                                 if (context.mounted) {
-                                  context.push(AdvertDetailScreen.pathFor(int.parse(pending)));
+                                  context.go('o/my-adverts');
                                 }
                               } else {
                                 context.push(AdvertsListScreen.volunteerPath);

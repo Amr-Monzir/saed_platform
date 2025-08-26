@@ -42,8 +42,8 @@ class AuthController extends _$AuthController {
     if (type == UserType.organizer) {
       final profile = await ref.read(organizerRepositoryProvider).fetchOrganizerProfile(token.accessToken);
       session = SessionData(
-        token: token.accessToken, 
-        userType: UserType.organizer, 
+        token: token.accessToken,
+        userType: UserType.organizer,
         organizerProfile: profile,
         refreshToken: token.refreshToken,
       );
@@ -55,13 +55,11 @@ class AuthController extends _$AuthController {
   }
 
   Future<bool> refreshToken() async {
-    final currentSession = state.value;
-    if (currentSession?.refreshToken == null) return false;
-
     try {
-      final newToken = await ref.read(authRepositoryProvider).refreshToken(
-        refreshToken: currentSession!.refreshToken!,
-      );
+      final currentSession = state.value;
+      if (currentSession?.refreshToken == null) throw Exception('No refresh token found');
+
+      final newToken = await ref.read(authRepositoryProvider).refreshToken(refreshToken: currentSession!.refreshToken!);
 
       // Create new session with refreshed token
       var newSession = SessionData(

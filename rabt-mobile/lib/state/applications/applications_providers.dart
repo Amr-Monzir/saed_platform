@@ -8,24 +8,46 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'applications_providers.g.dart';
 
+// @riverpod
+// Future<PaginatedResponse<Application>?> applicationsList(Ref ref, {int? advertId, int? page, int? limit}) async {
+//   final session = ref.watch(authControllerProvider).value;
+//   if (session?.userType != UserType.organizer) {
+//     return null;
+//   }
+
+//   final repository = ref.watch(applicationsRepositoryProvider);
+//   return repository.fetchOrganizerApplications(advertId: advertId, page: page, limit: limit);
+// }
+
 @riverpod
-Future<PaginatedResponse<Application>?> applicationsList(
-  Ref ref, {
-  int? advertId,
-  int? page,
-  int? limit,
-}) async {
-  final session = ref.watch(authControllerProvider).value;
-  if (session?.userType != UserType.organizer) {
-    return null;
+class ApplicationsList extends _$ApplicationsList {
+  @override
+  Future<PaginatedResponse<Application>?> build() async {
+    final session = ref.watch(authControllerProvider).value;
+    if (session?.userType != UserType.organizer) {
+      return null;
+    }
+
+    final repository = ref.watch(applicationsRepositoryProvider);
+    return repository.fetchOrganizerApplications();
   }
-  
-  final repository = ref.watch(applicationsRepositoryProvider);
-  return repository.fetchOrganizerApplications(
-    advertId: advertId,
-    page: page,
-    limit: limit,
-  );
+
+  Future<PaginatedResponse<Application>?> fetchApplications({int? advertId, int? page, int? limit}) async {
+    final repository = ref.watch(applicationsRepositoryProvider);
+    return repository.fetchOrganizerApplications(advertId: advertId, page: page, limit: limit);
+  }
+
+  Future<void> acceptApplication(int id, String? organizerMessage) async {
+    final repository = ref.watch(applicationsRepositoryProvider);
+    await repository.updateStatus(id, ApplicationStatus.accepted, organizerMessage: organizerMessage);
+    ref.invalidateSelf();
+  }
+
+  Future<void> rejectApplication(int id, String? organizerMessage) async {
+    final repository = ref.watch(applicationsRepositoryProvider);
+    await repository.updateStatus(id, ApplicationStatus.rejected, organizerMessage: organizerMessage);
+    ref.invalidateSelf();
+  }
 }
 
 class CreateApplicationController extends StateNotifier<AsyncValue<Application?>> {
@@ -39,7 +61,7 @@ class CreateApplicationController extends StateNotifier<AsyncValue<Application?>
       final repository = ref.read(applicationsRepositoryProvider);
       final result = await repository.create(advertId: advertId, coverMessage: coverMessage);
       state = AsyncValue.data(result);
-      
+
       // Invalidate the applications list to refresh it
       ref.invalidate(applicationsListProvider);
     } catch (error, stackTrace) {
@@ -67,7 +89,7 @@ class UpdateApplicationStatusController extends StateNotifier<AsyncValue<Applica
       final repository = ref.read(applicationsRepositoryProvider);
       final result = await repository.updateStatus(id, status, organizerMessage: organizerMessage);
       state = AsyncValue.data(result);
-      
+
       // Invalidate the applications list to refresh it
       ref.invalidate(applicationsListProvider);
     } catch (error, stackTrace) {
@@ -80,6 +102,7 @@ class UpdateApplicationStatusController extends StateNotifier<AsyncValue<Applica
   }
 }
 
-final updateApplicationStatusControllerProvider = StateNotifierProvider<UpdateApplicationStatusController, AsyncValue<Application?>>((ref) {
-  return UpdateApplicationStatusController(ref);
-});
+final updateApplicationStatusControllerProvider =
+    StateNotifierProvider<UpdateApplicationStatusController, AsyncValue<Application?>>((ref) {
+      return UpdateApplicationStatusController(ref);
+    });

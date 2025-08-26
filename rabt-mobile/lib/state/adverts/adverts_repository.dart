@@ -27,7 +27,9 @@ class AdvertsRepository {
 
   Future<PaginatedAdverts> fetchMine() async {
     final token = ref.read(authControllerProvider).value?.token ?? '';
-    final resp = await ref.read(apiServiceProvider).get('/api/v1/adverts?owner=me', headers: ref.read(apiServiceProvider).authHeaders(token));
+    final resp = await ref
+        .read(apiServiceProvider)
+        .get('/api/v1/adverts?owner=me', headers: ref.read(apiServiceProvider).authHeaders(token));
     final json = jsonDecode(resp.body) as Map<String, dynamic>;
     List<Advert> data;
     int totalPages;
@@ -38,7 +40,9 @@ class AdvertsRepository {
 
   Future<Advert?> getById(int id) async {
     final token = ref.read(authControllerProvider).value?.token;
-    final resp = await ref.read(apiServiceProvider).get('/api/v1/adverts/$id', headers: ref.read(apiServiceProvider).authHeaders(token));
+    final resp = await ref
+        .read(apiServiceProvider)
+        .get('/api/v1/adverts/$id', headers: ref.read(apiServiceProvider).authHeaders(token));
     return parseObject(resp, (e) => Advert.fromJson(e));
   }
 
@@ -46,18 +50,23 @@ class AdvertsRepository {
     final token = ref.read(authControllerProvider).value?.token;
     final advertData = advert.toJson();
 
-    if (imageFile != null) {
-      final imageUrl = await ref.read(imageUploadServiceProvider).uploadImageWithCategory(imageFile, category: 'adverts', token: token);
-      if (imageUrl != null) advertData['advert_image_url'] = imageUrl;
-    }
-
-    final resp = await ref.read(apiServiceProvider).post('/api/v1/adverts', advertData, headers: ref.read(apiServiceProvider).authHeaders(token));
+    final resp = await ref
+        .read(apiServiceProvider)
+        .postMultipart(
+          '/api/v1/adverts',
+          {"advert_data_json": jsonEncode(advertData)},
+          files: {if (imageFile != null) "image_file": imageFile},
+          headers: ref.read(apiServiceProvider).authHeaders(token),
+          contentType: 'image/${imageFile?.path.split('.').last}',
+        );
     return parseObject(resp, (e) => Advert.fromJson(e));
   }
 
   Future<void> close(int id) async {
     final token = ref.read(authControllerProvider).value?.token;
-    await ref.read(apiServiceProvider).post('/api/v1/adverts/$id/close', {}, headers: ref.read(apiServiceProvider).authHeaders(token));
+    await ref
+        .read(apiServiceProvider)
+        .post('/api/v1/adverts/$id/close', {}, headers: ref.read(apiServiceProvider).authHeaders(token));
   }
 }
 

@@ -86,7 +86,7 @@ class AdvertsListScreen extends ConsumerWidget {
                   final advert = page.items[index];
                   return AdvertCard(
                     advert: advert,
-                    onTap: () => context.push(AdvertDetailScreen.pathFor(advert.id)),
+                    onTap: () => context.go('o/my-adverts/${advert.id}'),
                     trailing: AppButton(
                       onPressed: () async {
                         final session = ref.read(authControllerProvider).value;

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rabt_mobile/screens/adverts/advert_detail_screen.dart';
 import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
 import 'package:rabt_mobile/widgets/app_card.dart';
 import 'create_advert/create_advert_wizard.dart';
@@ -37,7 +36,8 @@ class _MyAdvertsScreenState extends ConsumerState<MyAdvertsScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('My Adverts')),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.push(CreateAdvertWizard.path),
+        onPressed: () => context.go(CreateAdvertWizard.fullPath),
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         tooltip: 'Create Advert',
         child: const Icon(Icons.add),
       ),
@@ -76,7 +76,7 @@ class _MyAdvertsScreenState extends ConsumerState<MyAdvertsScreen> {
                     itemBuilder: (context, i) {
                       final advert = page.items[i];
                       return AppCard(
-                        onTap: () => context.go(AdvertDetailScreen.pathForOrg(advert.id)),
+                        onTap: () => context.go('/o/my-adverts/${advert.id}'),
                         child: Row(
                           children: [
                             Expanded(
