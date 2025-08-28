@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:rabt_mobile/models/application.dart';
 import 'package:rabt_mobile/models/enums.dart';
 import 'package:rabt_mobile/state/applications/applications_providers.dart';
@@ -105,7 +106,121 @@ class _ApplicationDetailSheetState extends ConsumerState<ApplicationDetailSheet>
                     ],
                   ),
 
-                  const SizedBox(height: 24),
+                  if (application.status == ApplicationStatus.accepted) ...[
+                    const SizedBox(height: 16),
+                    Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.green.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.green.withValues(alpha: 0.3)),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.check_circle, color: Colors.green, size: 24),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  'Application accepted',
+                                  style: theme.textTheme.bodyLarge?.copyWith(color: Colors.green, fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (application.organizerMessage != null && application.organizerMessage!.isNotEmpty) ...[
+                          const SizedBox(height: 12),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: _buildSection(
+                              title: 'Message to volunteer',
+                              children: [Text(application.organizerMessage!, style: theme.textTheme.bodyMedium)],
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 12),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: _buildSection(
+                            title: 'Contact',
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: _buildContactButton(
+                                      icon: Icons.phone,
+                                      label: 'Call',
+                                      onTap: () => _launchPhoneCall(volunteer?.phoneNumber ?? ''),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: _buildContactButton(
+                                      icon: Icons.message,
+                                      label: 'Signal',
+                                      onTap: () => _launchSignal(volunteer?.phoneNumber ?? ''),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: _buildContactButton(
+                                      icon: Icons.email,
+                                      label: 'Email',
+                                      onTap: () => _launchEmail(volunteer?.email ?? ''),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: _buildContactButton(
+                                      icon: Icons.whatshot,
+                                      label: 'WhatsApp',
+                                      onTap: () => _launchWhatsApp(volunteer?.phoneNumber ?? ''),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                  if (application.status == ApplicationStatus.rejected) ...[
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.cancel, color: Colors.red, size: 24),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'Application rejected',
+                              style: theme.textTheme.bodyLarge?.copyWith(color: Colors.red, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 12),
+
+                  const Divider(),
+
+                  const SizedBox(height: 8),
 
                   // Application details
                   _buildSection(
@@ -149,7 +264,7 @@ class _ApplicationDetailSheetState extends ConsumerState<ApplicationDetailSheet>
 
                   const SizedBox(height: 24),
 
-                  // Action buttons (only for pending applications  )
+                  // Action buttons (only for pending applications)
                   if (application.status == ApplicationStatus.pending) ...[
                     Row(
                       children: [
@@ -169,54 +284,7 @@ class _ApplicationDetailSheetState extends ConsumerState<ApplicationDetailSheet>
                         ),
                       ],
                     ),
-                  ] else if (application.status == ApplicationStatus.accepted) ...[
-                    const Divider(),
-                    const SizedBox(height: 16),
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.green.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.green.withValues(alpha: 0.3)),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.check_circle, color: Colors.green, size: 24),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              'Application accepted',
-                              style: theme.textTheme.bodyLarge?.copyWith(color: Colors.green, fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ] else if (application.status == ApplicationStatus.rejected) ...[
-                    const Divider(),
-                    const SizedBox(height: 16),
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.red.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.cancel, color: Colors.red, size: 24),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              'Application rejected',
-                              style: theme.textTheme.bodyLarge?.copyWith(color: Colors.red, fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
-
                   const SizedBox(height: 20),
                 ],
               ),
@@ -227,7 +295,7 @@ class _ApplicationDetailSheetState extends ConsumerState<ApplicationDetailSheet>
     );
   }
 
-  Widget _buildSection({required String title, required List<Widget> children}) {
+  Widget _buildSection({required String title, required List<Widget> children, CrossAxisAlignment? crossAxisAlignment}) {
     final theme = Theme.of(context);
 
     return Column(
@@ -241,7 +309,7 @@ class _ApplicationDetailSheetState extends ConsumerState<ApplicationDetailSheet>
             color: theme.colorScheme.surfaceContainerHigh.withValues(alpha: .3),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Column(children: children),
+          child: Column(crossAxisAlignment: crossAxisAlignment ?? CrossAxisAlignment.center, children: children),
         ),
       ],
     );
@@ -325,6 +393,98 @@ class _ApplicationDetailSheetState extends ConsumerState<ApplicationDetailSheet>
     } finally {
       if (mounted) {
         setState(() => _isUpdating = false);
+      }
+    }
+  }
+
+  Widget _buildContactButton({required IconData icon, required String label, required VoidCallback onTap}) {
+    final theme = Theme.of(context);
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.3)),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 20, color: theme.colorScheme.primary),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: theme.colorScheme.primary),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _launchPhoneCall(String phoneNumber) async {
+    final uri = Uri.parse('tel:$phoneNumber');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not launch phone app')));
+      }
+    }
+  }
+
+  Future<void> _launchSignal(String phoneNumber) async {
+    // Remove any non-digit characters and ensure it starts with country code
+    final cleanNumber = phoneNumber.replaceAll(RegExp(r'[^\d]'), '');
+    final uri = Uri.parse('sgnl://signal.me/#p/$cleanNumber');
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      // Fallback to Signal web link
+      final webUri = Uri.parse('https://signal.me/#p/$cleanNumber');
+      if (await canLaunchUrl(webUri)) {
+        await launchUrl(webUri, mode: LaunchMode.externalApplication);
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not launch Signal')));
+        }
+      }
+    }
+  }
+
+  Future<void> _launchWhatsApp(String phoneNumber) async {
+    // Remove any non-digit characters and ensure it starts with country code
+    final cleanNumber = phoneNumber.replaceAll(RegExp(r'[^\d]'), '');
+    final uri = Uri.parse('whatsapp://send?phone=$cleanNumber');
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      // Fallback to WhatsApp web link
+      final webUri = Uri.parse('https://wa.me/$cleanNumber');
+      if (await canLaunchUrl(webUri)) {
+        await launchUrl(webUri, mode: LaunchMode.externalApplication);
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not launch WhatsApp')));
+        }
+      }
+    }
+  }
+
+  Future<void> _launchEmail(String email) async {
+    final uri = Uri.parse('mailto:$email');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not launch email app')));
       }
     }
   }

@@ -9,7 +9,7 @@ class ApplicationsRepository {
   ApplicationsRepository(this.ref);
   final Ref ref;
 
-  Future<PaginatedResponse<Application>> fetchOrganizerApplications({int? advertId, int? page, int? limit}) async {
+  Future<PaginatedResponse<Application>> fetchOrganizerApplications({int? advertId, int? page, int? limit, ApplicationStatus? status}) async {
     if (ref.read(authControllerProvider).value?.userType != UserType.organizer) {
       throw Exception('Only organizations can fetch applications');
     }
@@ -18,6 +18,7 @@ class ApplicationsRepository {
     if (page != null) query['page'] = page.toString();
     if (limit != null) query['limit'] = limit.toString();
     if (advertId != null) query['advert_id'] = advertId.toString();
+    if (status != null) query['status'] = status.name;
     final resp = await ref
         .read(apiServiceProvider)
         .get('/api/v1/applications/organization', query: query, headers: ref.read(apiServiceProvider).authHeaders(token));

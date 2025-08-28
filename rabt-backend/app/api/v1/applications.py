@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
-from typing import List, Optional
+from typing import Optional
 
 from app.database.connection import get_db
+from app.database.enums import ApplicationStatus
 from app.database.models import Application, User
 from app.schemas.application import (
     ApplicationCreate,
@@ -29,21 +30,25 @@ def apply_for_advert(
     )
     return application
 
+
 @router.get("/organization", response_model=ApplicationListResponse)
 def get_organizer_applications(
     advert_id: Optional[int] = Query(None, description="Filter by specific advert ID"),
     limit: int = Query(20, description="Number of applications per page"),
     page: int = Query(1, description="Page number"),
+    status: Optional[ApplicationStatus] = Query(
+        None, description="Filter by application status"
+    ),
     db: Session = Depends(get_db),
     current_user: User = Depends(require_organizer),
 ):
-    applications, total_count, total_pages = ApplicationService.get_organizer_pending_applications(
-        db, current_user.organizer.id, advert_id, limit, page
+    applications, total_count, total_pages = (
+        ApplicationService.get_organizer_applications(
+            db, current_user.organizer.id, advert_id, limit, status, page
+        )
     )
     return ApplicationListResponse(
-        items=applications, 
-        total_count=total_count, 
-        total_pages=total_pages
+        items=applications, total_count=total_count, total_pages=total_pages
     )
 
 

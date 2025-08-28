@@ -15,6 +15,7 @@ class VolunteerProfile with _$VolunteerProfile {
     String? country,
     required bool onboardingCompleted,
     @Default([]) List<SkillResponse> skills,
+    String? email,
   }) = _VolunteerProfile;
 
   factory VolunteerProfile.fromJson(Map<String, dynamic> json) => _$VolunteerProfileFromJson(json);

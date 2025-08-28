@@ -20,6 +20,7 @@ _$ApplicationImpl _$$ApplicationImplFromJson(Map<String, dynamic> json) =>
               : VolunteerProfile.fromJson(
                 json['volunteer'] as Map<String, dynamic>,
               ),
+      organizerMessage: json['organizer_message'] as String?,
     );
 
 Map<String, dynamic> _$$ApplicationImplToJson(_$ApplicationImpl instance) =>
@@ -31,6 +32,7 @@ Map<String, dynamic> _$$ApplicationImplToJson(_$ApplicationImpl instance) =>
       'applied_at': instance.appliedAt.toIso8601String(),
       'advert': instance.advert,
       'volunteer': instance.volunteer,
+      'organizer_message': instance.organizerMessage,
     };
 
 const _$ApplicationStatusEnumMap = {

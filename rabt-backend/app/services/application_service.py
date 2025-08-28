@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from app.database.enums import ApplicationStatus
-from app.database.models import Application, Advert, Volunteer
+from app.database.models import Application, Advert
 from app.schemas.application import ApplicationCreate
 from typing import List, Optional
 
@@ -49,11 +49,12 @@ class ApplicationService:
         return application
 
     @staticmethod
-    def get_organizer_pending_applications(
+    def get_organizer_applications(
         db: Session, 
         organizer_id: int, 
         advert_id: Optional[int] = None,
         limit: int = 20,
+        status: Optional[ApplicationStatus] = None,
         page: int = 1
     ) -> tuple[List[Application], int, int]:
         """
@@ -64,11 +65,14 @@ class ApplicationService:
         query = (
             db.query(Application)
             .join(Advert, Application.advert_id == Advert.id)
-            .filter(Advert.organizer_id == organizer_id, Application.status == ApplicationStatus.PENDING)
+            .filter(Advert.organizer_id == organizer_id)
         )
         
         if advert_id is not None:
             query = query.filter(Application.advert_id == advert_id)
+        
+        if status is not None:
+            query = query.filter(Application.status == status)
         
         # Get total count for pagination
         total_count = query.count()
@@ -78,5 +82,4 @@ class ApplicationService:
         
         # Apply pagination
         applications = query.limit(limit).offset(offset).all()
-        
         return applications, total_count, total_pages

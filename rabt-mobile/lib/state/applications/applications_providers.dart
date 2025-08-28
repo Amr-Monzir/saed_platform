@@ -21,21 +21,29 @@ class ApplicationsList extends _$ApplicationsList {
     return repository.fetchOrganizerApplications();
   }
 
-  Future<PaginatedResponse<Application>?> fetchApplications({int? advertId, int? page, int? limit}) async {
+  Future<PaginatedResponse<Application>?> fetchApplications({int? advertId, int? page, int? limit, ApplicationStatus? status}) async {
     final repository = ref.watch(applicationsRepositoryProvider);
-    return repository.fetchOrganizerApplications(advertId: advertId, page: page, limit: limit);
+    return repository.fetchOrganizerApplications(advertId: advertId, page: page, limit: limit, status: status);
   }
 
   Future<void> acceptApplication(int id, String? organizerMessage) async {
     final repository = ref.watch(applicationsRepositoryProvider);
     await repository.updateStatus(id, ApplicationStatus.accepted, organizerMessage: organizerMessage);
     ref.invalidateSelf();
+    // Refresh status-specific providers
+    ref.invalidate(pendingApplicationsProvider);
+    ref.invalidate(acceptedApplicationsProvider);
+    ref.invalidate(rejectedApplicationsProvider);
   }
 
   Future<void> rejectApplication(int id, String? organizerMessage) async {
     final repository = ref.watch(applicationsRepositoryProvider);
     await repository.updateStatus(id, ApplicationStatus.rejected, organizerMessage: organizerMessage);
     ref.invalidateSelf();
+    // Refresh status-specific providers
+    ref.invalidate(pendingApplicationsProvider);
+    ref.invalidate(acceptedApplicationsProvider);
+    ref.invalidate(rejectedApplicationsProvider);
   }
 }
 
@@ -95,3 +103,72 @@ final updateApplicationStatusControllerProvider =
     StateNotifierProvider<UpdateApplicationStatusController, AsyncValue<Application?>>((ref) {
       return UpdateApplicationStatusController(ref);
     });
+
+@riverpod
+class PendingApplications extends _$PendingApplications {
+  @override
+  Future<PaginatedResponse<Application>?> build() async {
+    final session = ref.watch(authControllerProvider).value;
+    if (session?.userType != UserType.organizer) {
+      return null;
+    }
+
+    final repository = ref.watch(applicationsRepositoryProvider);
+    return repository.fetchOrganizerApplications(status: ApplicationStatus.pending);
+  }
+
+  Future<PaginatedResponse<Application>?> fetchApplications({int? page, int? limit}) async {
+    final repository = ref.watch(applicationsRepositoryProvider);
+    return repository.fetchOrganizerApplications(page: page, limit: limit, status: ApplicationStatus.pending);
+  }
+
+  void refresh() {
+    ref.invalidateSelf();
+  }
+}
+
+@riverpod
+class AcceptedApplications extends _$AcceptedApplications {
+  @override
+  Future<PaginatedResponse<Application>?> build() async {
+    final session = ref.watch(authControllerProvider).value;
+    if (session?.userType != UserType.organizer) {
+      return null;
+    }
+
+    final repository = ref.watch(applicationsRepositoryProvider);
+    return repository.fetchOrganizerApplications(status: ApplicationStatus.accepted);
+  }
+
+  Future<PaginatedResponse<Application>?> fetchApplications({int? page, int? limit}) async {
+    final repository = ref.watch(applicationsRepositoryProvider);
+    return repository.fetchOrganizerApplications(page: page, limit: limit, status: ApplicationStatus.accepted);
+  }
+
+  void refresh() {
+    ref.invalidateSelf();
+  }
+}
+
+@riverpod
+class RejectedApplications extends _$RejectedApplications {
+  @override
+  Future<PaginatedResponse<Application>?> build() async {
+    final session = ref.watch(authControllerProvider).value;
+    if (session?.userType != UserType.organizer) {
+      return null;
+    }
+
+    final repository = ref.watch(applicationsRepositoryProvider);
+    return repository.fetchOrganizerApplications(status: ApplicationStatus.rejected);
+  }
+
+  Future<PaginatedResponse<Application>?> fetchApplications({int? page, int? limit}) async {
+    final repository = ref.watch(applicationsRepositoryProvider);
+    return repository.fetchOrganizerApplications(page: page, limit: limit, status: ApplicationStatus.rejected);
+  }
+
+  void refresh() {
+    ref.invalidateSelf();
+  }
+}

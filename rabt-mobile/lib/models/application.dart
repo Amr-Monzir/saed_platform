@@ -17,6 +17,7 @@ class Application with _$Application {
     required DateTime appliedAt,
     required Advert advert,
     VolunteerProfile? volunteer,
+    String? organizerMessage,
   }) = _Application;
 
   factory Application.fromJson(Map<String, dynamic> json) => _$ApplicationFromJson(json);

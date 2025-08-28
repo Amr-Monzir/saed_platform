@@ -20,6 +20,7 @@ _$VolunteerProfileImpl _$$VolunteerProfileImplFromJson(
           ?.map((e) => SkillResponse.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const [],
+  email: json['email'] as String?,
 );
 
 Map<String, dynamic> _$$VolunteerProfileImplToJson(
@@ -32,4 +33,5 @@ Map<String, dynamic> _$$VolunteerProfileImplToJson(
   'country': instance.country,
   'onboarding_completed': instance.onboardingCompleted,
   'skills': instance.skills,
+  'email': instance.email,
 };

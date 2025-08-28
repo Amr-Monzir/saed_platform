@@ -28,6 +28,7 @@ mixin _$Application {
   DateTime get appliedAt => throw _privateConstructorUsedError;
   Advert get advert => throw _privateConstructorUsedError;
   VolunteerProfile? get volunteer => throw _privateConstructorUsedError;
+  String? get organizerMessage => throw _privateConstructorUsedError;
 
   /// Serializes this Application to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -54,6 +55,7 @@ abstract class $ApplicationCopyWith<$Res> {
     DateTime appliedAt,
     Advert advert,
     VolunteerProfile? volunteer,
+    String? organizerMessage,
   });
 
   $AdvertCopyWith<$Res> get advert;
@@ -82,6 +84,7 @@ class _$ApplicationCopyWithImpl<$Res, $Val extends Application>
     Object? appliedAt = null,
     Object? advert = null,
     Object? volunteer = freezed,
+    Object? organizerMessage = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -120,6 +123,11 @@ class _$ApplicationCopyWithImpl<$Res, $Val extends Application>
                     ? _value.volunteer
                     : volunteer // ignore: cast_nullable_to_non_nullable
                         as VolunteerProfile?,
+            organizerMessage:
+                freezed == organizerMessage
+                    ? _value.organizerMessage
+                    : organizerMessage // ignore: cast_nullable_to_non_nullable
+                        as String?,
           )
           as $Val,
     );
@@ -167,6 +175,7 @@ abstract class _$$ApplicationImplCopyWith<$Res>
     DateTime appliedAt,
     Advert advert,
     VolunteerProfile? volunteer,
+    String? organizerMessage,
   });
 
   @override
@@ -196,6 +205,7 @@ class __$$ApplicationImplCopyWithImpl<$Res>
     Object? appliedAt = null,
     Object? advert = null,
     Object? volunteer = freezed,
+    Object? organizerMessage = freezed,
   }) {
     return _then(
       _$ApplicationImpl(
@@ -234,6 +244,11 @@ class __$$ApplicationImplCopyWithImpl<$Res>
                 ? _value.volunteer
                 : volunteer // ignore: cast_nullable_to_non_nullable
                     as VolunteerProfile?,
+        organizerMessage:
+            freezed == organizerMessage
+                ? _value.organizerMessage
+                : organizerMessage // ignore: cast_nullable_to_non_nullable
+                    as String?,
       ),
     );
   }
@@ -251,6 +266,7 @@ class _$ApplicationImpl implements _Application {
     required this.appliedAt,
     required this.advert,
     this.volunteer,
+    this.organizerMessage,
   });
 
   factory _$ApplicationImpl.fromJson(Map<String, dynamic> json) =>
@@ -270,10 +286,12 @@ class _$ApplicationImpl implements _Application {
   final Advert advert;
   @override
   final VolunteerProfile? volunteer;
+  @override
+  final String? organizerMessage;
 
   @override
   String toString() {
-    return 'Application(id: $id, advertId: $advertId, coverMessage: $coverMessage, status: $status, appliedAt: $appliedAt, advert: $advert, volunteer: $volunteer)';
+    return 'Application(id: $id, advertId: $advertId, coverMessage: $coverMessage, status: $status, appliedAt: $appliedAt, advert: $advert, volunteer: $volunteer, organizerMessage: $organizerMessage)';
   }
 
   @override
@@ -291,7 +309,9 @@ class _$ApplicationImpl implements _Application {
                 other.appliedAt == appliedAt) &&
             (identical(other.advert, advert) || other.advert == advert) &&
             (identical(other.volunteer, volunteer) ||
-                other.volunteer == volunteer));
+                other.volunteer == volunteer) &&
+            (identical(other.organizerMessage, organizerMessage) ||
+                other.organizerMessage == organizerMessage));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -305,6 +325,7 @@ class _$ApplicationImpl implements _Application {
     appliedAt,
     advert,
     volunteer,
+    organizerMessage,
   );
 
   /// Create a copy of Application
@@ -330,6 +351,7 @@ abstract class _Application implements Application {
     required final DateTime appliedAt,
     required final Advert advert,
     final VolunteerProfile? volunteer,
+    final String? organizerMessage,
   }) = _$ApplicationImpl;
 
   factory _Application.fromJson(Map<String, dynamic> json) =
@@ -349,6 +371,8 @@ abstract class _Application implements Application {
   Advert get advert;
   @override
   VolunteerProfile? get volunteer;
+  @override
+  String? get organizerMessage;
 
   /// Create a copy of Application
   /// with the given fields replaced by the non-null parameter values.

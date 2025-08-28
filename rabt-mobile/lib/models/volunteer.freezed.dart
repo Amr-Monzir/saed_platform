@@ -28,6 +28,7 @@ mixin _$VolunteerProfile {
   String? get country => throw _privateConstructorUsedError;
   bool get onboardingCompleted => throw _privateConstructorUsedError;
   List<SkillResponse> get skills => throw _privateConstructorUsedError;
+  String? get email => throw _privateConstructorUsedError;
 
   /// Serializes this VolunteerProfile to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -54,6 +55,7 @@ abstract class $VolunteerProfileCopyWith<$Res> {
     String? country,
     bool onboardingCompleted,
     List<SkillResponse> skills,
+    String? email,
   });
 }
 
@@ -79,6 +81,7 @@ class _$VolunteerProfileCopyWithImpl<$Res, $Val extends VolunteerProfile>
     Object? country = freezed,
     Object? onboardingCompleted = null,
     Object? skills = null,
+    Object? email = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -117,6 +120,11 @@ class _$VolunteerProfileCopyWithImpl<$Res, $Val extends VolunteerProfile>
                     ? _value.skills
                     : skills // ignore: cast_nullable_to_non_nullable
                         as List<SkillResponse>,
+            email:
+                freezed == email
+                    ? _value.email
+                    : email // ignore: cast_nullable_to_non_nullable
+                        as String?,
           )
           as $Val,
     );
@@ -140,6 +148,7 @@ abstract class _$$VolunteerProfileImplCopyWith<$Res>
     String? country,
     bool onboardingCompleted,
     List<SkillResponse> skills,
+    String? email,
   });
 }
 
@@ -164,6 +173,7 @@ class __$$VolunteerProfileImplCopyWithImpl<$Res>
     Object? country = freezed,
     Object? onboardingCompleted = null,
     Object? skills = null,
+    Object? email = freezed,
   }) {
     return _then(
       _$VolunteerProfileImpl(
@@ -202,6 +212,11 @@ class __$$VolunteerProfileImplCopyWithImpl<$Res>
                 ? _value._skills
                 : skills // ignore: cast_nullable_to_non_nullable
                     as List<SkillResponse>,
+        email:
+            freezed == email
+                ? _value.email
+                : email // ignore: cast_nullable_to_non_nullable
+                    as String?,
       ),
     );
   }
@@ -219,6 +234,7 @@ class _$VolunteerProfileImpl implements _VolunteerProfile {
     this.country,
     required this.onboardingCompleted,
     final List<SkillResponse> skills = const [],
+    this.email,
   }) : _skills = skills;
 
   factory _$VolunteerProfileImpl.fromJson(Map<String, dynamic> json) =>
@@ -246,8 +262,11 @@ class _$VolunteerProfileImpl implements _VolunteerProfile {
   }
 
   @override
+  final String? email;
+
+  @override
   String toString() {
-    return 'VolunteerProfile(id: $id, name: $name, phoneNumber: $phoneNumber, city: $city, country: $country, onboardingCompleted: $onboardingCompleted, skills: $skills)';
+    return 'VolunteerProfile(id: $id, name: $name, phoneNumber: $phoneNumber, city: $city, country: $country, onboardingCompleted: $onboardingCompleted, skills: $skills, email: $email)';
   }
 
   @override
@@ -263,7 +282,8 @@ class _$VolunteerProfileImpl implements _VolunteerProfile {
             (identical(other.country, country) || other.country == country) &&
             (identical(other.onboardingCompleted, onboardingCompleted) ||
                 other.onboardingCompleted == onboardingCompleted) &&
-            const DeepCollectionEquality().equals(other._skills, _skills));
+            const DeepCollectionEquality().equals(other._skills, _skills) &&
+            (identical(other.email, email) || other.email == email));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -277,6 +297,7 @@ class _$VolunteerProfileImpl implements _VolunteerProfile {
     country,
     onboardingCompleted,
     const DeepCollectionEquality().hash(_skills),
+    email,
   );
 
   /// Create a copy of VolunteerProfile
@@ -305,6 +326,7 @@ abstract class _VolunteerProfile implements VolunteerProfile {
     final String? country,
     required final bool onboardingCompleted,
     final List<SkillResponse> skills,
+    final String? email,
   }) = _$VolunteerProfileImpl;
 
   factory _VolunteerProfile.fromJson(Map<String, dynamic> json) =
@@ -324,6 +346,8 @@ abstract class _VolunteerProfile implements VolunteerProfile {
   bool get onboardingCompleted;
   @override
   List<SkillResponse> get skills;
+  @override
+  String? get email;
 
   /// Create a copy of VolunteerProfile
   /// with the given fields replaced by the non-null parameter values.
