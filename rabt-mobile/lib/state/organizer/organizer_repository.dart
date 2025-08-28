@@ -17,6 +17,35 @@ class OrganizerRepository {
     return OrganizerProfile.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
   }
 
+  Future<OrganizerProfile> updateOrganizerProfile({
+    required String name,
+    String? website,
+    String? description,
+    String? logoUrl,
+  }) async {
+    final token = ref.read(authControllerProvider).value?.token;
+    final data = <String, dynamic>{
+      'name': name,
+    };
+
+    if (website != null && website.isNotEmpty) {
+      data['website'] = website;
+    }
+    if (description != null && description.isNotEmpty) {
+      data['description'] = description;
+    }
+    if (logoUrl != null) {
+      data['logo_url'] = logoUrl;
+    }
+
+    final resp = await ref.read(apiServiceProvider).put(
+      '/api/v1/organizers/profile',
+      data,
+      headers: ref.read(apiServiceProvider).authHeaders(token),
+    );
+    return OrganizerProfile.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
+  }
+
   /// Register a new organizer
   Future<void> register({
     required String name,
@@ -57,3 +86,12 @@ class OrganizerRepository {
 }
 
 final organizerRepositoryProvider = Provider((ref) => OrganizerRepository(ref));
+
+// Provider for organizer profile
+final organizerProfileProvider = FutureProvider<OrganizerProfile?>((ref) async {
+  final session = ref.watch(authControllerProvider).value;
+  if (session == null) return null;
+  
+  final repository = ref.watch(organizerRepositoryProvider);
+  return repository.fetchOrganizerProfile(session.token);
+});

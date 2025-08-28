@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rabt_mobile/models/advert.dart';
 import 'package:rabt_mobile/screens/adverts/advert_detail_screen.dart';
+import 'package:rabt_mobile/screens/organization/common/organizer_advert_card.dart';
 import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
 import 'package:rabt_mobile/widgets/app_card.dart';
 import 'create_advert/create_advert_wizard.dart';
@@ -74,28 +76,7 @@ class _MyAdvertsScreenState extends ConsumerState<MyAdvertsScreen> {
               data:
                   (page) => ListView.builder(
                     itemCount: page.items.length,
-                    itemBuilder: (context, i) {
-                      final advert = page.items[i];
-                      return AppCard(
-                        onTap: () => context.go(AdvertDetailScreen.orgFullPathFor(advert.id)),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(advert.title, style: Theme.of(context).textTheme.titleMedium),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    '${advert.category} • ${advert.frequency.displayName} • ${advert.locationType.displayName}',
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
+                    itemBuilder: (context, i) => OrganizerAdvertCard(advert: page.items[i]),
                   ),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, _) => Center(child: Text('$e')),

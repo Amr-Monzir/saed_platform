@@ -8,7 +8,7 @@ import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
 import 'package:rabt_mobile/state/applications/applications_providers.dart';
 import 'package:rabt_mobile/state/auth/auth_providers.dart';
 import 'package:rabt_mobile/widgets/app_button.dart';
-import 'package:rabt_mobile/widgets/advert_card.dart';
+import 'package:rabt_mobile/screens/adverts/volunteer_advert_card.dart';
 import 'adverts_filters_sheet.dart';
 
 class AdvertsListScreen extends ConsumerWidget {
@@ -81,7 +81,7 @@ class AdvertsListScreen extends ConsumerWidget {
                         );
                       }
                       final advert = page.items[index];
-                      return AdvertCard(
+                      return VolunteerAdvertCard(
                         advert: advert,
                         onTap:
                             () => context.go(

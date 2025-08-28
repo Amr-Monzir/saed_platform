@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../models/advert.dart';
-import 'badge_chip.dart';
-import 'app_card.dart';
-import 'icon_tile.dart';
+import 'package:rabt_mobile/models/advert.dart';
+import 'package:rabt_mobile/widgets/app_card.dart';
+import 'package:rabt_mobile/widgets/badge_chip.dart';
+import 'package:rabt_mobile/widgets/icon_tile.dart';
 
-class AdvertCard extends StatelessWidget {
-  const AdvertCard({super.key, required this.advert, this.onTap, this.trailing});
+class VolunteerAdvertCard extends StatelessWidget {
+  const VolunteerAdvertCard({super.key, required this.advert, this.onTap, this.trailing});
   final Advert advert;
   final VoidCallback? onTap;
   final Widget? trailing;
