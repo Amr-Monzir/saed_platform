@@ -17,7 +17,7 @@ _$VolunteerProfileImpl _$$VolunteerProfileImplFromJson(
   onboardingCompleted: json['onboarding_completed'] as bool,
   skills:
       (json['skills'] as List<dynamic>?)
-          ?.map((e) => SkillResponse.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => Skill.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const [],
   email: json['email'] as String?,

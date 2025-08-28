@@ -707,7 +707,7 @@ mixin _$Advert {
   String? get advertImageUrl => throw _privateConstructorUsedError;
   bool get isActive => throw _privateConstructorUsedError;
   OrganizerProfile get organizer => throw _privateConstructorUsedError;
-  List<SkillResponse> get requiredSkills => throw _privateConstructorUsedError;
+  List<Skill> get requiredSkills => throw _privateConstructorUsedError;
   OneOffAdvertDetails? get oneoffDetails => throw _privateConstructorUsedError;
   RecurringAdvertDetails? get recurringDetails =>
       throw _privateConstructorUsedError;
@@ -742,7 +742,7 @@ abstract class $AdvertCopyWith<$Res> {
     String? advertImageUrl,
     bool isActive,
     OrganizerProfile organizer,
-    List<SkillResponse> requiredSkills,
+    List<Skill> requiredSkills,
     OneOffAdvertDetails? oneoffDetails,
     RecurringAdvertDetails? recurringDetails,
     DateTime createdAt,
@@ -863,7 +863,7 @@ class _$AdvertCopyWithImpl<$Res, $Val extends Advert>
                 null == requiredSkills
                     ? _value.requiredSkills
                     : requiredSkills // ignore: cast_nullable_to_non_nullable
-                        as List<SkillResponse>,
+                        as List<Skill>,
             oneoffDetails:
                 freezed == oneoffDetails
                     ? _value.oneoffDetails
@@ -948,7 +948,7 @@ abstract class _$$AdvertImplCopyWith<$Res> implements $AdvertCopyWith<$Res> {
     String? advertImageUrl,
     bool isActive,
     OrganizerProfile organizer,
-    List<SkillResponse> requiredSkills,
+    List<Skill> requiredSkills,
     OneOffAdvertDetails? oneoffDetails,
     RecurringAdvertDetails? recurringDetails,
     DateTime createdAt,
@@ -1071,7 +1071,7 @@ class __$$AdvertImplCopyWithImpl<$Res>
             null == requiredSkills
                 ? _value._requiredSkills
                 : requiredSkills // ignore: cast_nullable_to_non_nullable
-                    as List<SkillResponse>,
+                    as List<Skill>,
         oneoffDetails:
             freezed == oneoffDetails
                 ? _value.oneoffDetails
@@ -1111,7 +1111,7 @@ class _$AdvertImpl implements _Advert {
     this.advertImageUrl,
     required this.isActive,
     required this.organizer,
-    final List<SkillResponse> requiredSkills = const [],
+    final List<Skill> requiredSkills = const [],
     this.oneoffDetails,
     this.recurringDetails,
     required this.createdAt,
@@ -1148,10 +1148,10 @@ class _$AdvertImpl implements _Advert {
   final bool isActive;
   @override
   final OrganizerProfile organizer;
-  final List<SkillResponse> _requiredSkills;
+  final List<Skill> _requiredSkills;
   @override
   @JsonKey()
-  List<SkillResponse> get requiredSkills {
+  List<Skill> get requiredSkills {
     if (_requiredSkills is EqualUnmodifiableListView) return _requiredSkills;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_requiredSkills);
@@ -1266,7 +1266,7 @@ abstract class _Advert implements Advert {
     final String? advertImageUrl,
     required final bool isActive,
     required final OrganizerProfile organizer,
-    final List<SkillResponse> requiredSkills,
+    final List<Skill> requiredSkills,
     final OneOffAdvertDetails? oneoffDetails,
     final RecurringAdvertDetails? recurringDetails,
     required final DateTime createdAt,
@@ -1303,7 +1303,7 @@ abstract class _Advert implements Advert {
   @override
   OrganizerProfile get organizer;
   @override
-  List<SkillResponse> get requiredSkills;
+  List<Skill> get requiredSkills;
   @override
   OneOffAdvertDetails? get oneoffDetails;
   @override

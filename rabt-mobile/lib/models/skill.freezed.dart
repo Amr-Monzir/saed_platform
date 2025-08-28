@@ -15,48 +15,45 @@ final _privateConstructorUsedError = UnsupportedError(
   'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
 );
 
-SkillResponse _$SkillResponseFromJson(Map<String, dynamic> json) {
-  return _SkillResponse.fromJson(json);
+Skill _$SkillFromJson(Map<String, dynamic> json) {
+  return _Skill.fromJson(json);
 }
 
 /// @nodoc
-mixin _$SkillResponse {
+mixin _$Skill {
   int get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String? get category => throw _privateConstructorUsedError;
   bool get isPredefined => throw _privateConstructorUsedError;
 
-  /// Serializes this SkillResponse to a JSON map.
+  /// Serializes this Skill to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of SkillResponse
+  /// Create a copy of Skill
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $SkillResponseCopyWith<SkillResponse> get copyWith =>
-      throw _privateConstructorUsedError;
+  $SkillCopyWith<Skill> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $SkillResponseCopyWith<$Res> {
-  factory $SkillResponseCopyWith(
-    SkillResponse value,
-    $Res Function(SkillResponse) then,
-  ) = _$SkillResponseCopyWithImpl<$Res, SkillResponse>;
+abstract class $SkillCopyWith<$Res> {
+  factory $SkillCopyWith(Skill value, $Res Function(Skill) then) =
+      _$SkillCopyWithImpl<$Res, Skill>;
   @useResult
   $Res call({int id, String name, String? category, bool isPredefined});
 }
 
 /// @nodoc
-class _$SkillResponseCopyWithImpl<$Res, $Val extends SkillResponse>
-    implements $SkillResponseCopyWith<$Res> {
-  _$SkillResponseCopyWithImpl(this._value, this._then);
+class _$SkillCopyWithImpl<$Res, $Val extends Skill>
+    implements $SkillCopyWith<$Res> {
+  _$SkillCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of SkillResponse
+  /// Create a copy of Skill
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -95,27 +92,26 @@ class _$SkillResponseCopyWithImpl<$Res, $Val extends SkillResponse>
 }
 
 /// @nodoc
-abstract class _$$SkillResponseImplCopyWith<$Res>
-    implements $SkillResponseCopyWith<$Res> {
-  factory _$$SkillResponseImplCopyWith(
-    _$SkillResponseImpl value,
-    $Res Function(_$SkillResponseImpl) then,
-  ) = __$$SkillResponseImplCopyWithImpl<$Res>;
+abstract class _$$SkillImplCopyWith<$Res> implements $SkillCopyWith<$Res> {
+  factory _$$SkillImplCopyWith(
+    _$SkillImpl value,
+    $Res Function(_$SkillImpl) then,
+  ) = __$$SkillImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({int id, String name, String? category, bool isPredefined});
 }
 
 /// @nodoc
-class __$$SkillResponseImplCopyWithImpl<$Res>
-    extends _$SkillResponseCopyWithImpl<$Res, _$SkillResponseImpl>
-    implements _$$SkillResponseImplCopyWith<$Res> {
-  __$$SkillResponseImplCopyWithImpl(
-    _$SkillResponseImpl _value,
-    $Res Function(_$SkillResponseImpl) _then,
+class __$$SkillImplCopyWithImpl<$Res>
+    extends _$SkillCopyWithImpl<$Res, _$SkillImpl>
+    implements _$$SkillImplCopyWith<$Res> {
+  __$$SkillImplCopyWithImpl(
+    _$SkillImpl _value,
+    $Res Function(_$SkillImpl) _then,
   ) : super(_value, _then);
 
-  /// Create a copy of SkillResponse
+  /// Create a copy of Skill
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -126,7 +122,7 @@ class __$$SkillResponseImplCopyWithImpl<$Res>
     Object? isPredefined = null,
   }) {
     return _then(
-      _$SkillResponseImpl(
+      _$SkillImpl(
         id:
             null == id
                 ? _value.id
@@ -155,16 +151,16 @@ class __$$SkillResponseImplCopyWithImpl<$Res>
 /// @nodoc
 
 @JsonSerializable(fieldRename: FieldRename.snake)
-class _$SkillResponseImpl implements _SkillResponse {
-  const _$SkillResponseImpl({
+class _$SkillImpl implements _Skill {
+  const _$SkillImpl({
     required this.id,
     required this.name,
     this.category,
     required this.isPredefined,
   });
 
-  factory _$SkillResponseImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SkillResponseImplFromJson(json);
+  factory _$SkillImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SkillImplFromJson(json);
 
   @override
   final int id;
@@ -177,14 +173,14 @@ class _$SkillResponseImpl implements _SkillResponse {
 
   @override
   String toString() {
-    return 'SkillResponse(id: $id, name: $name, category: $category, isPredefined: $isPredefined)';
+    return 'Skill(id: $id, name: $name, category: $category, isPredefined: $isPredefined)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SkillResponseImpl &&
+            other is _$SkillImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.category, category) ||
@@ -198,30 +194,29 @@ class _$SkillResponseImpl implements _SkillResponse {
   int get hashCode =>
       Object.hash(runtimeType, id, name, category, isPredefined);
 
-  /// Create a copy of SkillResponse
+  /// Create a copy of Skill
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$SkillResponseImplCopyWith<_$SkillResponseImpl> get copyWith =>
-      __$$SkillResponseImplCopyWithImpl<_$SkillResponseImpl>(this, _$identity);
+  _$$SkillImplCopyWith<_$SkillImpl> get copyWith =>
+      __$$SkillImplCopyWithImpl<_$SkillImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$SkillResponseImplToJson(this);
+    return _$$SkillImplToJson(this);
   }
 }
 
-abstract class _SkillResponse implements SkillResponse {
-  const factory _SkillResponse({
+abstract class _Skill implements Skill {
+  const factory _Skill({
     required final int id,
     required final String name,
     final String? category,
     required final bool isPredefined,
-  }) = _$SkillResponseImpl;
+  }) = _$SkillImpl;
 
-  factory _SkillResponse.fromJson(Map<String, dynamic> json) =
-      _$SkillResponseImpl.fromJson;
+  factory _Skill.fromJson(Map<String, dynamic> json) = _$SkillImpl.fromJson;
 
   @override
   int get id;
@@ -232,10 +227,10 @@ abstract class _SkillResponse implements SkillResponse {
   @override
   bool get isPredefined;
 
-  /// Create a copy of SkillResponse
+  /// Create a copy of Skill
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SkillResponseImplCopyWith<_$SkillResponseImpl> get copyWith =>
+  _$$SkillImplCopyWith<_$SkillImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

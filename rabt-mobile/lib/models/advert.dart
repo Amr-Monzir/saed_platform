@@ -61,7 +61,7 @@ class Advert with _$Advert {
     String? advertImageUrl,
     required bool isActive,
     required OrganizerProfile organizer,
-    @Default([]) List<SkillResponse> requiredSkills,
+    @Default([]) List<Skill> requiredSkills,
     OneOffAdvertDetails? oneoffDetails,
     RecurringAdvertDetails? recurringDetails,
     required DateTime createdAt,

@@ -3,9 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rabt_mobile/models/enums.dart';
 import 'package:rabt_mobile/screens/adverts/advert_detail_screen.dart';
-import 'package:rabt_mobile/screens/auth/signup_screen.dart';
 import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
-import 'package:rabt_mobile/state/applications/applications_providers.dart';
 import 'package:rabt_mobile/state/auth/auth_providers.dart';
 import 'package:rabt_mobile/widgets/app_button.dart';
 import 'package:rabt_mobile/screens/adverts/volunteer_advert_card.dart';
@@ -89,35 +87,6 @@ class AdvertsListScreen extends ConsumerWidget {
                                   ? AdvertDetailScreen.volunteerFullPathFor(advert.id)
                                   : AdvertDetailScreen.guestFullPathFor(advert.id),
                             ),
-                        trailing: AppButton(
-                          onPressed: () async {
-                            final session = ref.read(authControllerProvider).value;
-                            if (session == null) {
-                              await ref.read(authControllerProvider.notifier).setPendingAdvert(advert.id.toString());
-                              if (!context.mounted) return;
-                              context.push(SignupScreen.path);
-                              return;
-                            }
-
-                            // Use state notifier for application creation
-                            await ref.read(createApplicationControllerProvider.notifier).createApplication(advertId: advert.id);
-
-                            if (!context.mounted) return;
-
-                            // Check if application was successful
-                            final applicationState = ref.read(createApplicationControllerProvider);
-                            if (applicationState.hasError) {
-                              ScaffoldMessenger.of(
-                                context,
-                              ).showSnackBar(SnackBar(content: Text('Application failed: ${applicationState.error}')));
-                            } else if (applicationState.value != null) {
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Application submitted')));
-                              // Reset the state
-                              ref.read(createApplicationControllerProvider.notifier).reset();
-                            }
-                          },
-                          label: 'Apply',
-                        ),
                       );
                     },
                   ),

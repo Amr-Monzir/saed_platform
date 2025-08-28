@@ -1,20 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rabt_mobile/services/api_service.dart';
+import 'package:rabt_mobile/models/enums.dart';
+import 'package:rabt_mobile/state/auth/auth_providers.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:rabt_mobile/state/organizer/organizer_repository.dart';
 import 'package:rabt_mobile/widgets/app_card.dart';
 import 'package:rabt_mobile/widgets/icon_tile.dart';
+import 'package:rabt_mobile/widgets/my_network_image.dart';
 
 class OrganizerProfileScreen extends ConsumerWidget {
-  const OrganizerProfileScreen({super.key});
+  const OrganizerProfileScreen({super.key, this.orgId, this.advertId});
 
-  static const String path = '/o/profile';
+  static const String organizerPathTemplate = '/o/profile';
+  static const String volunteerPathTemplate = ':orgId/profile';
 
+  static String volunteerFullPathFor(int advertId, int orgId) => '/v/adverts/$advertId/$orgId/profile';
+
+  final int? orgId;
+  final int? advertId;
+  
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final profileAsync = ref.watch(organizerProfileProvider);
+    final session = ref.watch(authControllerProvider).value;
+    final profileAsync = ref.watch(orgId == null ? organizerProfileProvider : publicOrganizerProfileProvider(orgId!));
+
+    if (session == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
 
     return Scaffold(
       appBar: AppBar(title: const Text('Organizer Profile'), elevation: 0),
@@ -51,22 +64,7 @@ class OrganizerProfileScreen extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(60),
                             border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.3), width: 2),
                           ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(58),
-                            child: Image.network(
-                              '${ref.read(apiServiceProvider).baseUrl}${profile.logoUrl!}',
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(58),
-                                  ),
-                                  child: Icon(Icons.business, size: 48, color: theme.colorScheme.primary),
-                                );
-                              },
-                            ),
-                          ),
+                          child: ClipRRect(borderRadius: BorderRadius.circular(58), child: MyNetworkImage(url: profile.logoUrl!)),
                         ),
                         const SizedBox(height: 16),
                       ] else ...[
@@ -144,25 +142,27 @@ class OrganizerProfileScreen extends ConsumerWidget {
 
                 const SizedBox(height: 24),
 
-                // Actions
-                Text('Actions', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                const SizedBox(height: 12),
-                AppCard(
-                  onTap: () {
-                    // TODO: Implement edit profile functionality
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Edit profile coming soon...')));
-                  },
-                  child: Row(
-                    children: [
-                      const IconTile(icon: Icons.edit),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text('Edit Profile', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
-                      ),
-                      Icon(Icons.arrow_forward_ios, color: theme.colorScheme.onSurface.withValues(alpha: 0.5), size: 16),
-                    ],
+                if (session.userType == UserType.organizer) ...[
+                  // Actions
+                  Text('Actions', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 12),
+                  AppCard(
+                    onTap: () {
+                      // TODO: Implement edit profile functionality
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Edit profile coming soon...')));
+                    },
+                    child: Row(
+                      children: [
+                        const IconTile(icon: Icons.edit),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text('Edit Profile', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
+                        ),
+                        Icon(Icons.arrow_forward_ios, color: theme.colorScheme.onSurface.withValues(alpha: 0.5), size: 16),
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
           );

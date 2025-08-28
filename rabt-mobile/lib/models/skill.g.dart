@@ -6,15 +6,14 @@ part of 'skill.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SkillResponseImpl _$$SkillResponseImplFromJson(Map<String, dynamic> json) =>
-    _$SkillResponseImpl(
-      id: (json['id'] as num).toInt(),
-      name: json['name'] as String,
-      category: json['category'] as String?,
-      isPredefined: json['is_predefined'] as bool,
-    );
+_$SkillImpl _$$SkillImplFromJson(Map<String, dynamic> json) => _$SkillImpl(
+  id: (json['id'] as num).toInt(),
+  name: json['name'] as String,
+  category: json['category'] as String?,
+  isPredefined: json['is_predefined'] as bool,
+);
 
-Map<String, dynamic> _$$SkillResponseImplToJson(_$SkillResponseImpl instance) =>
+Map<String, dynamic> _$$SkillImplToJson(_$SkillImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,

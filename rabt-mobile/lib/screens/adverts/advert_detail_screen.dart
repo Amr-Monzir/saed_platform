@@ -11,6 +11,8 @@ import 'package:rabt_mobile/state/auth/auth_providers.dart';
 import 'package:rabt_mobile/widgets/app_button.dart';
 import 'package:rabt_mobile/widgets/app_card.dart';
 import 'package:rabt_mobile/widgets/icon_tile.dart';
+import 'package:rabt_mobile/widgets/my_network_image.dart';
+import 'package:rabt_mobile/widgets/organizer_card.dart';
 
 class AdvertDetailScreen extends ConsumerWidget {
   const AdvertDetailScreen({super.key, required this.id});
@@ -44,6 +46,8 @@ class AdvertDetailScreen extends ConsumerWidget {
                         body: ListView(
                           padding: const EdgeInsets.all(16),
                           children: [
+                            MyNetworkImage(url: advert.advertImageUrl!),
+                            const SizedBox(height: 12),
                             AppCard(
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,12 +69,34 @@ class AdvertDetailScreen extends ConsumerWidget {
                                 ],
                               ),
                             ),
+                            AppCard(
+                              padding: EdgeInsets.zero,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 16, top: 16),
+                                    child: Text('Organizer', style: Theme.of(context).textTheme.titleMedium),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  OrganizerCard(organizer: advert.organizer, advertId: advert.id),
+                                  const SizedBox(height: 8),
+                                ],
+                              ),
+                            ),
                             if (advert.requiredSkills.isNotEmpty)
                               AppCard(
-                                child: Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
-                                  children: advert.requiredSkills.map((s) => Chip(label: Text(s.name))).toList(),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Required skills', style: Theme.of(context).textTheme.titleMedium),
+                                    const SizedBox(height: 8),
+                                    Wrap(
+                                      spacing: 8,
+                                      runSpacing: 8,
+                                      children: advert.requiredSkills.map((s) => Chip(label: Text(s.name))).toList(),
+                                    ),
+                                  ],
                                 ),
                               ),
                             if (advert.oneoffDetails != null)

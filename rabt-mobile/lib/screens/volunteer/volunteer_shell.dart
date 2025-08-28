@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rabt_mobile/screens/volunteer/volunteer_profile_screen.dart';
 import '../adverts/adverts_list_screen.dart';
 import '../common/settings_screen.dart';
 
 class VolunteerShell extends StatefulWidget {
   const VolunteerShell({super.key, required this.child});
   final Widget child;
-
-  static const String profilePath = '/v/profile';
 
   @override
   State<VolunteerShell> createState() => _VolunteerShellState();
@@ -29,7 +28,7 @@ class _VolunteerShellState extends State<VolunteerShell> {
               context.go(AdvertsListScreen.volunteerPath);
               break;
             case 1:
-              context.go(VolunteerShell.profilePath);
+              context.go(VolunteerProfileScreen.path);
               break;
             case 2:
               context.go(SettingsScreen.volunteerPath);

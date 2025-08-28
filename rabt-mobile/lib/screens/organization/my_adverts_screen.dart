@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rabt_mobile/models/advert.dart';
-import 'package:rabt_mobile/screens/adverts/advert_detail_screen.dart';
 import 'package:rabt_mobile/screens/organization/common/organizer_advert_card.dart';
 import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
-import 'package:rabt_mobile/widgets/app_card.dart';
 import 'create_advert/create_advert_wizard.dart';
 
 class MyAdvertsScreen extends ConsumerStatefulWidget {

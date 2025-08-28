@@ -108,7 +108,7 @@ _$AdvertImpl _$$AdvertImplFromJson(Map<String, dynamic> json) => _$AdvertImpl(
   ),
   requiredSkills:
       (json['required_skills'] as List<dynamic>?)
-          ?.map((e) => SkillResponse.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => Skill.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const [],
   oneoffDetails:

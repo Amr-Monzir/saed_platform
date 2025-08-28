@@ -4,16 +4,16 @@ part 'skill.freezed.dart';
 part 'skill.g.dart';
 
 @freezed
-class SkillResponse with _$SkillResponse {
+class Skill with _$Skill {
   @JsonSerializable(fieldRename: FieldRename.snake)
-  const factory SkillResponse({
+  const factory Skill({
     required int id,
     required String name,
     String? category,
     required bool isPredefined,
-  }) = _SkillResponse;
+  }) = _Skill;
 
-  factory SkillResponse.fromJson(Map<String, dynamic> json) => _$SkillResponseFromJson(json);
+  factory Skill.fromJson(Map<String, dynamic> json) => _$SkillFromJson(json);
 }
 
 

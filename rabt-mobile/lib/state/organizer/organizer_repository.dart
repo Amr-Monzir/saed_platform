@@ -17,6 +17,11 @@ class OrganizerRepository {
     return OrganizerProfile.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
   }
 
+  Future<OrganizerProfile> fetchPublicOrganizerProfile(String token, int id) async {
+    final resp = await ref.read(apiServiceProvider).get('/api/v1/organizers/$id/public', headers: ref.read(apiServiceProvider).authHeaders(token));
+    return OrganizerProfile.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
+  }
+
   Future<OrganizerProfile> updateOrganizerProfile({
     required String name,
     String? website,
@@ -94,4 +99,12 @@ final organizerProfileProvider = FutureProvider<OrganizerProfile?>((ref) async {
   
   final repository = ref.watch(organizerRepositoryProvider);
   return repository.fetchOrganizerProfile(session.token);
+});
+
+final publicOrganizerProfileProvider = FutureProvider.family<OrganizerProfile?, int>((ref, id) async {
+  final session = ref.watch(authControllerProvider).value;
+  if (session == null) return null;
+
+  final repository = ref.watch(organizerRepositoryProvider);
+  return repository.fetchPublicOrganizerProfile(session.token, id);
 });

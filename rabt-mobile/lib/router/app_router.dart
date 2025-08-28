@@ -17,6 +17,7 @@ import 'package:rabt_mobile/screens/organization/received_applications/advert_re
 import 'package:rabt_mobile/screens/organization/received_applications/organizer_received_applications.dart';
 import 'package:rabt_mobile/screens/splash_screen.dart';
 import 'package:rabt_mobile/screens/volunteer/profile_setup_screen.dart';
+import 'package:rabt_mobile/screens/volunteer/volunteer_profile_screen.dart';
 import 'package:rabt_mobile/screens/volunteer/volunteer_shell.dart';
 import 'package:rabt_mobile/state/auth/auth_providers.dart';
 
@@ -66,12 +67,22 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                   final id = int.parse(state.pathParameters['id']!);
                   return AdvertDetailScreen(id: id);
                 },
+                routes: [
+                  GoRoute(
+                    path: OrganizerProfileScreen.volunteerPathTemplate,
+                    builder: (context, state) {
+                      final advertId = int.parse(state.pathParameters['id']!);
+                      final orgId = int.parse(state.pathParameters['orgId']!);
+                      return OrganizerProfileScreen(orgId: orgId, advertId: advertId);
+                    },
+                  ),
+                ],
               ),
             ],
           ),
           GoRoute(path: VolunteerProfileSetupScreen.path, builder: (context, state) => const VolunteerProfileSetupScreen()),
           GoRoute(path: SettingsScreen.volunteerPath, builder: (context, state) => const SettingsScreen()),
-          GoRoute(path: VolunteerShell.profilePath, builder: (context, state) => const PlaceholderScreen(title: 'Profile')),
+          GoRoute(path: VolunteerProfileScreen.path, builder: (context, state) => const VolunteerProfileScreen()),
         ],
       ),
       // Organization app shell
@@ -105,7 +116,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
           GoRoute(path: OrganizerReceivedApplications.path, builder: (context, state) => const OrganizerReceivedApplications()),
-          GoRoute(path: OrganizerProfileScreen.path, builder: (context, state) => const OrganizerProfileScreen()),
+          GoRoute(path: OrganizerProfileScreen.organizerPathTemplate, builder: (context, state) => const OrganizerProfileScreen()),
           GoRoute(path: SettingsScreen.orgPath, builder: (context, state) => const SettingsScreen()),
         ],
       ),

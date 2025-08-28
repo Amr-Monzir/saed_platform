@@ -14,7 +14,7 @@ class VolunteerProfile with _$VolunteerProfile {
     String? city,
     String? country,
     required bool onboardingCompleted,
-    @Default([]) List<SkillResponse> skills,
+    @Default([]) List<Skill> skills,
     String? email,
   }) = _VolunteerProfile;
 

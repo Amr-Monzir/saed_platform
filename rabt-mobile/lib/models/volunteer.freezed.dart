@@ -27,7 +27,7 @@ mixin _$VolunteerProfile {
   String? get city => throw _privateConstructorUsedError;
   String? get country => throw _privateConstructorUsedError;
   bool get onboardingCompleted => throw _privateConstructorUsedError;
-  List<SkillResponse> get skills => throw _privateConstructorUsedError;
+  List<Skill> get skills => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
 
   /// Serializes this VolunteerProfile to a JSON map.
@@ -54,7 +54,7 @@ abstract class $VolunteerProfileCopyWith<$Res> {
     String? city,
     String? country,
     bool onboardingCompleted,
-    List<SkillResponse> skills,
+    List<Skill> skills,
     String? email,
   });
 }
@@ -119,7 +119,7 @@ class _$VolunteerProfileCopyWithImpl<$Res, $Val extends VolunteerProfile>
                 null == skills
                     ? _value.skills
                     : skills // ignore: cast_nullable_to_non_nullable
-                        as List<SkillResponse>,
+                        as List<Skill>,
             email:
                 freezed == email
                     ? _value.email
@@ -147,7 +147,7 @@ abstract class _$$VolunteerProfileImplCopyWith<$Res>
     String? city,
     String? country,
     bool onboardingCompleted,
-    List<SkillResponse> skills,
+    List<Skill> skills,
     String? email,
   });
 }
@@ -211,7 +211,7 @@ class __$$VolunteerProfileImplCopyWithImpl<$Res>
             null == skills
                 ? _value._skills
                 : skills // ignore: cast_nullable_to_non_nullable
-                    as List<SkillResponse>,
+                    as List<Skill>,
         email:
             freezed == email
                 ? _value.email
@@ -233,7 +233,7 @@ class _$VolunteerProfileImpl implements _VolunteerProfile {
     this.city,
     this.country,
     required this.onboardingCompleted,
-    final List<SkillResponse> skills = const [],
+    final List<Skill> skills = const [],
     this.email,
   }) : _skills = skills;
 
@@ -252,10 +252,10 @@ class _$VolunteerProfileImpl implements _VolunteerProfile {
   final String? country;
   @override
   final bool onboardingCompleted;
-  final List<SkillResponse> _skills;
+  final List<Skill> _skills;
   @override
   @JsonKey()
-  List<SkillResponse> get skills {
+  List<Skill> get skills {
     if (_skills is EqualUnmodifiableListView) return _skills;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_skills);
@@ -325,7 +325,7 @@ abstract class _VolunteerProfile implements VolunteerProfile {
     final String? city,
     final String? country,
     required final bool onboardingCompleted,
-    final List<SkillResponse> skills,
+    final List<Skill> skills,
     final String? email,
   }) = _$VolunteerProfileImpl;
 
@@ -345,7 +345,7 @@ abstract class _VolunteerProfile implements VolunteerProfile {
   @override
   bool get onboardingCompleted;
   @override
-  List<SkillResponse> get skills;
+  List<Skill> get skills;
   @override
   String? get email;
 

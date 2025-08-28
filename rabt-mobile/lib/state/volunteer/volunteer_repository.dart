@@ -31,3 +31,12 @@ class VolunteerRepository {
 }
 
 final volunteerRepositoryProvider = Provider((ref) => VolunteerRepository(ref));
+
+// Provider for volunteer profile
+final volunteerProfileProvider = FutureProvider<VolunteerProfile?>((ref) async {
+  final session = ref.watch(authControllerProvider).value;
+  if (session == null) return null;
+  
+  final repository = ref.watch(volunteerRepositoryProvider);
+  return repository.fetchVolunteerProfile();
+});

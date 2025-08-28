@@ -161,7 +161,7 @@ class _CreateAdvertWizardState extends ConsumerState<CreateAdvertWizard> with Au
       postcode: _postcodeController.text.trim().isNotEmpty ? _postcodeController.text.trim() : null,
       isActive: true,
       organizer: OrganizerProfile(id: 1, name: 'Me'),
-      requiredSkills: _skills.map((s) => SkillResponse(id: 1, name: s, isPredefined: true)).toList(),
+      requiredSkills: _skills.map((s) => Skill(id: 1, name: s, isPredefined: true)).toList(),
       oneoffDetails:
           _frequency == FrequencyType.oneOff
               ? OneOffAdvertDetails(

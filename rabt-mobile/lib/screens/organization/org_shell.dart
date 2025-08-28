@@ -36,7 +36,7 @@ class _OrgShellState extends State<OrgShell> {
               context.go(OrganizerReceivedApplications.path);
               break;
             case 2:
-              context.go(OrganizerProfileScreen.path);
+              context.go(OrganizerProfileScreen.organizerPathTemplate);
               break;
             case 3:
               context.go(SettingsScreen.orgPath);
