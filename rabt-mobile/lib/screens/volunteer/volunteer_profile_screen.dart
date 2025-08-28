@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rabt_mobile/models/volunteer.dart';
+import 'package:rabt_mobile/state/skills/skills_providers.dart';
 import 'package:rabt_mobile/state/volunteer/volunteer_repository.dart';
 import 'package:rabt_mobile/widgets/app_button.dart';
 import 'package:rabt_mobile/widgets/app_card.dart';
@@ -360,19 +361,41 @@ class _VolunteerProfileScreenState extends ConsumerState<VolunteerProfileScreen>
   }
 
   Widget _buildSkillsSelector() {
-    // This would need to be connected to a skills provider
-    // For now, showing a placeholder
+    final allSkillsAsync = ref.watch(allSkillsProvider);
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3)),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Text(
-        'Skills selection coming soon...',
-        style: Theme.of(
-          context,
-        ).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
+      child: allSkillsAsync.when(
+        data: (skills) {
+          return Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children:
+                skills
+                    .map(
+                      (skill) => BadgeChip(
+                        label: skill.name,
+                        isSelected: _selectedSkillIds.contains(skill.id),
+                        onTap: () {
+                          setState(() {
+                            if (_selectedSkillIds.contains(skill.id)) {
+                              _selectedSkillIds.remove(skill.id);
+                            } else {
+                              _selectedSkillIds.add(skill.id);
+                            }
+                          });
+                        },
+                      ),
+                    )
+                    .toList(),
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Text('Error loading skills: $error'),
       ),
     );
   }

@@ -47,7 +47,9 @@ async def upload_logo(
     current_user: User = Depends(require_organizer),
     db: Session = Depends(get_db),
 ):
-    relative_path = save_image(file=file, category="logos", entity_id=current_user.organizer.id)
+    relative_path = save_image(
+        file=file, category="logos", entity_id=current_user.organizer.id
+    )
     # Store as "/uploads/<relative_path>" since app mounts uploads at /uploads
     logo_url = f"/uploads/{relative_path}"
 

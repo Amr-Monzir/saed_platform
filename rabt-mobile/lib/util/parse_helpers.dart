@@ -17,12 +17,13 @@ T parseObject<T>(http.Response resp, T Function(Map<String,dynamic>) fromJson) {
   return fromJson(map);
 }
 
-List<T> parseList<T>(http.Response resp, T Function(Map<String,dynamic>) fromJson) {
+List<T> parseList<T>(http.Response resp, T Function(Map<String,dynamic>) fromJson, {String? key}) {
   if (resp.statusCode < 200 || resp.statusCode >= 300) {
     final m = jsonDecode(resp.body);
     throw ApiException(m['detail']?.toString() ?? 'API error', resp.statusCode);
   }
-  final list = jsonDecode(resp.body) as List;
+  final map = jsonDecode(resp.body) as Map<String, dynamic>;
+  final list = map[key ?? 'items'] as List<dynamic>;
   return list.map((e) => fromJson(e as Map<String, dynamic>)).toList();
 }
 

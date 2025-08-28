@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../models/skill.dart';
-import '../../services/api_service.dart';
-import '../auth/auth_providers.dart';
+import 'package:rabt_mobile/models/skill.dart';
+import 'package:rabt_mobile/services/api_service.dart';
+import 'package:rabt_mobile/state/auth/auth_providers.dart';
+import 'package:rabt_mobile/util/parse_helpers.dart';
 
 class SkillsRepository {
   SkillsRepository(this.ref);
@@ -14,7 +14,7 @@ class SkillsRepository {
     final resp = await ref
         .read(apiServiceProvider)
         .get('/api/v1/skills', headers: ref.read(apiServiceProvider).authHeaders(token));
-    return (resp.body as List).map((e) => Skill.fromJson(e)).toList();
+    return parseList(resp, Skill.fromJson, key: 'skills');
   }
 
   Future<void> createSkill(String name, String category) async {
@@ -25,11 +25,22 @@ class SkillsRepository {
       'is_predefined': false,
     }, headers: ref.read(apiServiceProvider).authHeaders(token));
   }
+
+  Future<List<Skill>> getPredefinedSkills() async {
+    final token = ref.read(authControllerProvider).value?.token;
+    final resp = await ref
+        .read(apiServiceProvider)
+        .get('/api/v1/skills/predefined', headers: ref.read(apiServiceProvider).authHeaders(token));
+    return parseList(resp, Skill.fromJson);
+  }
+
+  Future<List<Skill>> getUserSkills() async {
+    final token = ref.read(authControllerProvider).value?.token;
+    final resp = await ref
+        .read(apiServiceProvider)
+        .get('/api/v1/skills/user-skills', headers: ref.read(apiServiceProvider).authHeaders(token));
+    return parseList(resp, Skill.fromJson);
+  }
 }
 
 final skillsRepositoryProvider = Provider((ref) => SkillsRepository(ref));
-
-final skillsProvider = FutureProvider<List<Skill>>((ref) async {
-  final repository = ref.watch(skillsRepositoryProvider);
-  return repository.getSkills();
-});
