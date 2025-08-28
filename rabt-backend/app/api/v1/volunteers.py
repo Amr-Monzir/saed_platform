@@ -23,7 +23,9 @@ def register_volunteer(volunteer_data: VolunteerCreate, db: Session = Depends(ge
 
 @router.get("/profile", response_model=VolunteerResponse)
 def get_volunteer_profile(current_user: User = Depends(require_volunteer)):
-    return current_user.volunteer
+    volunteer = current_user.volunteer
+    volunteer.email = current_user.email
+    return volunteer
 
 
 @router.put("/profile", response_model=VolunteerResponse)

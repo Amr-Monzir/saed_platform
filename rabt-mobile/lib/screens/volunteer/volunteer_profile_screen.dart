@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rabt_mobile/models/volunteer.dart';
+import 'package:rabt_mobile/state/auth/auth_providers.dart';
 import 'package:rabt_mobile/state/skills/skills_providers.dart';
 import 'package:rabt_mobile/state/volunteer/volunteer_repository.dart';
 import 'package:rabt_mobile/widgets/app_button.dart';
@@ -26,7 +27,7 @@ class _VolunteerProfileScreenState extends ConsumerState<VolunteerProfileScreen>
   late TextEditingController _phoneController;
   late TextEditingController _cityController;
   late TextEditingController _countryController;
-
+  late TextEditingController _emailController;
   // Selected skills for edit mode
   Set<int> _selectedSkillIds = {};
 
@@ -37,6 +38,7 @@ class _VolunteerProfileScreenState extends ConsumerState<VolunteerProfileScreen>
     _phoneController = TextEditingController();
     _cityController = TextEditingController();
     _countryController = TextEditingController();
+    _emailController = TextEditingController();
   }
 
   @override
@@ -45,6 +47,7 @@ class _VolunteerProfileScreenState extends ConsumerState<VolunteerProfileScreen>
     _phoneController.dispose();
     _cityController.dispose();
     _countryController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 
@@ -56,6 +59,7 @@ class _VolunteerProfileScreenState extends ConsumerState<VolunteerProfileScreen>
       _cityController.text = profile.city ?? '';
       _countryController.text = profile.country ?? '';
       _selectedSkillIds = profile.skills.map((skill) => skill.id).toSet();
+      _emailController.text = profile.email ?? '';
     });
   }
 
@@ -228,6 +232,8 @@ class _VolunteerProfileScreenState extends ConsumerState<VolunteerProfileScreen>
                         AppTextField(controller: _cityController, label: 'City'),
                         const SizedBox(height: 16),
                         AppTextField(controller: _countryController, label: 'Country'),
+                        const SizedBox(height: 16),
+                        AppTextField(label: 'Email', controller: _emailController, enabled: false),
                       ] else ...[
                         _buildDetailRow(context, 'Phone', profile.phoneNumber ?? 'Not provided', Icons.phone),
                         if (profile.city != null) ...[

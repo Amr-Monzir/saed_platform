@@ -162,11 +162,15 @@ ThemeData buildDarkTheme() {
     contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.grey[700]!),
+    ),
+    disabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
       borderSide: const BorderSide(color: darkBorder),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: darkBorder),
+      borderSide: BorderSide(color: Colors.grey[700]!),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),

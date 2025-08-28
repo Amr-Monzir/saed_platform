@@ -8,6 +8,7 @@ class VolunteerBase(BaseModel):
     phone_number: Optional[str] = None
     city: Optional[str] = None
     country: Optional[str] = None
+    email: Optional[str] = None
 
 
 class VolunteerCreate(VolunteerBase):
