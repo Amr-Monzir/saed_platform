@@ -37,7 +37,7 @@ class AdvertsFiltersSheet extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             DropdownButtonFormField<FrequencyType>(
-              initialValue: filters.frequency,
+              value: filters.frequency,
               items: [
                 const DropdownMenuItem(child: Text('Any')),
                 ...FrequencyType.values.map((x) => DropdownMenuItem(value: x, child: Text(x.displayName))),
@@ -47,7 +47,7 @@ class AdvertsFiltersSheet extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
-              initialValue: filters.category,
+              value: filters.category,
               items: [
                 const DropdownMenuItem(child: Text('Any')),
                 ...kCategories.map((e) => DropdownMenuItem(value: e, child: Text(e))),
@@ -57,7 +57,7 @@ class AdvertsFiltersSheet extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<TimeCommitment>(
-              initialValue: filters.timeCommitment,
+              value: filters.timeCommitment,
               items: [
                 const DropdownMenuItem(child: Text('Any')),
                 ...commitments.map((label) => DropdownMenuItem(value: TimeCommitment.values.byName(label), child: Text(label))),
@@ -67,7 +67,7 @@ class AdvertsFiltersSheet extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<DayTimePeriod>(
-              initialValue: filters.timeOfDay,
+              value: filters.timeOfDay,
               items: [
                 const DropdownMenuItem(child: Text('Any')),
                 ...DayTimePeriod.values.map((x) => DropdownMenuItem(value: x, child: Text(x.displayName))),

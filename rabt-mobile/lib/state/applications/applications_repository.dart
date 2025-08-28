@@ -35,7 +35,7 @@ class ApplicationsRepository {
 
   Future<Application> updateStatus(int id, ApplicationStatus status, {String? organizerMessage}) async {
     final token = ref.read(authControllerProvider).value?.token;
-    final resp = await ref.read(apiServiceProvider).post('/api/v1/applications/$id', {
+    final resp = await ref.read(apiServiceProvider).put('/api/v1/applications/$id/status', {
       'status': status.name,
       'organizer_message': organizerMessage,
     }, headers: ref.read(apiServiceProvider).authHeaders(token));

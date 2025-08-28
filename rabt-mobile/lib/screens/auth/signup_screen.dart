@@ -45,7 +45,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               DropdownButtonFormField<UserType>(
-                initialValue: _type,
+                value: _type,
                 items: const [
                   DropdownMenuItem(value: UserType.volunteer, child: Text('Volunteer')),
                   DropdownMenuItem(value: UserType.organizer, child: Text('Organization')),

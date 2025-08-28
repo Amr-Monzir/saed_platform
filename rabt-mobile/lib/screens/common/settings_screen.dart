@@ -32,7 +32,7 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
                     DropdownButtonFormField<int>(
-                      initialValue: ref.watch(userPrefsProvider).distanceMiles,
+                      value: ref.watch(userPrefsProvider).distanceMiles,
                       items: const [5, 10, 25, 50]
                           .map((e) => DropdownMenuItem(value: e, child: Text('$e miles')))
                           .toList(),

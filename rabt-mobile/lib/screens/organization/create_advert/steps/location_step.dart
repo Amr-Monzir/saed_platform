@@ -38,7 +38,7 @@ class LocationStep extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             DropdownButtonFormField<LocationType>(
-              initialValue: locationType,
+              value: locationType,
               items: LocationType.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))).toList(),
               onChanged: onLocationTypeChanged,
               decoration: const InputDecoration(labelText: 'Location Type *'),
