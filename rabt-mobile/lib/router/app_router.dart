@@ -9,6 +9,7 @@ import 'package:rabt_mobile/screens/auth/login_screen.dart';
 import 'package:rabt_mobile/screens/auth/signup_organizer_screen.dart';
 import 'package:rabt_mobile/screens/auth/signup_screen.dart';
 import 'package:rabt_mobile/screens/common/settings_screen.dart';
+import 'package:rabt_mobile/screens/guest/guest_shell.dart';
 import 'package:rabt_mobile/screens/organization/create_advert/create_advert_wizard.dart';
 import 'package:rabt_mobile/screens/organization/my_adverts_screen.dart';
 import 'package:rabt_mobile/screens/organization/org_shell.dart';
@@ -30,7 +31,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       final isOrg = auth.value?.userType == UserType.organizer;
       final loggingIn = state.matchedLocation == LoginScreen.path || state.matchedLocation == SignupScreen.path;
       if (state.matchedLocation == SplashScreen.path) {
-        if (!loggedIn) return LoginScreen.path;
+        if (!loggedIn) return AdvertsListScreen.guestPath;
         return isOrg ? MyAdvertsScreen.path : AdvertsListScreen.volunteerPath;
       }
       if (!loggedIn && state.matchedLocation.startsWith('/v')) return LoginScreen.path;
@@ -44,14 +45,25 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: OrganizerLoginScreen.path, builder: (context, state) => const OrganizerLoginScreen()),
       GoRoute(path: OrganizerSignupScreen.path, builder: (context, state) => const OrganizerSignupScreen()),
       GoRoute(path: SignupScreen.path, builder: (context, state) => const SignupScreen()),
+
       // Guest adverts listing
-      GoRoute(path: AdvertsListScreen.guestPath, builder: (context, state) => const AdvertsListScreen()),
-      GoRoute(
-        path: AdvertDetailScreen.guestPathTemplate,
-        builder: (context, state) {
-          final id = int.parse(state.pathParameters['id']!);
-          return AdvertDetailScreen(id: id);
-        },
+      ShellRoute(
+        builder: (context, state, child) => GuestShell(child: child),
+        routes: [
+          GoRoute(
+            path: AdvertsListScreen.guestPath,
+            builder: (context, state) => const AdvertsListScreen(),
+            routes: [
+              GoRoute(
+                path: AdvertDetailScreen.guestPathTemplate,
+                builder: (context, state) {
+                  final id = int.parse(state.pathParameters['id']!);
+                  return AdvertDetailScreen(id: id);
+                },
+              ),
+            ],
+          ),
+        ],
       ),
       // Volunteer app shell
       ShellRoute(
@@ -116,7 +128,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
           GoRoute(path: OrganizerReceivedApplications.path, builder: (context, state) => const OrganizerReceivedApplications()),
-          GoRoute(path: OrganizerProfileScreen.organizerPathTemplate, builder: (context, state) => const OrganizerProfileScreen()),
+          GoRoute(
+            path: OrganizerProfileScreen.organizerPathTemplate,
+            builder: (context, state) => const OrganizerProfileScreen(),
+          ),
           GoRoute(path: SettingsScreen.orgPath, builder: (context, state) => const SettingsScreen()),
         ],
       ),
