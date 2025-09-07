@@ -10,7 +10,6 @@ class VolunteerRepository {
   final Ref ref;
 
   Future<VolunteerProfile> fetchVolunteerProfile(String token) async {
-    print('fetching volunteer profile with token: $token');
     final resp = await ref
         .read(apiServiceProvider)
         .get('/api/v1/volunteers/profile', headers: ref.read(apiServiceProvider).authHeaders(token));

@@ -49,7 +49,7 @@ class LoginScreen extends ConsumerWidget {
                   emailController.text = email;
                   passController.text = password;
                 }
-                final ok = await ref.read(authControllerProvider.notifier).loginWithBackend(email: email, password: password, type: UserType.volunteer);
+                await ref.read(authControllerProvider.notifier).loginWithBackend(email: email, password: password, type: UserType.volunteer);
                 if (!context.mounted) return;
               },
               label: 'Login',

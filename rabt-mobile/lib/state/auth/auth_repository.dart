@@ -13,7 +13,6 @@ class AuthRepository {
       'username': email,
       'password': password,
     }, isAuthenticated: false);
-    print('login response: ${resp.body}');
     return Token.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
   }
 

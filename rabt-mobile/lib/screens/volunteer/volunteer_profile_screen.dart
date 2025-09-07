@@ -85,7 +85,6 @@ class _VolunteerProfileScreenState extends ConsumerState<VolunteerProfileScreen>
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile updated successfully')));
       }
     } catch (e) {
-      print(e);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error updating profile: $e')));
       }
