@@ -16,6 +16,16 @@ def get_skills(db: Session = Depends(get_db)):
     return {"skills": skills}
 
 
+@router.get("/signup", response_model=Dict[str, List[SkillResponse]])
+def get_signup_skills(db: Session = Depends(get_db)):
+    skills = (
+        db.query(Skill)
+        .filter(Skill.name != "None Required", Skill.name != "Other")
+        .all()
+    )
+    return {"skills": skills}
+
+
 @router.post("", response_model=SkillResponse, status_code=status.HTTP_201_CREATED)
 def create_skill(
     skill_data: SkillCreate,

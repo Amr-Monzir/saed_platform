@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app.database.connection import get_db
-from app.database.models import User, Volunteer
+from app.database.models import User
 from app.schemas.volunteer import VolunteerCreate, VolunteerResponse, VolunteerUpdate
 from app.services.user_service import UserService
 from app.api.dependencies import require_volunteer
