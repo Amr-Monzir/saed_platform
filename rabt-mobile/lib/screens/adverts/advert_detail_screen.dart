@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:rabt_mobile/models/enums.dart';
-import 'package:rabt_mobile/screens/auth/signup_screen.dart';
+import 'package:rabt_mobile/screens/auth/signup_volunteer_screen.dart';
 import 'package:rabt_mobile/screens/organization/received_applications/advert_received_applications.dart';
 import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
 import 'package:rabt_mobile/state/applications/applications_providers.dart';
@@ -142,7 +142,7 @@ class AdvertDetailScreen extends ConsumerWidget {
                                 onPressed: () async {
                                   final session = ref.read(authControllerProvider).value;
                                   if (session == null) {
-                                    context.push(SignupScreen.path);
+                                    context.push(SignupVolunteerScreen.path);
                                     return;
                                   }
                                   await ref
@@ -181,7 +181,7 @@ class AdvertDetailScreen extends ConsumerWidget {
                                           onPressed: () async {
                                             final session = ref.read(authControllerProvider).value;
                                             if (session == null) {
-                                              context.push(SignupScreen.path);
+                                              context.push(SignupVolunteerScreen.path);
                                               return;
                                             }
                                             await ref.read(closeAdvertControllerProvider.notifier).closeAdvert(advert.id);

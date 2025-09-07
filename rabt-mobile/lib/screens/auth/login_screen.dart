@@ -9,7 +9,7 @@ import '../../widgets/app_password_field.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../adverts/adverts_list_screen.dart';
 import '../volunteer/profile_setup_screen.dart';
-import 'signup_screen.dart';
+import 'signup_volunteer_screen.dart';
 import 'login_organizer_screen.dart';
 
 class LoginScreen extends ConsumerWidget {
@@ -31,8 +31,8 @@ class LoginScreen extends ConsumerWidget {
             Text('Rabt platform', style: Theme.of(context).textTheme.headlineMedium, textAlign: TextAlign.center),
             const SizedBox(height: 8),
             Text('Connect with organisations. Volunteer for Palestine.', style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
-            const SizedBox(height: 8),
-            Image.asset('assets/images/logo/rabt_logo_512.png', width: MediaQuery.of(context).size.width, fit: BoxFit.contain),
+            const Spacer(),
+            Image.asset('assets/images/logo/logo_no_bg.png', width: MediaQuery.of(context).size.width, fit: BoxFit.contain),
             const Spacer(),
             // Volunteer login only (switching to org login via link below)
             TextField(decoration: const InputDecoration(labelText: 'Email'), controller: emailController),
@@ -67,21 +67,21 @@ class LoginScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             AppButton(
-              onPressed: () => context.push(AdvertsListScreen.guestPath),
-              label: 'Continue as Guest Volunteer',
+              onPressed: () => context.go(AdvertsListScreen.guestPath),
+              label: 'Continue as Guest',
               variant: AppButtonVariant.outline,
             ),
             const SizedBox(height: 16),
             Center(
               child: TextButton(
-                onPressed: () => context.go(SignupScreen.path),
+                onPressed: () => context.push(SignupVolunteerScreen.path),
                 child: const Text('Need an account? Sign up'),
               ),
             ),
             const SizedBox(height: 8),
             Center(
               child: TextButton(
-                onPressed: () => context.go(OrganizerLoginScreen.path),
+                onPressed: () => context.push(OrganizerLoginScreen.path),
                 child: const Text('Login as Organization'),
               ),
             ),

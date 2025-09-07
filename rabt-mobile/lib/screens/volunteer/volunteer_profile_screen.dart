@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rabt_mobile/models/volunteer.dart';
-import 'package:rabt_mobile/state/auth/auth_providers.dart';
 import 'package:rabt_mobile/state/skills/skills_providers.dart';
 import 'package:rabt_mobile/state/volunteer/volunteer_repository.dart';
 import 'package:rabt_mobile/widgets/app_button.dart';
@@ -80,8 +79,6 @@ class _VolunteerProfileScreenState extends ConsumerState<VolunteerProfileScreen>
           .update(
             name: _nameController.text.trim(),
             phoneNumber: _phoneController.text.trim().isEmpty ? null : _phoneController.text.trim(),
-            city: _cityController.text.trim().isEmpty ? null : _cityController.text.trim(),
-            country: _countryController.text.trim().isEmpty ? null : _countryController.text.trim(),
             skillIds: _selectedSkillIds.toList(),
           );
 

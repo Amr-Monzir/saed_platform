@@ -36,7 +36,7 @@ class _VolunteerProfileSetupScreenState extends ConsumerState<VolunteerProfileSe
             const Text('Select skills'),
             Wrap(
               spacing: 8,
-              children: kSkills.map((s) {
+              children: kSkillsChooseList.map((s) {
                 final selected = _skills.contains(s);
                 return FilterChip(
                   label: Text(s),

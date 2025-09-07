@@ -31,8 +31,6 @@ class UserService:
             user_id=user.id,
             name=volunteer_data.name,
             phone_number=volunteer_data.phone_number,
-            city=volunteer_data.city,
-            country=volunteer_data.country,
         )
         db.add(volunteer)
 

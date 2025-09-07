@@ -5,10 +5,8 @@ from app.schemas.skill import SkillResponse
 
 class VolunteerBase(BaseModel):
     name: str
+    email: str
     phone_number: Optional[str] = None
-    city: Optional[str] = None
-    country: Optional[str] = None
-    email: Optional[str] = None
 
 
 class VolunteerCreate(VolunteerBase):

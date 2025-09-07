@@ -64,8 +64,6 @@ class Volunteer(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     name = Column(String, nullable=False)
     phone_number = Column(String)
-    city = Column(String)
-    country = Column(String)
     onboarding_completed = Column(Boolean, default=False)
 
     # Relationships

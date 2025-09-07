@@ -7,7 +7,7 @@ import 'package:rabt_mobile/screens/adverts/adverts_list_screen.dart';
 import 'package:rabt_mobile/screens/auth/login_organizer_screen.dart';
 import 'package:rabt_mobile/screens/auth/login_screen.dart';
 import 'package:rabt_mobile/screens/auth/signup_organizer_screen.dart';
-import 'package:rabt_mobile/screens/auth/signup_screen.dart';
+import 'package:rabt_mobile/screens/auth/signup_volunteer_screen.dart';
 import 'package:rabt_mobile/screens/common/settings_screen.dart';
 import 'package:rabt_mobile/screens/guest/guest_shell.dart';
 import 'package:rabt_mobile/screens/organization/create_advert/create_advert_wizard.dart';
@@ -29,7 +29,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final loggedIn = auth.value != null;
       final isOrg = auth.value?.userType == UserType.organizer;
-      final loggingIn = state.matchedLocation == LoginScreen.path || state.matchedLocation == SignupScreen.path;
+      final loggingIn = state.matchedLocation == LoginScreen.path || state.matchedLocation == SignupVolunteerScreen.path;
       if (state.matchedLocation == SplashScreen.path) {
         if (!loggedIn) return AdvertsListScreen.guestPath;
         return isOrg ? MyAdvertsScreen.path : AdvertsListScreen.volunteerPath;
@@ -44,7 +44,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: LoginScreen.path, builder: (context, state) => const LoginScreen()),
       GoRoute(path: OrganizerLoginScreen.path, builder: (context, state) => const OrganizerLoginScreen()),
       GoRoute(path: OrganizerSignupScreen.path, builder: (context, state) => const OrganizerSignupScreen()),
-      GoRoute(path: SignupScreen.path, builder: (context, state) => const SignupScreen()),
+      GoRoute(path: SignupVolunteerScreen.path, builder: (context, state) => const SignupVolunteerScreen()),
 
       // Guest adverts listing
       ShellRoute(

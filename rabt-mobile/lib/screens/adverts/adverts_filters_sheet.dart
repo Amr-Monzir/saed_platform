@@ -82,7 +82,7 @@ class AdvertsFiltersSheet extends ConsumerWidget {
               spacing: 8,
               runSpacing: 4,
               children:
-                  kSkills.map((s) {
+                  kSkillsCreateAdvert.map((s) {
                     final selected = filters.skills.contains(s);
                     return FilterChip(label: Text(s), selected: selected, onSelected: (_) => ctrl.toggleSkill(s));
                   }).toList(),

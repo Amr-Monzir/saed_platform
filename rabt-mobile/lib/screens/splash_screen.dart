@@ -37,7 +37,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
             child: Image.asset(
-              'assets/images/logo/rabt_logo_512.png',
+              'assets/images/logo/logo_no_bg.png',
               width: MediaQuery.of(context).size.width,
               fit: BoxFit.contain,
             ),

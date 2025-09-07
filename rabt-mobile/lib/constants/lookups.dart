@@ -10,7 +10,7 @@ const List<String> kCategories = [
   'Other',
 ];
 
-const List<String> kSkills = [
+const List<String> kSkillsCreateAdvert = [
   'Graphic Design',
   'Social Media',
   'Translation',
@@ -21,6 +21,17 @@ const List<String> kSkills = [
   'Research',
   'Other',
   'No Skills Required',
+];
+
+const List<String> kSkillsChooseList = [
+  'Graphic Design',
+  'Social Media',
+  'Translation',
+  'Public Speaking',
+  'Event Planning',
+  'Photography',
+  'Writing',
+  'Research',
 ];
 
 const List<String> kTimeCommitmentOneOff = [
@@ -35,13 +46,6 @@ const List<String> kTimeCommitmentRecurring = [
   'Weekly: 6–10h',
   'Weekly: 11–20h',
   'Weekly: 20+h',
-];
-
-const List<String> kTimesOfDay = [
-  'Morning',
-  'Afternoon',
-  'Evening',
-  'Flexible',
 ];
 
 const List<int> kDistancesMiles = [5, 10, 25, 50];

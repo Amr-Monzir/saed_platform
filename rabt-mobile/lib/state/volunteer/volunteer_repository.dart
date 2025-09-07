@@ -17,13 +17,11 @@ class VolunteerRepository {
     return VolunteerProfile.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
   }
 
-  Future<VolunteerProfile> update({String? name, String? phoneNumber, String? city, String? country, List<int>? skillIds}) async {
+  Future<VolunteerProfile> update({String? name, String? phoneNumber, List<int>? skillIds}) async {
     final token = ref.read(authControllerProvider).value?.token;
     final resp = await ref.read(apiServiceProvider).put('/api/v1/volunteers/profile', {
       if (name != null) 'name': name,
       if (phoneNumber != null) 'phone_number': phoneNumber,
-      if (city != null) 'city': city,
-      if (country != null) 'country': country,
       if (skillIds != null) 'skill_ids': skillIds,
     }, headers: ref.read(apiServiceProvider).authHeaders(token));
     return VolunteerProfile.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);

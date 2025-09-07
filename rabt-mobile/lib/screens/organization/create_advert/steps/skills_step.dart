@@ -33,7 +33,7 @@ class SkillsStep extends StatelessWidget {
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: kSkills.map((s) {
+            children: kSkillsCreateAdvert.map((s) {
               final selected = selectedSkills.contains(s);
               return FilterChip(
                 label: Text(s),

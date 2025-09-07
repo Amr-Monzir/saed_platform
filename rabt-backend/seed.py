@@ -147,8 +147,6 @@ def seed_data():
                 user_id=user.id,
                 name=fake.name(),
                 phone_number=fake.phone_number(),
-                city=fake.city(),
-                country=fake.country(),
                 onboarding_completed=True,
             )
             db.add(volunteer)
