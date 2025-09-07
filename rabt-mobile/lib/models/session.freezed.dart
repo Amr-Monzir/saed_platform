@@ -25,6 +25,7 @@ mixin _$SessionData {
   UserType get userType => throw _privateConstructorUsedError;
   String? get pendingAdvertId => throw _privateConstructorUsedError;
   OrganizerProfile? get organizerProfile => throw _privateConstructorUsedError;
+  VolunteerProfile? get volunteerProfile => throw _privateConstructorUsedError;
   String? get refreshToken => throw _privateConstructorUsedError;
 
   /// Serializes this SessionData to a JSON map.
@@ -49,10 +50,12 @@ abstract class $SessionDataCopyWith<$Res> {
     UserType userType,
     String? pendingAdvertId,
     OrganizerProfile? organizerProfile,
+    VolunteerProfile? volunteerProfile,
     String? refreshToken,
   });
 
   $OrganizerProfileCopyWith<$Res>? get organizerProfile;
+  $VolunteerProfileCopyWith<$Res>? get volunteerProfile;
 }
 
 /// @nodoc
@@ -74,6 +77,7 @@ class _$SessionDataCopyWithImpl<$Res, $Val extends SessionData>
     Object? userType = null,
     Object? pendingAdvertId = freezed,
     Object? organizerProfile = freezed,
+    Object? volunteerProfile = freezed,
     Object? refreshToken = freezed,
   }) {
     return _then(
@@ -98,6 +102,11 @@ class _$SessionDataCopyWithImpl<$Res, $Val extends SessionData>
                     ? _value.organizerProfile
                     : organizerProfile // ignore: cast_nullable_to_non_nullable
                         as OrganizerProfile?,
+            volunteerProfile:
+                freezed == volunteerProfile
+                    ? _value.volunteerProfile
+                    : volunteerProfile // ignore: cast_nullable_to_non_nullable
+                        as VolunteerProfile?,
             refreshToken:
                 freezed == refreshToken
                     ? _value.refreshToken
@@ -121,6 +130,20 @@ class _$SessionDataCopyWithImpl<$Res, $Val extends SessionData>
       return _then(_value.copyWith(organizerProfile: value) as $Val);
     });
   }
+
+  /// Create a copy of SessionData
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $VolunteerProfileCopyWith<$Res>? get volunteerProfile {
+    if (_value.volunteerProfile == null) {
+      return null;
+    }
+
+    return $VolunteerProfileCopyWith<$Res>(_value.volunteerProfile!, (value) {
+      return _then(_value.copyWith(volunteerProfile: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -137,11 +160,14 @@ abstract class _$$SessionDataImplCopyWith<$Res>
     UserType userType,
     String? pendingAdvertId,
     OrganizerProfile? organizerProfile,
+    VolunteerProfile? volunteerProfile,
     String? refreshToken,
   });
 
   @override
   $OrganizerProfileCopyWith<$Res>? get organizerProfile;
+  @override
+  $VolunteerProfileCopyWith<$Res>? get volunteerProfile;
 }
 
 /// @nodoc
@@ -162,6 +188,7 @@ class __$$SessionDataImplCopyWithImpl<$Res>
     Object? userType = null,
     Object? pendingAdvertId = freezed,
     Object? organizerProfile = freezed,
+    Object? volunteerProfile = freezed,
     Object? refreshToken = freezed,
   }) {
     return _then(
@@ -186,6 +213,11 @@ class __$$SessionDataImplCopyWithImpl<$Res>
                 ? _value.organizerProfile
                 : organizerProfile // ignore: cast_nullable_to_non_nullable
                     as OrganizerProfile?,
+        volunteerProfile:
+            freezed == volunteerProfile
+                ? _value.volunteerProfile
+                : volunteerProfile // ignore: cast_nullable_to_non_nullable
+                    as VolunteerProfile?,
         refreshToken:
             freezed == refreshToken
                 ? _value.refreshToken
@@ -205,6 +237,7 @@ class _$SessionDataImpl implements _SessionData {
     required this.userType,
     this.pendingAdvertId,
     this.organizerProfile,
+    this.volunteerProfile,
     this.refreshToken,
   });
 
@@ -220,11 +253,13 @@ class _$SessionDataImpl implements _SessionData {
   @override
   final OrganizerProfile? organizerProfile;
   @override
+  final VolunteerProfile? volunteerProfile;
+  @override
   final String? refreshToken;
 
   @override
   String toString() {
-    return 'SessionData(token: $token, userType: $userType, pendingAdvertId: $pendingAdvertId, organizerProfile: $organizerProfile, refreshToken: $refreshToken)';
+    return 'SessionData(token: $token, userType: $userType, pendingAdvertId: $pendingAdvertId, organizerProfile: $organizerProfile, volunteerProfile: $volunteerProfile, refreshToken: $refreshToken)';
   }
 
   @override
@@ -239,6 +274,8 @@ class _$SessionDataImpl implements _SessionData {
                 other.pendingAdvertId == pendingAdvertId) &&
             (identical(other.organizerProfile, organizerProfile) ||
                 other.organizerProfile == organizerProfile) &&
+            (identical(other.volunteerProfile, volunteerProfile) ||
+                other.volunteerProfile == volunteerProfile) &&
             (identical(other.refreshToken, refreshToken) ||
                 other.refreshToken == refreshToken));
   }
@@ -251,6 +288,7 @@ class _$SessionDataImpl implements _SessionData {
     userType,
     pendingAdvertId,
     organizerProfile,
+    volunteerProfile,
     refreshToken,
   );
 
@@ -274,6 +312,7 @@ abstract class _SessionData implements SessionData {
     required final UserType userType,
     final String? pendingAdvertId,
     final OrganizerProfile? organizerProfile,
+    final VolunteerProfile? volunteerProfile,
     final String? refreshToken,
   }) = _$SessionDataImpl;
 
@@ -288,6 +327,8 @@ abstract class _SessionData implements SessionData {
   String? get pendingAdvertId;
   @override
   OrganizerProfile? get organizerProfile;
+  @override
+  VolunteerProfile? get volunteerProfile;
   @override
   String? get refreshToken;
 

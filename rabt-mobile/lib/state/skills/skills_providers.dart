@@ -7,6 +7,11 @@ final allSkillsProvider = FutureProvider<List<Skill>>((ref) async {
   return repository.getSkills();
 });
 
+final skillsForSignupProvider = FutureProvider<List<Skill>>((ref) async {
+  final repository = ref.watch(skillsRepositoryProvider);
+  return repository.getSkillsForSignup();
+});
+
 final predefinedSkillsProvider = FutureProvider<List<Skill>>((ref) async {
   final repository = ref.watch(skillsRepositoryProvider);
   return repository.getPredefinedSkills();

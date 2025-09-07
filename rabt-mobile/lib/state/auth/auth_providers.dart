@@ -1,8 +1,12 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:rabt_mobile/models/enums.dart';
+import 'package:rabt_mobile/models/organizer.dart';
 import 'package:rabt_mobile/models/session.dart';
+import 'package:rabt_mobile/models/user.dart';
+import 'package:rabt_mobile/models/volunteer.dart';
 import 'package:rabt_mobile/state/organizer/organizer_repository.dart';
+import 'package:rabt_mobile/state/volunteer/volunteer_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'auth_repository.dart';
 
@@ -26,31 +30,97 @@ class AuthController extends _$AuthController {
     return session;
   }
 
-  Future<bool> signup({required String email, required String password, required UserType type}) async {
-    await Future.delayed(const Duration(milliseconds: 400));
-    final fakeToken = 'token_${DateTime.now().millisecondsSinceEpoch}';
-    final session = SessionData(token: fakeToken, userType: type);
+  /// Saves a token to storage and updates the current session
+  Future<void> saveTokenToStorage({
+    required Token token,
+    required UserType userType,
+    String? pendingAdvertId,
+    OrganizerProfile? organizerProfile,
+    VolunteerProfile? volunteerProfile,
+  }) async {
+    var session = SessionData(
+      token: token.accessToken,
+      userType: userType,
+      refreshToken: token.refreshToken,
+      pendingAdvertId: pendingAdvertId,
+    );
+
+    session = SessionData(
+      token: token.accessToken,
+      userType: userType,
+      organizerProfile: organizerProfile,
+      volunteerProfile: volunteerProfile,
+      refreshToken: token.refreshToken,
+      pendingAdvertId: pendingAdvertId,
+    );
+
     await _storage.write(key: _sessionKey, value: jsonEncode(session.toJson()));
-    state = AsyncData(session);
-    return true;
   }
 
   Future<bool> loginWithBackend({required String email, required String password, required UserType type}) async {
     final token = await ref.read(authRepositoryProvider).login(email: email, password: password);
 
-    var session = SessionData(token: token.accessToken, userType: type, refreshToken: token.refreshToken);
+    OrganizerProfile? organizerProfile;
+    VolunteerProfile? volunteerProfile;
+
     if (type == UserType.organizer) {
-      final profile = await ref.read(organizerRepositoryProvider).fetchOrganizerProfile(token.accessToken);
-      session = SessionData(
-        token: token.accessToken,
-        userType: UserType.organizer,
-        organizerProfile: profile,
-        refreshToken: token.refreshToken,
-      );
+      organizerProfile = await ref.read(organizerRepositoryProvider).fetchOrganizerProfile(token.accessToken);
+    } else if (type == UserType.volunteer) {
+      volunteerProfile = await ref.read(volunteerRepositoryProvider).fetchVolunteerProfile(token.accessToken);
     }
 
-    await _storage.write(key: _sessionKey, value: jsonEncode(session.toJson()));
+    final session = SessionData(
+      token: token.accessToken,
+      userType: type,
+      organizerProfile: organizerProfile,
+      volunteerProfile: volunteerProfile,
+      refreshToken: token.refreshToken,
+    );
+    
+    await saveTokenToStorage(
+      token: token,
+      userType: type,
+      organizerProfile: organizerProfile,
+      volunteerProfile: volunteerProfile,
+    );
     state = AsyncData(session);
+    return true;
+  }
+
+  Future<bool> signupVolunteer({
+    required String email,
+    required String password,
+    required List<int> skillIds,
+    required String name,
+    required String phoneNumber,
+  }) async {
+    await ref
+        .read(authRepositoryProvider)
+        .signupVolunteer(email: email, password: password, skillIds: skillIds, name: name, phoneNumber: phoneNumber);
+    return true;
+  }
+
+  /// Updates the volunteer profile in the current session
+  Future<void> updateVolunteerProfileInSession(VolunteerProfile volunteerProfile) async {
+    final session = state.value;
+    if (session == null || session.userType != UserType.volunteer) return;
+
+    final token = Token(accessToken: session.token, tokenType: 'Bearer', refreshToken: session.refreshToken);
+
+    await saveTokenToStorage(
+      token: token,
+      userType: session.userType,
+      pendingAdvertId: session.pendingAdvertId,
+      volunteerProfile: volunteerProfile,
+    );
+  }
+
+  Future<bool> signupOrganizer({
+    required String email,
+    required String password,
+    required OrganizerProfileSignup organizerProfile,
+  }) async {
+    await ref.read(authRepositoryProvider).signupOrganizer(email: email, password: password, organizerProfile: organizerProfile);
     return true;
   }
 
@@ -61,28 +131,22 @@ class AuthController extends _$AuthController {
 
       final newToken = await ref.read(authRepositoryProvider).refreshToken(refreshToken: currentSession!.refreshToken!);
 
-      // Create new session with refreshed token
-      var newSession = SessionData(
-        token: newToken.accessToken,
-        userType: currentSession.userType,
-        refreshToken: newToken.refreshToken ?? currentSession.refreshToken,
-        pendingAdvertId: currentSession.pendingAdvertId,
-      );
+      OrganizerProfile? organizerProfile;
+      VolunteerProfile? volunteerProfile;
 
-      // If organizer, fetch profile again
       if (currentSession.userType == UserType.organizer) {
-        final profile = await ref.read(organizerRepositoryProvider).fetchOrganizerProfile(newToken.accessToken);
-        newSession = SessionData(
-          token: newToken.accessToken,
-          userType: UserType.organizer,
-          organizerProfile: profile,
-          refreshToken: newToken.refreshToken ?? currentSession.refreshToken,
-          pendingAdvertId: currentSession.pendingAdvertId,
-        );
+        organizerProfile = await ref.read(organizerRepositoryProvider).fetchOrganizerProfile(newToken.accessToken);
+      } else if (currentSession.userType == UserType.volunteer) {
+        volunteerProfile = await ref.read(volunteerRepositoryProvider).fetchVolunteerProfile(newToken.accessToken);
       }
 
-      await _storage.write(key: _sessionKey, value: jsonEncode(newSession.toJson()));
-      state = AsyncData(newSession);
+      await saveTokenToStorage(
+        token: newToken,
+        userType: currentSession.userType,
+        pendingAdvertId: currentSession.pendingAdvertId,
+        organizerProfile: organizerProfile,
+        volunteerProfile: volunteerProfile,
+      );
       return true;
     } catch (e) {
       // Refresh failed, clear session
@@ -91,12 +155,20 @@ class AuthController extends _$AuthController {
     }
   }
 
+  //for when guest is redirected to signup on clicking apply on advert detail screen
   Future<void> setPendingAdvert(String? advertId) async {
     final session = state.value;
     if (session == null) return;
-    final updated = SessionData(token: session.token, userType: session.userType, pendingAdvertId: advertId);
-    await _storage.write(key: _sessionKey, value: jsonEncode(updated.toJson()));
-    state = AsyncData(updated);
+
+    final token = Token(accessToken: session.token, tokenType: 'Bearer', refreshToken: session.refreshToken);
+
+    await saveTokenToStorage(
+      token: token,
+      userType: session.userType,
+      pendingAdvertId: advertId,
+      organizerProfile: session.organizerProfile,
+      volunteerProfile: session.volunteerProfile,
+    );
   }
 
   Future<void> logout() async {

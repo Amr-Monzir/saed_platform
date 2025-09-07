@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rabt_mobile/models/enums.dart';
-import 'package:rabt_mobile/screens/adverts/adverts_list_screen.dart';
-import 'package:rabt_mobile/screens/organization/my_adverts_screen.dart';
 import 'package:rabt_mobile/state/auth/auth_providers.dart';
-import 'package:rabt_mobile/state/volunteer/volunteer_repository.dart';
+import 'package:rabt_mobile/state/skills/skills_providers.dart';
 import 'package:rabt_mobile/widgets/app_button.dart';
 import 'package:rabt_mobile/widgets/app_text_field.dart';
-import 'package:rabt_mobile/constants/lookups.dart';
 
 class SignupVolunteerScreen extends ConsumerStatefulWidget {
   const SignupVolunteerScreen({super.key});
@@ -25,7 +21,7 @@ class _SignupVolunteerScreenState extends ConsumerState<SignupVolunteerScreen> {
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
-  final Set<String> _selectedSkills = {};
+  final Set<int> _selectedSkills = {};
 
   @override
   void dispose() {
@@ -38,7 +34,8 @@ class _SignupVolunteerScreenState extends ConsumerState<SignupVolunteerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = ref.watch(authControllerProvider).isLoading;
+    final allSkillsAsync = ref.watch(skillsForSignupProvider);
+    final isLoading = allSkillsAsync.isLoading || ref.watch(authControllerProvider).isLoading;
     return Scaffold(
       appBar: AppBar(title: const Text('Create your volunteer account')),
       body: SingleChildScrollView(
@@ -68,7 +65,7 @@ class _SignupVolunteerScreenState extends ConsumerState<SignupVolunteerScreen> {
               const Padding(
                 padding: EdgeInsets.only(left: 12, top: 4),
                 child: Text(
-                  'We need your email for login and notifications about updates to your applications.',
+                  'We need your email for login and notifications about updates to your',
                   style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ),
@@ -91,7 +88,7 @@ class _SignupVolunteerScreenState extends ConsumerState<SignupVolunteerScreen> {
               const Padding(
                 padding: EdgeInsets.only(left: 12, top: 4),
                 child: Text(
-                  'Organizers may need to contact you on your phone number if they accept your applications.',
+                  'Organizers may need to contact you on your phone number if they accept your application.',
                   style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ),
@@ -105,23 +102,28 @@ class _SignupVolunteerScreenState extends ConsumerState<SignupVolunteerScreen> {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children:
-                    kSkillsChooseList.map((skill) {
-                      final selected = _selectedSkills.contains(skill);
-                      return FilterChip(
-                        label: Text(skill),
-                        selected: selected,
-                        onSelected: (selected) {
-                          setState(() {
-                            if (selected) {
-                              _selectedSkills.add(skill);
-                            } else {
-                              _selectedSkills.remove(skill);
-                            }
-                          });
-                        },
-                      );
-                    }).toList(),
+                children: allSkillsAsync.when(
+                  data:
+                      (skills) =>
+                          skills.map((skill) {
+                            final selected = _selectedSkills.contains(skill.id);
+                            return FilterChip(
+                              label: Text(skill.name),
+                              selected: selected,
+                              onSelected: (selected) {
+                                setState(() {
+                                  if (selected) {
+                                    _selectedSkills.add(skill.id);
+                                  } else {
+                                    _selectedSkills.remove(skill.id);
+                                  }
+                                });
+                              },
+                            );
+                          }).toList(),
+                  error: (error, stack) => [Text('Error loading skills: $error')],
+                  loading: () => const [Center(child: CircularProgressIndicator())],
+                ),
               ),
               const SizedBox(height: 32),
 
@@ -146,34 +148,24 @@ class _SignupVolunteerScreenState extends ConsumerState<SignupVolunteerScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     try {
-      // First, create the user account
       final success = await ref
           .read(authControllerProvider.notifier)
-          .signup(email: _emailController.text.trim(), password: _passwordController.text, type: UserType.volunteer);
+          .signupVolunteer(
+            email: _emailController.text.trim(),
+            password: _passwordController.text,
+            skillIds: _selectedSkills.toList(),
+            name: _nameController.text.trim(),
+            phoneNumber: _phoneController.text.trim().isNotEmpty ? _phoneController.text.trim() : '',
+          );
 
       if (!context.mounted) return;
 
       if (success) {
-        // Create volunteer profile with collected information
-        await ref
-            .read(volunteerRepositoryProvider)
-            .update(
-              name: _nameController.text.trim(),
-              phoneNumber: _phoneController.text.trim().isNotEmpty ? _phoneController.text.trim() : null,
-              skillIds: _selectedSkills.map((skill) => kSkillsCreateAdvert.indexOf(skill)).toList(),
-            );
-
-        // Navigate to appropriate screen
-        final pending = ref.read(authControllerProvider).value?.pendingAdvertId;
-        if (pending != null) {
-          await ref.read(authControllerProvider.notifier).setPendingAdvert(null);
-          if (mounted) {
-            context.go(MyAdvertsScreen.path);
-          }
-        } else {
-          if (mounted) {
-            context.push(AdvertsListScreen.volunteerPath);
-          }
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Account created successfully! Please log in.')),
+          );
+          context.pop();
         }
       }
     } catch (e) {

@@ -31,7 +31,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       final isOrg = auth.value?.userType == UserType.organizer;
       final loggingIn = state.matchedLocation == LoginScreen.path || state.matchedLocation == SignupVolunteerScreen.path;
       if (state.matchedLocation == SplashScreen.path) {
-        if (!loggedIn) return AdvertsListScreen.guestPath;
+        if (!loggedIn && !loggingIn) return AdvertsListScreen.guestPath;
         return isOrg ? MyAdvertsScreen.path : AdvertsListScreen.volunteerPath;
       }
       if (!loggedIn && state.matchedLocation.startsWith('/v')) return LoginScreen.path;

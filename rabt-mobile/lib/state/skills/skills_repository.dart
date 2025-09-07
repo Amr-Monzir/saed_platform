@@ -10,10 +10,12 @@ class SkillsRepository {
   final Ref ref;
 
   Future<List<Skill>> getSkills() async {
-    final token = ref.read(authControllerProvider).value?.token;
-    final resp = await ref
-        .read(apiServiceProvider)
-        .get('/api/v1/skills', headers: ref.read(apiServiceProvider).authHeaders(token));
+    final resp = await ref.read(apiServiceProvider).get('/api/v1/skills');
+    return parseList(resp, Skill.fromJson, key: 'skills');
+  }
+
+  Future<List<Skill>> getSkillsForSignup() async {
+    final resp = await ref.read(apiServiceProvider).get('/api/v1/skills/signup');
     return parseList(resp, Skill.fromJson, key: 'skills');
   }
 

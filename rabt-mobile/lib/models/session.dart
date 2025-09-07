@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:rabt_mobile/models/enums.dart';
 import 'package:rabt_mobile/models/organizer.dart';
+import 'package:rabt_mobile/models/volunteer.dart';
 
 part 'session.freezed.dart';
 part 'session.g.dart';
@@ -13,6 +14,7 @@ class SessionData with _$SessionData {
     required UserType userType,
     String? pendingAdvertId,
     OrganizerProfile? organizerProfile,
+    VolunteerProfile? volunteerProfile,
     String? refreshToken, // Add refresh token field
   }) = _SessionData;
 

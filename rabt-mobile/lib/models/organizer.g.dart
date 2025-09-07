@@ -25,3 +25,21 @@ Map<String, dynamic> _$$OrganizerProfileImplToJson(
   'website': instance.website,
   'description': instance.description,
 };
+
+_$OrganizerProfileSignupImpl _$$OrganizerProfileSignupImplFromJson(
+  Map<String, dynamic> json,
+) => _$OrganizerProfileSignupImpl(
+  name: json['name'] as String,
+  logoUrl: json['logo_url'] as String,
+  website: json['website'] as String,
+  description: json['description'] as String,
+);
+
+Map<String, dynamic> _$$OrganizerProfileSignupImplToJson(
+  _$OrganizerProfileSignupImpl instance,
+) => <String, dynamic>{
+  'name': instance.name,
+  'logo_url': instance.logoUrl,
+  'website': instance.website,
+  'description': instance.description,
+};

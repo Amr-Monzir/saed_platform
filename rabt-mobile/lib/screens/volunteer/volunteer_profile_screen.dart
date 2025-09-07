@@ -24,8 +24,6 @@ class _VolunteerProfileScreenState extends ConsumerState<VolunteerProfileScreen>
   // Controllers for edit mode
   late TextEditingController _nameController;
   late TextEditingController _phoneController;
-  late TextEditingController _cityController;
-  late TextEditingController _countryController;
   late TextEditingController _emailController;
   // Selected skills for edit mode
   Set<int> _selectedSkillIds = {};
@@ -35,8 +33,6 @@ class _VolunteerProfileScreenState extends ConsumerState<VolunteerProfileScreen>
     super.initState();
     _nameController = TextEditingController();
     _phoneController = TextEditingController();
-    _cityController = TextEditingController();
-    _countryController = TextEditingController();
     _emailController = TextEditingController();
   }
 
@@ -44,8 +40,6 @@ class _VolunteerProfileScreenState extends ConsumerState<VolunteerProfileScreen>
   void dispose() {
     _nameController.dispose();
     _phoneController.dispose();
-    _cityController.dispose();
-    _countryController.dispose();
     _emailController.dispose();
     super.dispose();
   }
@@ -55,8 +49,6 @@ class _VolunteerProfileScreenState extends ConsumerState<VolunteerProfileScreen>
       _isEditing = true;
       _nameController.text = profile.name;
       _phoneController.text = profile.phoneNumber ?? '';
-      _cityController.text = profile.city ?? '';
-      _countryController.text = profile.country ?? '';
       _selectedSkillIds = profile.skills.map((skill) => skill.id).toSet();
       _emailController.text = profile.email ?? '';
     });
@@ -93,6 +85,7 @@ class _VolunteerProfileScreenState extends ConsumerState<VolunteerProfileScreen>
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile updated successfully')));
       }
     } catch (e) {
+      print(e);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error updating profile: $e')));
       }
@@ -201,13 +194,12 @@ class _VolunteerProfileScreenState extends ConsumerState<VolunteerProfileScreen>
                               color: profile.onboardingCompleted ? Colors.green : Colors.orange,
                             ),
                             const SizedBox(width: 6),
-                            Text(
-                              profile.onboardingCompleted ? 'Profile Complete' : 'Profile Incomplete',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: profile.onboardingCompleted ? Colors.green : Colors.orange,
-                                fontWeight: FontWeight.w600,
+                            if (!profile.onboardingCompleted) ...[
+                              Text(
+                                'Onboarding Incomplete',
+                                style: theme.textTheme.bodySmall?.copyWith(color: Colors.orange, fontWeight: FontWeight.w600),
                               ),
-                            ),
+                            ],
                           ],
                         ),
                       ),
@@ -226,21 +218,9 @@ class _VolunteerProfileScreenState extends ConsumerState<VolunteerProfileScreen>
                       if (_isEditing) ...[
                         AppTextField(controller: _phoneController, label: 'Phone Number', keyboardType: TextInputType.phone),
                         const SizedBox(height: 16),
-                        AppTextField(controller: _cityController, label: 'City'),
-                        const SizedBox(height: 16),
-                        AppTextField(controller: _countryController, label: 'Country'),
-                        const SizedBox(height: 16),
                         AppTextField(label: 'Email', controller: _emailController, enabled: false),
                       ] else ...[
                         _buildDetailRow(context, 'Phone', profile.phoneNumber ?? 'Not provided', Icons.phone),
-                        if (profile.city != null) ...[
-                          const Divider(),
-                          _buildDetailRow(context, 'City', profile.city!, Icons.location_city),
-                        ],
-                        if (profile.country != null) ...[
-                          const Divider(),
-                          _buildDetailRow(context, 'Country', profile.country!, Icons.public),
-                        ],
                         if (profile.email != null) ...[
                           const Divider(),
                           _buildDetailRow(context, 'Email', profile.email!, Icons.email),

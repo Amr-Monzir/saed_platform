@@ -274,3 +274,238 @@ abstract class _OrganizerProfile extends OrganizerProfile {
   _$$OrganizerProfileImplCopyWith<_$OrganizerProfileImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+OrganizerProfileSignup _$OrganizerProfileSignupFromJson(
+  Map<String, dynamic> json,
+) {
+  return _OrganizerProfileSignup.fromJson(json);
+}
+
+/// @nodoc
+mixin _$OrganizerProfileSignup {
+  String get name => throw _privateConstructorUsedError;
+  String get logoUrl => throw _privateConstructorUsedError;
+  String get website => throw _privateConstructorUsedError;
+  String get description => throw _privateConstructorUsedError;
+
+  /// Serializes this OrganizerProfileSignup to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of OrganizerProfileSignup
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $OrganizerProfileSignupCopyWith<OrganizerProfileSignup> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $OrganizerProfileSignupCopyWith<$Res> {
+  factory $OrganizerProfileSignupCopyWith(
+    OrganizerProfileSignup value,
+    $Res Function(OrganizerProfileSignup) then,
+  ) = _$OrganizerProfileSignupCopyWithImpl<$Res, OrganizerProfileSignup>;
+  @useResult
+  $Res call({String name, String logoUrl, String website, String description});
+}
+
+/// @nodoc
+class _$OrganizerProfileSignupCopyWithImpl<
+  $Res,
+  $Val extends OrganizerProfileSignup
+>
+    implements $OrganizerProfileSignupCopyWith<$Res> {
+  _$OrganizerProfileSignupCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of OrganizerProfileSignup
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? logoUrl = null,
+    Object? website = null,
+    Object? description = null,
+  }) {
+    return _then(
+      _value.copyWith(
+            name:
+                null == name
+                    ? _value.name
+                    : name // ignore: cast_nullable_to_non_nullable
+                        as String,
+            logoUrl:
+                null == logoUrl
+                    ? _value.logoUrl
+                    : logoUrl // ignore: cast_nullable_to_non_nullable
+                        as String,
+            website:
+                null == website
+                    ? _value.website
+                    : website // ignore: cast_nullable_to_non_nullable
+                        as String,
+            description:
+                null == description
+                    ? _value.description
+                    : description // ignore: cast_nullable_to_non_nullable
+                        as String,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$OrganizerProfileSignupImplCopyWith<$Res>
+    implements $OrganizerProfileSignupCopyWith<$Res> {
+  factory _$$OrganizerProfileSignupImplCopyWith(
+    _$OrganizerProfileSignupImpl value,
+    $Res Function(_$OrganizerProfileSignupImpl) then,
+  ) = __$$OrganizerProfileSignupImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String name, String logoUrl, String website, String description});
+}
+
+/// @nodoc
+class __$$OrganizerProfileSignupImplCopyWithImpl<$Res>
+    extends
+        _$OrganizerProfileSignupCopyWithImpl<$Res, _$OrganizerProfileSignupImpl>
+    implements _$$OrganizerProfileSignupImplCopyWith<$Res> {
+  __$$OrganizerProfileSignupImplCopyWithImpl(
+    _$OrganizerProfileSignupImpl _value,
+    $Res Function(_$OrganizerProfileSignupImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of OrganizerProfileSignup
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? logoUrl = null,
+    Object? website = null,
+    Object? description = null,
+  }) {
+    return _then(
+      _$OrganizerProfileSignupImpl(
+        name:
+            null == name
+                ? _value.name
+                : name // ignore: cast_nullable_to_non_nullable
+                    as String,
+        logoUrl:
+            null == logoUrl
+                ? _value.logoUrl
+                : logoUrl // ignore: cast_nullable_to_non_nullable
+                    as String,
+        website:
+            null == website
+                ? _value.website
+                : website // ignore: cast_nullable_to_non_nullable
+                    as String,
+        description:
+            null == description
+                ? _value.description
+                : description // ignore: cast_nullable_to_non_nullable
+                    as String,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class _$OrganizerProfileSignupImpl extends _OrganizerProfileSignup {
+  _$OrganizerProfileSignupImpl({
+    required this.name,
+    required this.logoUrl,
+    required this.website,
+    required this.description,
+  }) : super._();
+
+  factory _$OrganizerProfileSignupImpl.fromJson(Map<String, dynamic> json) =>
+      _$$OrganizerProfileSignupImplFromJson(json);
+
+  @override
+  final String name;
+  @override
+  final String logoUrl;
+  @override
+  final String website;
+  @override
+  final String description;
+
+  @override
+  String toString() {
+    return 'OrganizerProfileSignup(name: $name, logoUrl: $logoUrl, website: $website, description: $description)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$OrganizerProfileSignupImpl &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl) &&
+            (identical(other.website, website) || other.website == website) &&
+            (identical(other.description, description) ||
+                other.description == description));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, name, logoUrl, website, description);
+
+  /// Create a copy of OrganizerProfileSignup
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$OrganizerProfileSignupImplCopyWith<_$OrganizerProfileSignupImpl>
+  get copyWith =>
+      __$$OrganizerProfileSignupImplCopyWithImpl<_$OrganizerProfileSignupImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$OrganizerProfileSignupImplToJson(this);
+  }
+}
+
+abstract class _OrganizerProfileSignup extends OrganizerProfileSignup {
+  factory _OrganizerProfileSignup({
+    required final String name,
+    required final String logoUrl,
+    required final String website,
+    required final String description,
+  }) = _$OrganizerProfileSignupImpl;
+  _OrganizerProfileSignup._() : super._();
+
+  factory _OrganizerProfileSignup.fromJson(Map<String, dynamic> json) =
+      _$OrganizerProfileSignupImpl.fromJson;
+
+  @override
+  String get name;
+  @override
+  String get logoUrl;
+  @override
+  String get website;
+  @override
+  String get description;
+
+  /// Create a copy of OrganizerProfileSignup
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$OrganizerProfileSignupImplCopyWith<_$OrganizerProfileSignupImpl>
+  get copyWith => throw _privateConstructorUsedError;
+}

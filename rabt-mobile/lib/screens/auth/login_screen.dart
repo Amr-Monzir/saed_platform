@@ -4,11 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:rabt_mobile/models/enums.dart';
 import '../../state/auth/auth_providers.dart';
 import '../../widgets/app_button.dart';
-import '../../state/volunteer/volunteer_repository.dart';
 import '../../widgets/app_password_field.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../adverts/adverts_list_screen.dart';
-import '../volunteer/profile_setup_screen.dart';
 import 'signup_volunteer_screen.dart';
 import 'login_organizer_screen.dart';
 
@@ -53,15 +51,6 @@ class LoginScreen extends ConsumerWidget {
                 }
                 final ok = await ref.read(authControllerProvider.notifier).loginWithBackend(email: email, password: password, type: UserType.volunteer);
                 if (!context.mounted) return;
-                if (ok) {
-                  final me = await ref.read(volunteerRepositoryProvider).fetchVolunteerProfile();
-                  if (!context.mounted) return;
-                  if (me.onboardingCompleted) {
-                    context.go(AdvertsListScreen.volunteerPath);
-                  } else {
-                    context.go(VolunteerProfileSetupScreen.path);
-                  }
-                }
               },
               label: 'Login',
             ),

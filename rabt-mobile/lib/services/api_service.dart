@@ -28,18 +28,25 @@ class ApiService {
     Map<String, dynamic> data, {
     Map<String, String>? headers,
     Map<String, String>? query,
+    bool isAuthenticated = true,
   }) async {
-    return _makeAuthenticatedRequest(() async {
-      final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
-      final resp = await http.post(uri, headers: {'Content-Type': 'application/json', ...?headers}, body: jsonEncode(data));
-      _throwOnError(resp);
-      return resp;
-    });
+    return isAuthenticated
+        ? _makeAuthenticatedRequest(() async {
+          final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
+          final resp = await http.post(uri, headers: {'Content-Type': 'application/json', ...?headers}, body: jsonEncode(data));
+          _throwOnError(resp);
+          return resp;
+        })
+        : await http.post(
+          Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}'),
+          headers: {'Content-Type': 'application/json', ...?headers},
+          body: jsonEncode(data),
+        );
   }
 
   Future<http.Response> postForm(
     String path,
-    Map<String, String> fields, {
+    Map<String, dynamic> fields, {
     Map<String, String>? headers,
     Map<String, String>? query,
     bool isAuthenticated = true,

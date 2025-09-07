@@ -9,8 +9,8 @@ class VolunteerRepository {
 
   final Ref ref;
 
-  Future<VolunteerProfile> fetchVolunteerProfile() async {
-    final token = ref.read(authControllerProvider).value?.token;
+  Future<VolunteerProfile> fetchVolunteerProfile(String token) async {
+    print('fetching volunteer profile with token: $token');
     final resp = await ref
         .read(apiServiceProvider)
         .get('/api/v1/volunteers/profile', headers: ref.read(apiServiceProvider).authHeaders(token));
@@ -36,5 +36,5 @@ final volunteerProfileProvider = FutureProvider<VolunteerProfile?>((ref) async {
   if (session == null) return null;
   
   final repository = ref.watch(volunteerRepositoryProvider);
-  return repository.fetchVolunteerProfile();
+  return repository.fetchVolunteerProfile(session.token);
 });

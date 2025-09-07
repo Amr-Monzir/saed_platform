@@ -6,6 +6,8 @@ import '../../widgets/app_text_field.dart';
 import '../../widgets/app_button.dart';
 import '../../services/image_upload_service.dart';
 import '../../state/organizer/organizer_repository.dart';
+import '../../state/auth/auth_providers.dart';
+import '../../models/organizer.dart';
 import 'login_organizer_screen.dart';
 
 class OrganizerSignupScreen extends ConsumerStatefulWidget {
@@ -205,25 +207,34 @@ class _OrganizerSignupScreenState extends ConsumerState<OrganizerSignupScreen> {
                           if (!_formKey.currentState!.validate()) return;
                           setState(() => _loading = true);
                           try {
-                            await ref.read(organizerRepositoryProvider).register(
+                            final organizerProfile = OrganizerProfileSignup(
                               name: _nameCtrl.text.trim(),
+                              website: _websiteCtrl.text.trim().isNotEmpty ? _websiteCtrl.text.trim() : '',
+                              description: _descCtrl.text.trim().isNotEmpty ? _descCtrl.text.trim() : '',
+                              logoUrl: _uploadedImageUrl ?? '',
+                            );
+
+                            final success = await ref.read(authControllerProvider.notifier).signupOrganizer(
                               email: _emailCtrl.text.trim(),
                               password: _passCtrl.text,
-                              website: _websiteCtrl.text.trim().isNotEmpty ? _websiteCtrl.text.trim() : null,
-                              description: _descCtrl.text.trim().isNotEmpty ? _descCtrl.text.trim() : null,
-                              logoUrl: _uploadedImageUrl,
+                              organizerProfile: organizerProfile,
                             );
+
                             if (!mounted) return;
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(
-                                context,
-                              ).showSnackBar(const SnackBar(content: Text('Account created. Please log in.')));
-                              context.go(OrganizerLoginScreen.path);
+                            if (success) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Account created successfully! Please log in.')),
+                                );
+                                context.go(OrganizerLoginScreen.path);
+                              }
                             }
                           } catch (e) {
                             if (!mounted) return;
                             if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Signup failed: $e')));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Signup failed: $e')),
+                              );
                             }
                           } finally {
                             if (mounted) setState(() => _loading = false);
