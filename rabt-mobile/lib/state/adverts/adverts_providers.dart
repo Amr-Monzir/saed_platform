@@ -39,7 +39,7 @@ Future<Advert?> advertById(Ref ref, int id) async {
   return repo.getById(id);
 }
 
-final myAdvertsProvider = FutureProvider<PaginatedAdverts>((ref) async {
+final myAdvertsProvider = FutureProvider<List<Advert>>((ref) async {
   final repo = ref.watch(advertsRepositoryProvider);
   return repo.fetchMine();
 });
@@ -177,17 +177,17 @@ class MyAdvertsSearchController extends StateNotifier<String?> {
 final myAdvertsSearchControllerProvider =
     StateNotifierProvider<MyAdvertsSearchController, String?>((ref) => MyAdvertsSearchController());
 
-final filteredMyAdvertsProvider = Provider<AsyncValue<PaginatedAdverts>>((ref) {
+final filteredMyAdvertsProvider = Provider<AsyncValue<List<Advert>>>((ref) {
   final search = (ref.watch(myAdvertsSearchControllerProvider) ?? '').trim().toLowerCase();
   final mine = ref.watch(myAdvertsProvider);
-  return mine.whenData((page) {
-    if (search.isEmpty) return page;
-    final filtered = page.items.where((a) {
+  return mine.whenData((data) {
+    if (search.isEmpty) return data;
+    final filtered = data.where((a) {
       final title = a.title.toLowerCase();
       final category = a.category.toLowerCase();
       return title.contains(search) || category.contains(search);
     }).toList();
-    return PaginatedAdverts(items: filtered, totalPages: page.totalPages);
+    return filtered;
   });
 });
 

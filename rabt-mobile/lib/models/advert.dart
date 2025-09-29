@@ -58,7 +58,7 @@ class Advert with _$Advert {
     String? postcode,
     double? latitude,
     double? longitude,
-    String? advertImageUrl,
+    String? imageUrl,
     required bool isActive,
     required OrganizerProfile organizer,
     @Default([]) List<Skill> requiredSkills,

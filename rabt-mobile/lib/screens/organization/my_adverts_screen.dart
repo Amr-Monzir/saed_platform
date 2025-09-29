@@ -71,10 +71,8 @@ class _MyAdvertsScreenState extends ConsumerState<MyAdvertsScreen> {
           Expanded(
             child: mine.when(
               data:
-                  (page) => ListView.builder(
-                    itemCount: page.items.length,
-                    itemBuilder: (context, i) => OrganizerAdvertCard(advert: page.items[i]),
-                  ),
+                  (data) =>
+                      ListView.builder(itemCount: data.length, itemBuilder: (context, i) => OrganizerAdvertCard(advert: data[i])),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, _) => Center(child: Text('$e')),
             ),

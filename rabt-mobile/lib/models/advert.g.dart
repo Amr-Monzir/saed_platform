@@ -101,7 +101,7 @@ _$AdvertImpl _$$AdvertImplFromJson(Map<String, dynamic> json) => _$AdvertImpl(
   postcode: json['postcode'] as String?,
   latitude: (json['latitude'] as num?)?.toDouble(),
   longitude: (json['longitude'] as num?)?.toDouble(),
-  advertImageUrl: json['advert_image_url'] as String?,
+  imageUrl: json['image_url'] as String?,
   isActive: json['is_active'] as bool,
   organizer: OrganizerProfile.fromJson(
     json['organizer'] as Map<String, dynamic>,
@@ -139,7 +139,7 @@ Map<String, dynamic> _$$AdvertImplToJson(_$AdvertImpl instance) =>
       'postcode': instance.postcode,
       'latitude': instance.latitude,
       'longitude': instance.longitude,
-      'advert_image_url': instance.advertImageUrl,
+      'image_url': instance.imageUrl,
       'is_active': instance.isActive,
       'organizer': instance.organizer,
       'required_skills': instance.requiredSkills,

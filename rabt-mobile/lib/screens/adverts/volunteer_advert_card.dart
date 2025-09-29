@@ -15,29 +15,26 @@ class VolunteerAdvertCard extends StatelessWidget {
       onTap: onTap,
       child: Column(
         children: [
-          MyNetworkImage(url: advert.advertImageUrl!),
+          if (advert.imageUrl != null) MyNetworkImage(url: advert.imageUrl!, height: 200, width: double.infinity),
           const SizedBox(height: 12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(advert.title, style: Theme.of(context).textTheme.titleMedium),
-                  const SizedBox(height: 6),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      BadgeChip(label: advert.category, icon: Icons.category_outlined),
-                      BadgeChip(label: advert.frequency.displayName, icon: Icons.schedule_outlined),
-                      BadgeChip(label: advert.locationType.displayName, icon: Icons.place_outlined),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(width: 12),
-            ],
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(advert.title, style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    BadgeChip(label: advert.category, icon: Icons.category_outlined),
+                    BadgeChip(label: advert.frequency.displayName, icon: Icons.schedule_outlined),
+                    BadgeChip(label: advert.locationType.displayName, icon: Icons.place_outlined),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),

@@ -1,4 +1,4 @@
-.PHONY: help install run migrate makemigrations test
+.PHONY: help install run migrate makemigrations test seed
 
 help:
 	@echo "Commands:"
@@ -6,6 +6,7 @@ help:
 	@echo "  run            : Run the development server"
 	@echo "  migrate        : Apply database migrations"
 	@echo "  makemigrations : Create a new database migration"
+	@echo "  seed           : Seed the database with sample data"
 	@echo "  test           : Run tests"
 
 install:
@@ -19,6 +20,9 @@ migrate:
 
 makemigrations:
 	uv run alembic revision --autogenerate -m "$(m)"
+
+seed:
+	uv run python seed.py
 
 test:
 	uv run pytest

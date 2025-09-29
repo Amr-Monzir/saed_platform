@@ -26,9 +26,9 @@ class OrganizerLoginScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: 24),
-            Text('Login as Organisation', style: Theme.of(context).textTheme.headlineMedium, textAlign: TextAlign.center),
+            Text('Organisation Login', style: Theme.of(context).textTheme.headlineMedium, textAlign: TextAlign.center),
             const SizedBox(height: 8),
-            Text('Post and manage adverts.', style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
+            Text('Post and manage volunteering adverts', style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
             const Spacer(),
             Image.asset('assets/images/logo/logo_no_bg.png', width: MediaQuery.of(context).size.width, fit: BoxFit.contain),
             const Spacer(),

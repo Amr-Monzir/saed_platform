@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
 from typing import Optional, List
 from datetime import datetime
 from app.database.enums import (
@@ -11,6 +11,7 @@ from app.database.enums import (
 )
 from app.schemas.skill import SkillResponse
 from app.schemas.organizer import OrganizerResponse
+from app.utils.file_utils import get_image_url
 
 
 class RecurringDays(BaseModel):
@@ -66,6 +67,12 @@ class AdvertResponse(AdvertBase):
     recurring_details: Optional[RecurringAdvertDetails] = None
     created_at: datetime
 
+    @computed_field
+    @property
+    def image_url(self) -> Optional[str]:
+        """Convert relative image path to full URL"""
+        return get_image_url(self.advert_image_url)
+
     class Config:
         from_attributes = True
 
@@ -77,6 +84,12 @@ class AdvertResponseForApplications(AdvertBase):
     required_skills: List[SkillResponse] = []
     created_at: datetime
 
+    @computed_field
+    @property
+    def image_url(self) -> Optional[str]:
+        """Convert relative image path to full URL"""
+        return get_image_url(self.advert_image_url)
+
     class Config:
         from_attributes = True
 
@@ -84,3 +97,6 @@ class AdvertResponseForApplications(AdvertBase):
 class AdvertListResponse(BaseModel):
     items: List[AdvertResponse]
     total_pages: int
+
+class OrganizerAdvertsListResponse(BaseModel):
+    items: List[AdvertResponse]

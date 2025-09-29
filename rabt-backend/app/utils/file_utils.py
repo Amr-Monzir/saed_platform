@@ -36,3 +36,28 @@ def save_image(file: UploadFile, category: str, entity_id: int) -> str:
 
     # Return the relative path to be stored in the database
     return os.path.join(category, str(entity_id), unique_filename)
+
+
+def get_image_url(relative_path: str, base_url: str = "/uploads") -> str:
+    """
+    Convert a relative image path to a full URL.
+    
+    Args:
+        relative_path: The relative path stored in database (e.g., "adverts/123/uuid.jpg")
+        base_url: The base URL for serving static files (default: "/uploads")
+    
+    Returns:
+        Full URL for the image (e.g., "/uploads/adverts/123/uuid.jpg")
+    """
+    if not relative_path:
+        return None
+    
+    # Ensure base_url starts with / and doesn't end with /
+    base_url = base_url.rstrip('/')
+    if not base_url.startswith('/'):
+        base_url = '/' + base_url
+    
+    # Ensure relative_path doesn't start with /
+    relative_path = relative_path.lstrip('/')
+    
+    return f"{base_url}/{relative_path}"

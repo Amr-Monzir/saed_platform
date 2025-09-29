@@ -43,8 +43,8 @@ class AdvertService:
 
         # Handle image upload
         if image_file:
-            image_url = save_image(file=image_file, category="adverts", entity_id=advert.id)
-            advert.advert_image_url = image_url
+            image_path = save_image(file=image_file, category="adverts", entity_id=advert.id)
+            advert.advert_image_url = image_path
 
         # Add details based on frequency
         if advert_data.frequency == "one-off" and advert_data.oneoff_details:

@@ -19,6 +19,7 @@ from app.schemas.advert import (
     AdvertResponse,
     AdvertUpdate,
     AdvertListResponse,
+    OrganizerAdvertsListResponse,
 )
 from app.services.advert_service import AdvertService
 from app.api.dependencies import require_organizer, get_current_user
@@ -79,6 +80,16 @@ def list_adverts(
     return {"items": adverts, "total_pages": total_pages}
 
 
+@router.get("/my-adverts", response_model=OrganizerAdvertsListResponse)
+def get_my_adverts(
+    db: Session = Depends(get_db), current_user: User = Depends(require_organizer)
+):
+    adverts = (
+        db.query(Advert).filter(Advert.organizer_id == current_user.organizer.id).all()
+    )
+    return {"items": adverts}
+
+
 @router.get("/{advert_id}", response_model=AdvertResponse)
 def get_advert(advert_id: int, db: Session = Depends(get_db)):
     advert = db.query(Advert).filter(Advert.id == advert_id).first()
@@ -131,13 +142,3 @@ def delete_advert(
     advert.is_active = False
     db.commit()
     return
-
-
-@router.get("/my-adverts", response_model=List[AdvertResponse])
-def get_my_adverts(
-    db: Session = Depends(get_db), current_user: User = Depends(require_organizer)
-):
-    adverts = (
-        db.query(Advert).filter(Advert.organizer_id == current_user.organizer.id).all()
-    )
-    return adverts

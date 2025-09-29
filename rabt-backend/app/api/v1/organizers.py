@@ -50,17 +50,18 @@ async def upload_logo(
     relative_path = save_image(
         file=file, category="logos", entity_id=current_user.organizer.id
     )
-    # Store as "/uploads/<relative_path>" since app mounts uploads at /uploads
-    logo_url = f"/uploads/{relative_path}"
 
     organizer = (
         db.query(Organizer).filter(Organizer.id == current_user.organizer.id).first()
     )
-    organizer.logo_url = logo_url
+    organizer.logo_url = relative_path  # Store relative path
     db.commit()
     db.refresh(organizer)
 
-    return {"logo_url": logo_url}
+    # Return the full URL for the response
+    from app.utils.file_utils import get_image_url
+    full_url = get_image_url(relative_path)
+    return {"logo_url": full_url}
 
 
 @router.get("/{organizer_id}/public", response_model=OrganizerResponse)

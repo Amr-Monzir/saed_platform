@@ -21,8 +21,7 @@ class OrganizerAdvertCard extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                MyNetworkImage(url: advert.advertImageUrl!),
-                const SizedBox(height: 18),
+                if (advert.imageUrl != null) ...[MyNetworkImage(url: advert.imageUrl!, height: 200, width: double.infinity,), const SizedBox(height: 18)],
                 Text(advert.title, style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 4),
                 Text('${advert.category} • ${advert.frequency.displayName} • ${advert.locationType.displayName}'),

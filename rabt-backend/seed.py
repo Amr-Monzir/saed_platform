@@ -115,9 +115,11 @@ def seed_data():
             db.commit()
             db.refresh(user)
 
-            # Copy logo to uploads
-            shutil.copy(os.path.join(logo_dir, logo_filename), upload_dir)
-            logo_url = f"/{upload_dir}/{logo_filename}"
+            # Copy logo to uploads/logos/{organizer_id}/
+            logo_upload_dir = os.path.join(upload_dir, "logos", str(i + 1))
+            os.makedirs(logo_upload_dir, exist_ok=True)
+            shutil.copy(os.path.join(logo_dir, logo_filename), logo_upload_dir)
+            logo_url = f"logos/{i + 1}/{logo_filename}"  # Store relative path
 
             organizer = Organizer(
                 user_id=user.id,
@@ -174,7 +176,7 @@ def seed_data():
             shutil.copy(
                 os.path.join(advert_image_dir, advert_image_filename), upload_dir
             )
-            advert_image_url = f"/{upload_dir}/{advert_image_filename}"
+            advert_image_url = f"{advert_image_filename}"
 
             advert = Advert(
                 organizer_id=organizer.id,

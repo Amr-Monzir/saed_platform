@@ -46,7 +46,7 @@ class AdvertDetailScreen extends ConsumerWidget {
                         body: ListView(
                           padding: const EdgeInsets.all(16),
                           children: [
-                            MyNetworkImage(url: advert.advertImageUrl!),
+                            if (advert.imageUrl != null) MyNetworkImage(url: advert.imageUrl!),
                             const SizedBox(height: 12),
                             AppCard(
                               child: Row(
