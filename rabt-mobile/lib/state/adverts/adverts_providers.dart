@@ -27,6 +27,7 @@ final advertsProvider = FutureProvider<PaginatedAdverts>((ref) async {
   if (filters.timeCommitment != null) query['time_commitment'] = filters.timeCommitment!.wireValue;
   if (filters.timeOfDay != null) query['time_of_day'] = filters.timeOfDay!.wireValue;
   if (prefs.distanceMiles != null) query['distance'] = prefs.distanceMiles!.toString();
+  if (filters.locationType != null) query['location_type'] = filters.locationType!.wireValue;
   if (prefs.city != null && prefs.city!.isNotEmpty) query['city'] = prefs.city!;
   if (search != null && search.isNotEmpty) query['q'] = search;
   if (page > 1) query['page'] = page.toString();
@@ -48,34 +49,45 @@ class AdvertsFilterState {
   AdvertsFilterState({
     this.frequency,
     this.category,
+    this.recurrence,
     this.skills = const <String>{},
     this.timeCommitment,
     this.timeOfDay,
     this.distanceMiles,
+    this.locationType,
   });
 
   final FrequencyType? frequency;
   final String? category;
+  final RecurrenceType? recurrence;
   final Set<String> skills;
   final TimeCommitment? timeCommitment;
   final DayTimePeriod? timeOfDay;
   final int? distanceMiles;
+  final LocationType? locationType;
+
+  // Sentinel value to distinguish between "not provided" and "explicitly null"
+  static const Object _notProvided = Object();
 
   AdvertsFilterState copyWith({
-    FrequencyType? frequency,
-    String? category,
-    Set<String>? skills,
-    TimeCommitment? timeCommitment,
-    DayTimePeriod? timeOfDay,
-    int? distanceMiles,
+    Object? frequency = _notProvided,
+    Object? category = _notProvided,
+    Object? recurrence = _notProvided,
+    Object? skills = _notProvided,
+    Object? timeCommitment = _notProvided,
+    Object? timeOfDay = _notProvided,
+    Object? distanceMiles = _notProvided,
+    Object? locationType = _notProvided,
   }) {
     return AdvertsFilterState(
-      frequency: frequency ?? this.frequency,
-      category: category ?? this.category,
-      skills: skills ?? this.skills,
-      timeCommitment: timeCommitment ?? this.timeCommitment,
-      timeOfDay: timeOfDay ?? this.timeOfDay,
-      distanceMiles: distanceMiles ?? this.distanceMiles,
+      frequency: frequency == _notProvided ? this.frequency : frequency as FrequencyType?,
+      category: category == _notProvided ? this.category : category as String?,
+      recurrence: recurrence == _notProvided ? this.recurrence : recurrence as RecurrenceType?,
+      skills: skills == _notProvided ? this.skills : skills as Set<String>,
+      timeCommitment: timeCommitment == _notProvided ? this.timeCommitment : timeCommitment as TimeCommitment?,
+      timeOfDay: timeOfDay == _notProvided ? this.timeOfDay : timeOfDay as DayTimePeriod?,
+      distanceMiles: distanceMiles == _notProvided ? this.distanceMiles : distanceMiles as int?,
+      locationType: locationType == _notProvided ? this.locationType : locationType as LocationType?,
     );
   }
 }
@@ -84,7 +96,13 @@ class AdvertsFilterController extends StateNotifier<AdvertsFilterState> {
   AdvertsFilterController() : super(AdvertsFilterState());
 
   void setFrequency(FrequencyType? value) => state = state.copyWith(frequency: value);
+
+  void setRecurrence(RecurrenceType? value) => state = state.copyWith(recurrence: value);
+
   void setCategory(String? value) => state = state.copyWith(category: value);
+
+  void setLocationType(LocationType? value) => state = state.copyWith(locationType: value);
+
   void toggleSkill(String skill) {
     final newSet = {...state.skills};
     if (newSet.contains(skill)) {
@@ -94,10 +112,14 @@ class AdvertsFilterController extends StateNotifier<AdvertsFilterState> {
     }
     state = state.copyWith(skills: newSet);
   }
+
   void setTimeCommitment(TimeCommitment? value) => state = state.copyWith(timeCommitment: value);
   void setTimeOfDay(DayTimePeriod? value) => state = state.copyWith(timeOfDay: value);
   void setDistance(int? miles) => state = state.copyWith(distanceMiles: miles);
   void clear() => state = AdvertsFilterState();
+
+  // Clear all filters
+  void clearAll() => state = AdvertsFilterState();
 }
 
 final advertsFilterProvider = StateNotifierProvider<AdvertsFilterController, AdvertsFilterState>((ref) {
@@ -115,7 +137,7 @@ class CreateAdvertController extends StateNotifier<AsyncValue<Advert?>> {
       final repository = ref.read(advertsRepositoryProvider);
       final result = await repository.create(advert, imageFile: imageFile);
       state = AsyncValue.data(result);
-      
+
       // Invalidate the adverts list to refresh it
       ref.invalidate(advertsProvider);
       ref.invalidate(myAdvertsProvider);
@@ -144,7 +166,7 @@ class CloseAdvertController extends StateNotifier<AsyncValue<void>> {
       final repository = ref.read(advertsRepositoryProvider);
       await repository.close(id);
       state = const AsyncValue.data(null);
-      
+
       // Invalidate the adverts list to refresh it
       ref.invalidate(advertsProvider);
       ref.invalidate(myAdvertsProvider);
@@ -174,21 +196,21 @@ class MyAdvertsSearchController extends StateNotifier<String?> {
   void clear() => state = null;
 }
 
-final myAdvertsSearchControllerProvider =
-    StateNotifierProvider<MyAdvertsSearchController, String?>((ref) => MyAdvertsSearchController());
+final myAdvertsSearchControllerProvider = StateNotifierProvider<MyAdvertsSearchController, String?>(
+  (ref) => MyAdvertsSearchController(),
+);
 
 final filteredMyAdvertsProvider = Provider<AsyncValue<List<Advert>>>((ref) {
   final search = (ref.watch(myAdvertsSearchControllerProvider) ?? '').trim().toLowerCase();
   final mine = ref.watch(myAdvertsProvider);
   return mine.whenData((data) {
     if (search.isEmpty) return data;
-    final filtered = data.where((a) {
-      final title = a.title.toLowerCase();
-      final category = a.category.toLowerCase();
-      return title.contains(search) || category.contains(search);
-    }).toList();
+    final filtered =
+        data.where((a) {
+          final title = a.title.toLowerCase();
+          final category = a.category.toLowerCase();
+          return title.contains(search) || category.contains(search);
+        }).toList();
     return filtered;
   });
 });
-
-

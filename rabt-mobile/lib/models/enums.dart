@@ -46,6 +46,12 @@ enum LocationType {
     LocationType.hybrid => 'Hybrid',
     LocationType.onSite => 'On-site',
   };
+
+  String get wireValue => switch (this) {
+    LocationType.remote => 'remote',
+    LocationType.hybrid => 'hybrid',
+    LocationType.onSite => 'on-site',
+  };
 }
 
 @JsonEnum(alwaysCreate: true, fieldRename: FieldRename.snake)

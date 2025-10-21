@@ -41,13 +41,6 @@ const List<String> kTimeCommitmentOneOff = [
   '10+h',
 ];
 
-const List<String> kTimeCommitmentRecurring = [
-  'Weekly: 1–5h',
-  'Weekly: 6–10h',
-  'Weekly: 11–20h',
-  'Weekly: 20+h',
-];
-
 const List<int> kDistancesMiles = [5, 10, 25, 50];
 
 

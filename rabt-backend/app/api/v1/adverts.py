@@ -13,6 +13,7 @@ from typing import List, Optional
 import json
 
 from app.database.connection import get_db
+from app.database.enums import FrequencyType
 from app.database.models import Advert, User, Skill
 from app.schemas.advert import (
     AdvertCreate,
@@ -55,6 +56,7 @@ def list_adverts(
     category: Optional[str] = None,
     location_type: Optional[str] = None,
     skills: Optional[str] = Query(None),
+    frequency: Optional[FrequencyType] = Query(None, alias="frequency"),
     limit: int = 20,
     page: int = 1,
 ):
@@ -70,7 +72,9 @@ def list_adverts(
     if skills:
         skill_ids = [int(s_id) for s_id in skills.split(",")]
         query = query.join(Advert.required_skills).filter(Skill.id.in_(skill_ids))
-
+    if frequency:
+        query = query.filter(Advert.frequency == frequency)
+        
     total_count = query.count()
     total_pages = (total_count + limit - 1) // limit if limit > 0 else 1
     current_page = max(page, 1)
