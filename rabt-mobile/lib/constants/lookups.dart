@@ -34,13 +34,3 @@ const List<String> kSkillsChooseList = [
   'Research',
 ];
 
-const List<String> kTimeCommitmentOneOff = [
-  '1–2h',
-  '3–5h',
-  '6–10h',
-  '10+h',
-];
-
-const List<int> kDistancesMiles = [5, 10, 25, 50];
-
-

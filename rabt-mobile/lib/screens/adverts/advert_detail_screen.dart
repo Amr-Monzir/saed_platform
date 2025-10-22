@@ -8,22 +8,14 @@ import 'package:rabt_mobile/screens/organization/received_applications/advert_re
 import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
 import 'package:rabt_mobile/state/applications/applications_providers.dart';
 import 'package:rabt_mobile/state/auth/auth_providers.dart';
+import 'package:rabt_mobile/utils/utils.dart';
 import 'package:rabt_mobile/widgets/app_button.dart';
 import 'package:rabt_mobile/widgets/app_card.dart';
 import 'package:rabt_mobile/widgets/icon_tile.dart';
 import 'package:rabt_mobile/widgets/my_network_image.dart';
 import 'package:rabt_mobile/widgets/organizer_card.dart';
 
-// State provider for schedule expansion
-final _scheduleExpandedProvider = StateProvider<bool>((ref) => false);
-
-// Helper function to capitalize day names
-String _capitalizeDayName(String day) {
-  if (day.isEmpty) return day;
-  return day[0].toUpperCase() + day.substring(1).toLowerCase();
-}
-
-class AdvertDetailScreen extends ConsumerWidget {
+class AdvertDetailScreen extends ConsumerStatefulWidget {
   const AdvertDetailScreen({super.key, required this.id});
 
   static const String pathTemplate = ':id';
@@ -34,10 +26,17 @@ class AdvertDetailScreen extends ConsumerWidget {
   final int id;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AdvertDetailScreen> createState() => _AdvertDetailScreenState();
+}
+
+class _AdvertDetailScreenState extends ConsumerState<AdvertDetailScreen> {
+  bool _scheduleExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
     final role = ref.watch(authControllerProvider).value?.userType;
     return ref
-        .watch(advertByIdProvider(id))
+        .watch(advertByIdProvider(widget.id))
         .when(
           data:
               (advert) =>
@@ -120,7 +119,6 @@ class AdvertDetailScreen extends ConsumerWidget {
                             if (advert.recurringDetails != null)
                               Consumer(
                                 builder: (context, ref, child) {
-                                  final isExpanded = ref.watch(_scheduleExpandedProvider);
                                   return AppCard(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,7 +134,9 @@ class AdvertDetailScreen extends ConsumerWidget {
                                           const SizedBox(height: 12),
                                           InkWell(
                                             onTap: () {
-                                              ref.read(_scheduleExpandedProvider.notifier).update((state) => !state);
+                                              setState(() {
+                                                _scheduleExpanded = !_scheduleExpanded;
+                                              });
                                             },
                                             borderRadius: BorderRadius.circular(8),
                                             child: Container(
@@ -152,7 +152,7 @@ class AdvertDetailScreen extends ConsumerWidget {
                                                     ),
                                                   ),
                                                   AnimatedRotation(
-                                                    turns: isExpanded ? 0.5 : 0,
+                                                    turns: _scheduleExpanded ? 0.5 : 0,
                                                     duration: const Duration(milliseconds: 200),
                                                     child: Icon(
                                                       Icons.keyboard_arrow_down,
@@ -163,20 +163,21 @@ class AdvertDetailScreen extends ConsumerWidget {
                                               ),
                                             ),
                                           ),
-
                                           AnimatedContainer(
                                             duration: const Duration(milliseconds: 300),
                                             curve: Curves.easeInOut,
-                                            height: isExpanded ? null : 0,
+                                            height: _scheduleExpanded ? null : 0,
                                             child:
-                                                isExpanded
+                                                _scheduleExpanded
                                                     ? Column(
                                                       children: [
                                                         const SizedBox(height: 12),
                                                         Container(
                                                           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                                                           decoration: BoxDecoration(
-                                                            color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
+                                                            color: Theme.of(
+                                                              context,
+                                                            ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                                                             borderRadius: BorderRadius.circular(6),
                                                           ),
                                                           child: Row(
@@ -226,7 +227,7 @@ class AdvertDetailScreen extends ConsumerWidget {
                                                                 Expanded(
                                                                   flex: 2,
                                                                   child: Text(
-                                                                    _capitalizeDayName(dayInfo.day),
+                                                                    dayInfo.day.capitalizeFirstLetter,
                                                                     style: Theme.of(
                                                                       context,
                                                                     ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
