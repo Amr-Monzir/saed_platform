@@ -9,12 +9,13 @@ from fastapi import (
     Body,
 )
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from typing import List, Optional
 import json
 
 from app.database.connection import get_db
-from app.database.enums import FrequencyType
-from app.database.models import Advert, User, Skill
+from app.database.enums import FrequencyType, DayPeriod
+from app.database.models import Advert, User, Skill, RecurringAdvert
 from app.schemas.advert import (
     AdvertCreate,
     AdvertResponse,
@@ -57,9 +58,17 @@ def list_adverts(
     location_type: Optional[str] = None,
     skills: Optional[str] = Query(None),
     frequency: Optional[FrequencyType] = Query(None, alias="frequency"),
+    time_of_day: Optional[DayPeriod] = Query(None, alias="time_of_day"),
     limit: int = 20,
     page: int = 1,
 ):
+    """
+    List adverts with optional filtering.
+    
+    time_of_day: Filter recurring adverts by time period (am, pm, after5pm).
+    Only applies to recurring adverts that have the specified time period
+    in their specific_days JSON configuration.
+    """
     query = db.query(Advert).filter(Advert.is_active == True)
     if search:
         query = query.filter(
@@ -74,7 +83,14 @@ def list_adverts(
         query = query.join(Advert.required_skills).filter(Skill.id.in_(skill_ids))
     if frequency:
         query = query.filter(Advert.frequency == frequency)
-        
+    if time_of_day:
+        # Join with recurring_adverts table and filter by specific_days JSON
+        query = query.join(RecurringAdvert, Advert.id == RecurringAdvert.advert_id)
+        # We need to check if any day has the time_of_day period in its periods array
+        query = query.filter(
+            RecurringAdvert.specific_days.like(f'%"{time_of_day.value}"%')
+        )
+
     total_count = query.count()
     total_pages = (total_count + limit - 1) // limit if limit > 0 else 1
     current_page = max(page, 1)

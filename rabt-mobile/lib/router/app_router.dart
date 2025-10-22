@@ -55,7 +55,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const AdvertsListScreen(),
             routes: [
               GoRoute(
-                path: AdvertDetailScreen.guestPathTemplate,
+                path: AdvertDetailScreen.pathTemplate,
                 builder: (context, state) {
                   final id = int.parse(state.pathParameters['id']!);
                   return AdvertDetailScreen(id: id);
@@ -74,7 +74,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const AdvertsListScreen(),
             routes: [
               GoRoute(
-                path: AdvertDetailScreen.volunteerPathTemplate,
+                path: AdvertDetailScreen.pathTemplate,
                 builder: (context, state) {
                   final id = int.parse(state.pathParameters['id']!);
                   return AdvertDetailScreen(id: id);
@@ -107,7 +107,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(path: CreateAdvertWizard.pathTemplate, builder: (context, state) => const CreateAdvertWizard()),
               GoRoute(
-                path: AdvertDetailScreen.orgPathTemplate,
+                path: AdvertDetailScreen.pathTemplate,
                 builder: (context, state) {
                   final advertId = int.tryParse(state.pathParameters['id']!);
                   if (advertId == null) {
