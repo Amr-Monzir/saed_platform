@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rabt_mobile/models/enums.dart';
 import '../../state/auth/auth_providers.dart';
 import '../../theme/theme_providers.dart';
 import '../auth/login_screen.dart';

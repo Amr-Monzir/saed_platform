@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rabt_mobile/models/advert.dart';
 import 'package:rabt_mobile/models/enums.dart';
 import 'package:rabt_mobile/state/adverts/adverts_repository.dart';
-import 'package:rabt_mobile/state/prefs/user_prefs.dart';
 import 'package:rabt_mobile/state/adverts/paginated_adverts.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
