@@ -24,7 +24,6 @@ class _OrgShellState extends State<OrgShell> {
         currentIndex: _index,
         unselectedItemColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
         unselectedLabelStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5)),
-        type: BottomNavigationBarType.shifting,
         selectedItemColor: Theme.of(context).colorScheme.secondary,
         onTap: (i) {
           setState(() => _index = i);

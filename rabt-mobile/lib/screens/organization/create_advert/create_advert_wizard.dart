@@ -42,6 +42,7 @@ class _CreateAdvertWizardState extends ConsumerState<CreateAdvertWizard> with Au
   final _descController = TextEditingController();
   final _addressController = TextEditingController();
   final _postcodeController = TextEditingController();
+  final _cityController = TextEditingController();
 
   // Form data
   String? _category;
@@ -70,6 +71,7 @@ class _CreateAdvertWizardState extends ConsumerState<CreateAdvertWizard> with Au
     _descController.addListener(_onFieldChanged);
     _addressController.addListener(_onFieldChanged);
     _postcodeController.addListener(_onFieldChanged);
+    _cityController.addListener(_onFieldChanged);
   }
 
   @override
@@ -79,10 +81,12 @@ class _CreateAdvertWizardState extends ConsumerState<CreateAdvertWizard> with Au
     _descController.removeListener(_onFieldChanged);
     _addressController.removeListener(_onFieldChanged);
     _postcodeController.removeListener(_onFieldChanged);
+    _cityController.removeListener(_onFieldChanged);
     _titleController.dispose();
     _descController.dispose();
     _addressController.dispose();
     _postcodeController.dispose();
+    _cityController.dispose();
     super.dispose();
   }
 
@@ -159,6 +163,7 @@ class _CreateAdvertWizardState extends ConsumerState<CreateAdvertWizard> with Au
       locationType: _locationType,
       addressText: _addressController.text.trim().isNotEmpty ? _addressController.text.trim() : null,
       postcode: _postcodeController.text.trim().isNotEmpty ? _postcodeController.text.trim() : null,
+      city: _cityController.text.trim().isNotEmpty ? _cityController.text.trim().toLowerCase() : null,
       isActive: true,
       organizer: OrganizerProfile(id: 1, name: 'Me'),
       requiredSkills: _skills.map((s) => Skill(id: 1, name: s, isPredefined: true)).toList(),
@@ -224,6 +229,7 @@ class _CreateAdvertWizardState extends ConsumerState<CreateAdvertWizard> with Au
               formKey: _locationFormKey,
               addressController: _addressController,
               postcodeController: _postcodeController,
+              cityController: _cityController,
               locationType: _locationType,
               selectedImage: _selectedImage,
               onLocationTypeChanged: (v) => setState(() => _locationType = v ?? LocationType.onSite),
@@ -265,6 +271,7 @@ class _CreateAdvertWizardState extends ConsumerState<CreateAdvertWizard> with Au
               descController: _descController,
               addressController: _addressController,
               postcodeController: _postcodeController,
+              cityController: _cityController,
               category: _category,
               frequency: _frequency,
               numberOfVolunteers: _numberOfVolunteers,

@@ -12,6 +12,7 @@ class ReviewStep extends ConsumerWidget {
     required this.descController,
     required this.addressController,
     required this.postcodeController,
+    required this.cityController,
     required this.category,
     required this.frequency,
     required this.numberOfVolunteers,
@@ -33,6 +34,7 @@ class ReviewStep extends ConsumerWidget {
   final TextEditingController descController;
   final TextEditingController addressController;
   final TextEditingController postcodeController;
+  final TextEditingController cityController;
   final String? category;
   final FrequencyType frequency;
   final int numberOfVolunteers;
@@ -92,6 +94,7 @@ class ReviewStep extends ConsumerWidget {
             'Type: ${locationType.displayName}',
             if (addressController.text.isNotEmpty) 'Address: ${addressController.text}',
             if (postcodeController.text.isNotEmpty) 'Postcode: ${postcodeController.text}',
+            if (cityController.text.isNotEmpty) 'City: ${cityController.text}',
           ]),
 
           // Skills

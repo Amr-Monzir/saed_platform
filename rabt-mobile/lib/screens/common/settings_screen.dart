@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rabt_mobile/models/enums.dart';
 import '../../state/auth/auth_providers.dart';
 import '../../theme/theme_providers.dart';
-import '../../state/prefs/user_prefs.dart';
 import '../auth/login_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -22,26 +21,6 @@ class SettingsScreen extends ConsumerWidget {
         child: Card(
           child: Column(
             children: [
-              if (ref.watch(authControllerProvider).value?.userType == UserType.volunteer)
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        initialValue: ref.watch(userPrefsProvider).city,
-                        decoration: const InputDecoration(labelText: 'City (for distance filter)'),
-                        onChanged: (v) => ref.read(userPrefsProvider.notifier).setCity(v),
-                      ),
-                      const SizedBox(height: 12),
-                      DropdownButtonFormField<int>(
-                        value: ref.watch(userPrefsProvider).distanceMiles,
-                        items: const [5, 10, 25, 50].map((e) => DropdownMenuItem(value: e, child: Text('$e miles'))).toList(),
-                        onChanged: (v) => ref.read(userPrefsProvider.notifier).setDistance(v),
-                        decoration: const InputDecoration(labelText: 'Max distance'),
-                      ),
-                    ],
-                  ),
-                ),
               SwitchListTile.adaptive(
                 title: const Text('Dark mode'),
                 value: ref.watch(themeControllerProvider) == ThemeMode.dark,

@@ -702,9 +702,8 @@ mixin _$Advert {
   LocationType get locationType => throw _privateConstructorUsedError;
   String? get addressText => throw _privateConstructorUsedError;
   String? get postcode => throw _privateConstructorUsedError;
-  double? get latitude => throw _privateConstructorUsedError;
-  double? get longitude => throw _privateConstructorUsedError;
   String? get imageUrl => throw _privateConstructorUsedError;
+  String? get city => throw _privateConstructorUsedError;
   bool get isActive => throw _privateConstructorUsedError;
   OrganizerProfile get organizer => throw _privateConstructorUsedError;
   List<Skill> get requiredSkills => throw _privateConstructorUsedError;
@@ -737,9 +736,8 @@ abstract class $AdvertCopyWith<$Res> {
     LocationType locationType,
     String? addressText,
     String? postcode,
-    double? latitude,
-    double? longitude,
     String? imageUrl,
+    String? city,
     bool isActive,
     OrganizerProfile organizer,
     List<Skill> requiredSkills,
@@ -777,9 +775,8 @@ class _$AdvertCopyWithImpl<$Res, $Val extends Advert>
     Object? locationType = null,
     Object? addressText = freezed,
     Object? postcode = freezed,
-    Object? latitude = freezed,
-    Object? longitude = freezed,
     Object? imageUrl = freezed,
+    Object? city = freezed,
     Object? isActive = null,
     Object? organizer = null,
     Object? requiredSkills = null,
@@ -834,20 +831,15 @@ class _$AdvertCopyWithImpl<$Res, $Val extends Advert>
                     ? _value.postcode
                     : postcode // ignore: cast_nullable_to_non_nullable
                         as String?,
-            latitude:
-                freezed == latitude
-                    ? _value.latitude
-                    : latitude // ignore: cast_nullable_to_non_nullable
-                        as double?,
-            longitude:
-                freezed == longitude
-                    ? _value.longitude
-                    : longitude // ignore: cast_nullable_to_non_nullable
-                        as double?,
             imageUrl:
                 freezed == imageUrl
                     ? _value.imageUrl
                     : imageUrl // ignore: cast_nullable_to_non_nullable
+                        as String?,
+            city:
+                freezed == city
+                    ? _value.city
+                    : city // ignore: cast_nullable_to_non_nullable
                         as String?,
             isActive:
                 null == isActive
@@ -943,9 +935,8 @@ abstract class _$$AdvertImplCopyWith<$Res> implements $AdvertCopyWith<$Res> {
     LocationType locationType,
     String? addressText,
     String? postcode,
-    double? latitude,
-    double? longitude,
     String? imageUrl,
+    String? city,
     bool isActive,
     OrganizerProfile organizer,
     List<Skill> requiredSkills,
@@ -985,9 +976,8 @@ class __$$AdvertImplCopyWithImpl<$Res>
     Object? locationType = null,
     Object? addressText = freezed,
     Object? postcode = freezed,
-    Object? latitude = freezed,
-    Object? longitude = freezed,
     Object? imageUrl = freezed,
+    Object? city = freezed,
     Object? isActive = null,
     Object? organizer = null,
     Object? requiredSkills = null,
@@ -1042,20 +1032,15 @@ class __$$AdvertImplCopyWithImpl<$Res>
                 ? _value.postcode
                 : postcode // ignore: cast_nullable_to_non_nullable
                     as String?,
-        latitude:
-            freezed == latitude
-                ? _value.latitude
-                : latitude // ignore: cast_nullable_to_non_nullable
-                    as double?,
-        longitude:
-            freezed == longitude
-                ? _value.longitude
-                : longitude // ignore: cast_nullable_to_non_nullable
-                    as double?,
         imageUrl:
             freezed == imageUrl
                 ? _value.imageUrl
                 : imageUrl // ignore: cast_nullable_to_non_nullable
+                    as String?,
+        city:
+            freezed == city
+                ? _value.city
+                : city // ignore: cast_nullable_to_non_nullable
                     as String?,
         isActive:
             null == isActive
@@ -1106,9 +1091,8 @@ class _$AdvertImpl implements _Advert {
     required this.locationType,
     this.addressText,
     this.postcode,
-    this.latitude,
-    this.longitude,
     this.imageUrl,
+    this.city,
     required this.isActive,
     required this.organizer,
     final List<Skill> requiredSkills = const [],
@@ -1139,11 +1123,9 @@ class _$AdvertImpl implements _Advert {
   @override
   final String? postcode;
   @override
-  final double? latitude;
-  @override
-  final double? longitude;
-  @override
   final String? imageUrl;
+  @override
+  final String? city;
   @override
   final bool isActive;
   @override
@@ -1166,7 +1148,7 @@ class _$AdvertImpl implements _Advert {
 
   @override
   String toString() {
-    return 'Advert(id: $id, title: $title, description: $description, category: $category, frequency: $frequency, numberOfVolunteers: $numberOfVolunteers, locationType: $locationType, addressText: $addressText, postcode: $postcode, latitude: $latitude, longitude: $longitude, imageUrl: $imageUrl, isActive: $isActive, organizer: $organizer, requiredSkills: $requiredSkills, oneoffDetails: $oneoffDetails, recurringDetails: $recurringDetails, createdAt: $createdAt)';
+    return 'Advert(id: $id, title: $title, description: $description, category: $category, frequency: $frequency, numberOfVolunteers: $numberOfVolunteers, locationType: $locationType, addressText: $addressText, postcode: $postcode, imageUrl: $imageUrl, city: $city, isActive: $isActive, organizer: $organizer, requiredSkills: $requiredSkills, oneoffDetails: $oneoffDetails, recurringDetails: $recurringDetails, createdAt: $createdAt)';
   }
 
   @override
@@ -1190,12 +1172,9 @@ class _$AdvertImpl implements _Advert {
                 other.addressText == addressText) &&
             (identical(other.postcode, postcode) ||
                 other.postcode == postcode) &&
-            (identical(other.latitude, latitude) ||
-                other.latitude == latitude) &&
-            (identical(other.longitude, longitude) ||
-                other.longitude == longitude) &&
             (identical(other.imageUrl, imageUrl) ||
                 other.imageUrl == imageUrl) &&
+            (identical(other.city, city) || other.city == city) &&
             (identical(other.isActive, isActive) ||
                 other.isActive == isActive) &&
             (identical(other.organizer, organizer) ||
@@ -1225,9 +1204,8 @@ class _$AdvertImpl implements _Advert {
     locationType,
     addressText,
     postcode,
-    latitude,
-    longitude,
     imageUrl,
+    city,
     isActive,
     organizer,
     const DeepCollectionEquality().hash(_requiredSkills),
@@ -1261,9 +1239,8 @@ abstract class _Advert implements Advert {
     required final LocationType locationType,
     final String? addressText,
     final String? postcode,
-    final double? latitude,
-    final double? longitude,
     final String? imageUrl,
+    final String? city,
     required final bool isActive,
     required final OrganizerProfile organizer,
     final List<Skill> requiredSkills,
@@ -1293,11 +1270,9 @@ abstract class _Advert implements Advert {
   @override
   String? get postcode;
   @override
-  double? get latitude;
-  @override
-  double? get longitude;
-  @override
   String? get imageUrl;
+  @override
+  String? get city;
   @override
   bool get isActive;
   @override

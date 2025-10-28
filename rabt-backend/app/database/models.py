@@ -5,7 +5,6 @@ from sqlalchemy import (
     DateTime,
     Boolean,
     Text,
-    Float,
     ForeignKey,
     Table,
     JSON,
@@ -122,12 +121,11 @@ class Advert(Base):
     location_type = Column(String, nullable=False)
     address_text = Column(String)
     postcode = Column(String)
-    latitude = Column(Float)
-    longitude = Column(Float)
     advert_image_url = Column(String, nullable=True)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    city = Column(String)   
 
     # Relationships
     organizer = relationship("Organizer", back_populates="adverts")

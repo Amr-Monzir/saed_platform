@@ -17,7 +17,6 @@ final pageProvider = StateProvider<int>((ref) => 1);
 final advertsProvider = FutureProvider<PaginatedAdverts>((ref) async {
   final repo = ref.watch(advertsRepositoryProvider);
   final filters = ref.watch(advertsFilterProvider);
-  final prefs = ref.watch(userPrefsProvider);
   final search = ref.watch(searchQueryProvider);
   final page = ref.watch(pageProvider);
   final Map<String, String> query = {};
@@ -26,9 +25,8 @@ final advertsProvider = FutureProvider<PaginatedAdverts>((ref) async {
   if (filters.skills.isNotEmpty) query['skills'] = filters.skills.join(',');
   if (filters.timeCommitment != null) query['time_commitment'] = filters.timeCommitment!.wireValue;
   if (filters.timeOfDay != null) query['time_of_day'] = filters.timeOfDay!.wireValue;
-  if (prefs.distanceMiles != null) query['distance'] = prefs.distanceMiles!.toString();
   if (filters.locationType != null) query['location_type'] = filters.locationType!.wireValue;
-  if (prefs.city != null && prefs.city!.isNotEmpty) query['city'] = prefs.city!;
+  if (filters.city != null && filters.city!.isNotEmpty) query['city'] = filters.city!;
   if (search != null && search.isNotEmpty) query['q'] = search;
   if (page > 1) query['page'] = page.toString();
   return repo.fetchAll(query: query.isEmpty ? null : query);
@@ -55,6 +53,7 @@ class AdvertsFilterState {
     this.timeOfDay,
     this.distanceMiles,
     this.locationType,
+    this.city,
   });
 
   final FrequencyType? frequency;
@@ -65,6 +64,7 @@ class AdvertsFilterState {
   final DayTimePeriod? timeOfDay;
   final int? distanceMiles;
   final LocationType? locationType;
+  final String? city;
 
   // Sentinel value to distinguish between "not provided" and "explicitly null"
   static const Object _notProvided = Object();
@@ -78,6 +78,7 @@ class AdvertsFilterState {
     Object? timeOfDay = _notProvided,
     Object? distanceMiles = _notProvided,
     Object? locationType = _notProvided,
+    Object? city = _notProvided,
   }) {
     return AdvertsFilterState(
       frequency: frequency == _notProvided ? this.frequency : frequency as FrequencyType?,
@@ -88,6 +89,7 @@ class AdvertsFilterState {
       timeOfDay: timeOfDay == _notProvided ? this.timeOfDay : timeOfDay as DayTimePeriod?,
       distanceMiles: distanceMiles == _notProvided ? this.distanceMiles : distanceMiles as int?,
       locationType: locationType == _notProvided ? this.locationType : locationType as LocationType?,
+      city: city == _notProvided ? this.city : city as String?,
     );
   }
 }
@@ -116,6 +118,7 @@ class AdvertsFilterController extends StateNotifier<AdvertsFilterState> {
   void setTimeCommitment(TimeCommitment? value) => state = state.copyWith(timeCommitment: value);
   void setTimeOfDay(DayTimePeriod? value) => state = state.copyWith(timeOfDay: value);
   void setDistance(int? miles) => state = state.copyWith(distanceMiles: miles);
+  void setCity(String? value) => state = state.copyWith(city: value);
   void clear() => state = AdvertsFilterState();
 
   // Clear all filters

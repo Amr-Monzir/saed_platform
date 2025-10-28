@@ -64,8 +64,8 @@ class AdvertsListScreen extends ConsumerWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               AppButton(
+                                variant: AppButtonVariant.inline,
                                 label: 'Prev',
-                                variant: AppButtonVariant.outline,
                                 onPressed: current > 1 ? () => ref.read(pageProvider.notifier).state = current - 1 : null,
                               ),
                               Text('Page $current of ${page.totalPages}'),

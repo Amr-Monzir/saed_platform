@@ -56,6 +56,7 @@ def list_adverts(
     search: Optional[str] = None,
     category: Optional[str] = None,
     location_type: Optional[str] = None,
+    city: Optional[str] = None,
     skills: Optional[str] = Query(None),
     frequency: Optional[FrequencyType] = Query(None, alias="frequency"),
     time_of_day: Optional[DayPeriod] = Query(None, alias="time_of_day"),
@@ -78,6 +79,8 @@ def list_adverts(
         query = query.filter(Advert.category == category)
     if location_type:
         query = query.filter(Advert.location_type == location_type)
+    if city:
+        query = query.filter(Advert.city == city)
     if skills:
         skill_ids = [int(s_id) for s_id in skills.split(",")]
         query = query.join(Advert.required_skills).filter(Skill.id.in_(skill_ids))

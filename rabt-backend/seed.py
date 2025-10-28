@@ -190,6 +190,7 @@ def seed_data():
                 postcode=fake.postcode(),
                 is_active=True,
                 advert_image_url=advert_image_url,
+                city=fake.city().lower(),
             )
 
             required_skills = random.sample(skills, k=random.randint(1, 3))

@@ -4,6 +4,7 @@ import 'package:rabt_mobile/constants/lookups.dart';
 import 'package:rabt_mobile/models/enums.dart';
 import 'package:rabt_mobile/state/adverts/adverts_providers.dart';
 import 'package:rabt_mobile/state/skills/skills_providers.dart';
+import 'package:rabt_mobile/widgets/app_text_field.dart';
 
 class AdvertsFiltersSheet extends ConsumerStatefulWidget {
   const AdvertsFiltersSheet({super.key});
@@ -13,6 +14,30 @@ class AdvertsFiltersSheet extends ConsumerStatefulWidget {
 }
 
 class _AdvertsFiltersSheetState extends ConsumerState<AdvertsFiltersSheet> {
+  final _cityController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize city controller with current filter value
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final filters = ref.read(advertsFilterProvider);
+      _cityController.text = filters.city ?? '';
+    });
+    
+    // Add listener to update filter when text changes
+    _cityController.addListener(() {
+      final ctrl = ref.read(advertsFilterProvider.notifier);
+      ctrl.setCity(_cityController.text.trim().isNotEmpty ? _cityController.text.trim().toLowerCase() : null);
+    });
+  }
+
+  @override
+  void dispose() {
+    _cityController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final filters = ref.watch(advertsFilterProvider);
@@ -37,6 +62,7 @@ class _AdvertsFiltersSheetState extends ConsumerState<AdvertsFiltersSheet> {
                   TextButton(
                     onPressed: () {
                       ctrl.clear();
+                      _cityController.clear();
                     },
                     child: const Text('Clear all'),
                   ),
@@ -44,7 +70,7 @@ class _AdvertsFiltersSheetState extends ConsumerState<AdvertsFiltersSheet> {
               ),
               const SizedBox(height: 8),
               DropdownButtonFormField<FrequencyType>(
-                value: filters.frequency,
+                initialValue: filters.frequency,
                 items: [
                   const DropdownMenuItem(child: Text('Any')),
                   ...FrequencyType.values.map((x) => DropdownMenuItem(value: x, child: Text(x.displayName))),
@@ -60,7 +86,7 @@ class _AdvertsFiltersSheetState extends ConsumerState<AdvertsFiltersSheet> {
                         ? Padding(
                           padding: const EdgeInsets.only(bottom: 12),
                           child: DropdownButtonFormField<RecurrenceType>(
-                            value: filters.recurrence,
+                            initialValue: filters.recurrence,
                             items: [
                               const DropdownMenuItem(child: Text('Any')),
                               ...RecurrenceType.values.map((x) => DropdownMenuItem(value: x, child: Text(x.displayName))),
@@ -72,7 +98,7 @@ class _AdvertsFiltersSheetState extends ConsumerState<AdvertsFiltersSheet> {
                         : const SizedBox.shrink(),
               ),
               DropdownButtonFormField<LocationType>(
-                value: filters.locationType,
+                initialValue: filters.locationType,
                 items: [
                   const DropdownMenuItem(child: Text('Any')),
                   ...LocationType.values.map((e) => DropdownMenuItem(value: e, child: Text(e.displayName))),
@@ -81,8 +107,13 @@ class _AdvertsFiltersSheetState extends ConsumerState<AdvertsFiltersSheet> {
                 decoration: const InputDecoration(labelText: 'Location Type'),
               ),
               const SizedBox(height: 12),
+              AppTextField(
+                controller: _cityController,
+                label: 'City',
+              ),
+              const SizedBox(height: 12),
               DropdownButtonFormField<String>(
-                value: filters.category,
+                initialValue: filters.category,
                 items: [
                   const DropdownMenuItem(child: Text('Any')),
                   ...kCategories.map((e) => DropdownMenuItem(value: e, child: Text(e))),
@@ -92,7 +123,7 @@ class _AdvertsFiltersSheetState extends ConsumerState<AdvertsFiltersSheet> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<TimeCommitment>(
-                value: filters.timeCommitment,
+                initialValue: filters.timeCommitment,
                 items: [
                   const DropdownMenuItem(child: Text('Any')),
                   ...TimeCommitment.values.map((x) => DropdownMenuItem(value: x, child: Text(x.displayName))),
@@ -102,7 +133,7 @@ class _AdvertsFiltersSheetState extends ConsumerState<AdvertsFiltersSheet> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<DayTimePeriod>(
-                value: filters.timeOfDay,
+                initialValue: filters.timeOfDay,
                 items: [
                   const DropdownMenuItem(child: Text('Any')),
                   ...DayTimePeriod.values.map((x) => DropdownMenuItem(value: x, child: Text(x.displayName))),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import 'package:rabt_mobile/models/enums.dart';
 import 'package:rabt_mobile/screens/auth/signup_volunteer_screen.dart';
@@ -31,6 +32,14 @@ class AdvertDetailScreen extends ConsumerStatefulWidget {
 
 class _AdvertDetailScreenState extends ConsumerState<AdvertDetailScreen> {
   bool _scheduleExpanded = false;
+
+  String _formatDateTime(DateTime dateTime) {
+    return DateFormat('EEEE, MMMM d, y • h:mm a').format(dateTime);
+  }
+
+  String _formatDate(DateTime dateTime) {
+    return DateFormat('MMMM d, y').format(dateTime);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +82,30 @@ class _AdvertDetailScreenState extends ConsumerState<AdvertDetailScreen> {
                                 ],
                               ),
                             ),
+                            // Location information
+                            if (advert.locationType != LocationType.remote || 
+                                advert.addressText != null || 
+                                advert.postcode != null || 
+                                advert.city != null)
+                              AppCard(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const IconTile(icon: Icons.location_on_outlined),
+                                        const SizedBox(width: 12),
+                                        Text('Location', style: Theme.of(context).textTheme.titleMedium),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text('Type: ${advert.locationType.displayName}'),
+                                    if (advert.addressText != null) Text('Address: ${advert.addressText}'),
+                                    if (advert.postcode != null) Text('Postcode: ${advert.postcode}'),
+                                    if (advert.city != null) Text('City: ${advert.city}'),
+                                  ],
+                                ),
+                              ),
                             AppCard(
                               padding: EdgeInsets.zero,
                               child: Column(
@@ -110,9 +143,9 @@ class _AdvertDetailScreenState extends ConsumerState<AdvertDetailScreen> {
                                   children: [
                                     Text('One-off', style: Theme.of(context).textTheme.titleMedium),
                                     const SizedBox(height: 8),
-                                    Text('Event: ${advert.oneoffDetails!.eventDatetime}'),
-                                    Text('Time: ${advert.oneoffDetails!.timeCommitment.name}'),
-                                    Text('Apply by: ${advert.oneoffDetails!.applicationDeadline}'),
+                                    Text('Event: ${_formatDateTime(advert.oneoffDetails!.eventDatetime)}'),
+                                    Text('Time commitment: ${advert.oneoffDetails!.timeCommitment.displayName}'),
+                                    Text('Apply by: ${_formatDate(advert.oneoffDetails!.applicationDeadline)}'),
                                   ],
                                 ),
                               ),

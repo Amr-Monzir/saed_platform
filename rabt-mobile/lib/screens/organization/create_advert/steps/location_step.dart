@@ -9,6 +9,7 @@ class LocationStep extends StatelessWidget {
     required this.formKey,
     required this.addressController,
     required this.postcodeController,
+    required this.cityController,
     required this.locationType,
     required this.selectedImage,
     required this.onLocationTypeChanged,
@@ -18,6 +19,7 @@ class LocationStep extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController addressController;
   final TextEditingController postcodeController;
+  final TextEditingController cityController;
   final LocationType locationType;
   final File? selectedImage;
   final ValueChanged<LocationType?> onLocationTypeChanged;
@@ -54,6 +56,11 @@ class LocationStep extends StatelessWidget {
               AppTextField(
                 controller: postcodeController,
                 label: 'Postcode',
+              ),
+              const SizedBox(height: 16),
+              AppTextField(
+                controller: cityController,
+                label: 'City',
               ),
             ],
             const SizedBox(height: 24),

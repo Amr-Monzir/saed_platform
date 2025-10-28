@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../theme/theme_providers.dart';
 
 class UserPrefsState {
   const UserPrefsState({this.city, this.distanceMiles});
@@ -43,10 +42,3 @@ class UserPrefsController extends StateNotifier<UserPrefsState> {
     }
   }
 }
-
-final userPrefsProvider = StateNotifierProvider<UserPrefsController, UserPrefsState>((ref) {
-  final prefs = ref.watch(sharedPrefsProvider);
-  return UserPrefsController(prefs);
-});
-
-

@@ -41,10 +41,8 @@ class AdvertBase(BaseModel):
     location_type: LocationType
     address_text: Optional[str] = None
     postcode: Optional[str] = None
-    latitude: Optional[float] = None
-    longitude: Optional[float] = None
     advert_image_url: Optional[str] = None
-
+    city: Optional[str] = None
 
 class AdvertCreate(AdvertBase):
     required_skill_ids: List[int] = []
