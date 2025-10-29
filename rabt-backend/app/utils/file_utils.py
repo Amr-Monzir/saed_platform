@@ -2,13 +2,14 @@ import os
 import uuid
 from fastapi import UploadFile, HTTPException
 from app.config import settings
+from app.utils.r2_storage import upload_to_r2, get_r2_public_url
 
 ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/gif"]
 
 
 def save_image(file: UploadFile, category: str, entity_id: int) -> str:
     """
-    Generic image upload function that saves images to organized directories.
+    Generic image upload function that saves images to R2 storage.
     
     Args:
         file: The uploaded file
@@ -21,43 +22,22 @@ def save_image(file: UploadFile, category: str, entity_id: int) -> str:
     if file.content_type not in ALLOWED_IMAGE_TYPES:
         raise HTTPException(status_code=400, detail="Invalid image type")
 
-    # Create a unique filename
-    ext = os.path.splitext(file.filename)[1]
-    unique_filename = f"{uuid.uuid4()}{ext}"
-
-    # Create the directory structure
-    upload_dir = os.path.join(settings.upload_directory, category, str(entity_id))
-    os.makedirs(upload_dir, exist_ok=True)
-
-    # Save the file
-    file_path = os.path.join(upload_dir, unique_filename)
-    with open(file_path, "wb") as buffer:
-        buffer.write(file.file.read())
-
-    # Return the relative path to be stored in the database
-    return os.path.join(category, str(entity_id), unique_filename)
+    # Upload to R2 and return the object key
+    return upload_to_r2(file=file, category=category, entity_id=entity_id)
 
 
-def get_image_url(relative_path: str, base_url: str = "/uploads") -> str:
+def get_image_url(relative_path: str, base_url: str = None) -> str:
     """
     Convert a relative image path to a full URL.
     
     Args:
         relative_path: The relative path stored in database (e.g., "adverts/123/uuid.jpg")
-        base_url: The base URL for serving static files (default: "/uploads")
+        base_url: Ignored for R2 (kept for compatibility)
     
     Returns:
-        Full URL for the image (e.g., "/uploads/adverts/123/uuid.jpg")
+        Full URL for the image from R2
     """
     if not relative_path:
         return None
     
-    # Ensure base_url starts with / and doesn't end with /
-    base_url = base_url.rstrip('/')
-    if not base_url.startswith('/'):
-        base_url = '/' + base_url
-    
-    # Ensure relative_path doesn't start with /
-    relative_path = relative_path.lstrip('/')
-    
-    return f"{base_url}/{relative_path}"
+    return get_r2_public_url(relative_path)

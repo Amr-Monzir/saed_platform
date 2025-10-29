@@ -39,9 +39,9 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True, nullable=False)
+    email = Column(String(255), unique=True, index=True, nullable=False)
     password_hash = Column(String, nullable=False)
-    user_type = Column(String, nullable=False)
+    user_type = Column(String(50), nullable=False)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
@@ -61,8 +61,8 @@ class Volunteer(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    name = Column(String, nullable=False)
-    phone_number = Column(String)
+    name = Column(String(255), nullable=False)
+    phone_number = Column(String(20))
     onboarding_completed = Column(Boolean, default=False)
 
     # Relationships
@@ -78,9 +78,9 @@ class Organizer(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    name = Column(String, nullable=False)
-    logo_url = Column(String)
-    website = Column(String)
+    name = Column(String(255), nullable=False)
+    logo_url = Column(String(500))
+    website = Column(String(255))
     description = Column(Text)
 
     # Relationships
@@ -93,8 +93,8 @@ class Skill(Base):
     __tablename__ = "skills"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, nullable=False)
-    category = Column(String)
+    name = Column(String(255), unique=True, nullable=False)
+    category = Column(String(100))
     is_predefined = Column(Boolean, default=True)
     created_by = Column(Integer, ForeignKey("organizers.id"), nullable=True)
 
@@ -113,19 +113,19 @@ class Advert(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     organizer_id = Column(Integer, ForeignKey("organizers.id"), nullable=False)
-    title = Column(String, nullable=False)
+    title = Column(String(255), nullable=False)
     description = Column(Text, nullable=False)
-    category = Column(String, nullable=False)
-    frequency = Column(String, nullable=False)
+    category = Column(String(100), nullable=False)
+    frequency = Column(String(50), nullable=False)
     number_of_volunteers = Column(Integer, default=1)
-    location_type = Column(String, nullable=False)
-    address_text = Column(String)
-    postcode = Column(String)
-    advert_image_url = Column(String, nullable=True)
+    location_type = Column(String(50), nullable=False)
+    address_text = Column(String(500))
+    postcode = Column(String(20))
+    advert_image_url = Column(String(500), nullable=True)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-    city = Column(String)   
+    city = Column(String(100))   
 
     # Relationships
     organizer = relationship("Organizer", back_populates="adverts")
@@ -158,7 +158,7 @@ class OneOffAdvert(Base):
     id = Column(Integer, primary_key=True, index=True)
     advert_id = Column(Integer, ForeignKey("adverts.id"), nullable=False)
     event_datetime = Column(DateTime(timezone=True), nullable=False)
-    time_commitment = Column(String, nullable=False)
+    time_commitment = Column(String(100), nullable=False)
     application_deadline = Column(DateTime(timezone=True), nullable=False)
 
     # Relationships
@@ -170,9 +170,9 @@ class RecurringAdvert(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     advert_id = Column(Integer, ForeignKey("adverts.id"), nullable=False)
-    recurrence = Column(String, nullable=False)
-    time_commitment_per_session = Column(String, nullable=False)
-    duration = Column(String, nullable=False)
+    recurrence = Column(String(100), nullable=False)
+    time_commitment_per_session = Column(String(100), nullable=False)
+    duration = Column(String(100), nullable=False)
     specific_days = Column(JSON)  # [{"day": "monday", "periods": ["am", "pm"]}]
 
     # Relationships
@@ -185,7 +185,7 @@ class Application(Base):
     id = Column(Integer, primary_key=True, index=True)
     advert_id = Column(Integer, ForeignKey("adverts.id"), nullable=False)
     volunteer_id = Column(Integer, ForeignKey("volunteers.id"), nullable=False)
-    status = Column(String, default="pending")
+    status = Column(String(50), default="pending")
     cover_message = Column(Text, nullable=True)
     organizer_message = Column(Text, nullable=True)
     applied_at = Column(DateTime(timezone=True), server_default=func.now())

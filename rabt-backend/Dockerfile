@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.11-slim
+FROM python:3.13-slim
 
 # Set the working directory in the container
 WORKDIR /app
@@ -15,6 +15,9 @@ RUN uv sync --system
 
 # Copy the rest of the application code
 COPY . .
+
+# Run Alembic migrations
+RUN alembic upgrade head
 
 # Expose the port the app runs on
 EXPOSE 8000

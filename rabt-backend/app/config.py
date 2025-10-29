@@ -7,7 +7,16 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 30
-    upload_directory: str = "uploads"
+    
+    # Cloudflare R2 settings
+    r2_account_id: str
+    r2_access_key_id: str
+    r2_secret_access_key: str
+    r2_bucket_name: str
+    r2_public_url: str
+    
+    # CORS settings
+    allowed_origins: str = "*"
 
     class Config:
         env_file = ".env"

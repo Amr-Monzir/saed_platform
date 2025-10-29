@@ -9,7 +9,7 @@ from fastapi import (
     Body,
 )
 from sqlalchemy.orm import Session
-from sqlalchemy import text
+from sqlalchemy import text, Text
 from typing import List, Optional
 import json
 
@@ -90,8 +90,9 @@ def list_adverts(
         # Join with recurring_adverts table and filter by specific_days JSON
         query = query.join(RecurringAdvert, Advert.id == RecurringAdvert.advert_id)
         # We need to check if any day has the time_of_day period in its periods array
+        # PostgreSQL compatible JSON query
         query = query.filter(
-            RecurringAdvert.specific_days.like(f'%"{time_of_day.value}"%')
+            RecurringAdvert.specific_days.cast(Text).contains(time_of_day.value)
         )
 
     total_count = query.count()
