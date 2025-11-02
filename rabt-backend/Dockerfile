@@ -10,11 +10,14 @@ RUN pip install uv
 # Copy the dependency files
 COPY pyproject.toml uv.lock ./
 
-# Install dependencies
-RUN uv sync --system
+# Install dependencies (creates .venv)
+RUN uv sync
 
 # Copy the rest of the application code
 COPY . .
+
+# Add .venv to PATH so we can use installed commands
+ENV PATH="/app/.venv/bin:$PATH"
 
 # Run Alembic migrations
 RUN alembic upgrade head
