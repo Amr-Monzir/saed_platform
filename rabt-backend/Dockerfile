@@ -8,13 +8,14 @@ WORKDIR /app
 RUN pip install uv
 
 # Copy the dependency files
-COPY pyproject.toml uv.lock ./
+# When building from monorepo root, copy from rabt-backend subdirectory
+COPY rabt-backend/pyproject.toml rabt-backend/uv.lock ./
 
 # Install dependencies
 RUN uv sync --system
 
-# Copy the rest of the application code
-COPY . .
+# Copy the rest of the application code from rabt-backend directory
+COPY rabt-backend/ .
 
 # Run Alembic migrations
 RUN alembic upgrade head
