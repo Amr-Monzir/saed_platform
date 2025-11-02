@@ -8,12 +8,12 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 30
     
-    # Cloudflare R2 settings
-    r2_account_id: str
-    r2_access_key_id: str
-    r2_secret_access_key: str
-    r2_bucket_name: str
-    r2_public_url: str
+    # AWS S3 settings
+    aws_access_key_id: str
+    aws_secret_access_key: str
+    aws_region: str = "us-east-1"
+    s3_bucket_name: str
+    s3_custom_domain: str = ""  # Optional: for CloudFront or custom domain
     
     # CORS settings
     allowed_origins: str = "*"

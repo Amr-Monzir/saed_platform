@@ -12,7 +12,7 @@ if [ ! -f .env ]; then
     echo "⚠️  Please edit .env with your local configuration:"
     echo "   - Set DATABASE_URL (PostgreSQL or SQLite)"
     echo "   - Set SECRET_KEY (generate with: python -c 'import secrets; print(secrets.token_urlsafe(32))')"
-    echo "   - Set R2 credentials for file uploads"
+    echo "   - Set AWS S3 credentials for file uploads"
     echo "   - Set ALLOWED_ORIGINS for your frontend"
     echo ""
     echo "After editing .env, run this script again."

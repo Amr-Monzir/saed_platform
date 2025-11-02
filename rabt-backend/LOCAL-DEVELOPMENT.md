@@ -12,9 +12,10 @@ brew services start postgresql
 createdb rabt_local
 ```
 
-### 2. Setup Cloudflare R2
-- Create an R2 bucket for development
-- Get your R2 credentials (same as production setup)
+### 2. Setup AWS S3
+- Create an S3 bucket for development (or use the same as production)
+- Create an IAM user with S3 access (or use your existing AWS credentials)
+- Get your AWS Access Key ID and Secret Access Key
 
 ### 3. Create local .env file
 ```bash
@@ -25,11 +26,11 @@ Edit `.env` with your local values:
 ```env
 DATABASE_URL=postgresql://username:password@localhost:5432/rabt_local
 SECRET_KEY=your-local-secret-key
-R2_ACCOUNT_ID=your-r2-account-id
-R2_ACCESS_KEY_ID=your-r2-access-key-id
-R2_SECRET_ACCESS_KEY=your-r2-secret-access-key
-R2_BUCKET_NAME=your-dev-bucket-name
-R2_PUBLIC_URL=https://your-dev-bucket.your-account-id.r2.cloudflarestorage.com
+AWS_ACCESS_KEY_ID=your-aws-access-key-id
+AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
+AWS_REGION=us-east-1
+S3_BUCKET_NAME=your-dev-bucket-name
+S3_CUSTOM_DOMAIN=
 ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
 ```
 
@@ -45,19 +46,19 @@ alembic upgrade head
 uvicorn app.main:app --reload
 ```
 
-## Option 2: Hybrid Setup (SQLite + R2)
+## Option 2: Hybrid Setup (SQLite + S3)
 
-If you want to keep using SQLite locally but still test R2 functionality:
+If you want to keep using SQLite locally but still test S3 functionality:
 
 ### 1. Create local .env file
 ```env
 DATABASE_URL=sqlite:///./rabt_local.db
 SECRET_KEY=your-local-secret-key
-R2_ACCOUNT_ID=your-r2-account-id
-R2_ACCESS_KEY_ID=your-r2-access-key-id
-R2_SECRET_ACCESS_KEY=your-r2-secret-access-key
-R2_BUCKET_NAME=your-dev-bucket-name
-R2_PUBLIC_URL=https://your-dev-bucket.your-account-id.r2.cloudflarestorage.com
+AWS_ACCESS_KEY_ID=your-aws-access-key-id
+AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
+AWS_REGION=us-east-1
+S3_BUCKET_NAME=your-dev-bucket-name
+S3_CUSTOM_DOMAIN=
 ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
 ```
 
@@ -120,11 +121,11 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:password@postgres:5432/rabt_local
       - SECRET_KEY=your-local-secret-key
-      - R2_ACCOUNT_ID=your-r2-account-id
-      - R2_ACCESS_KEY_ID=your-r2-access-key-id
-      - R2_SECRET_ACCESS_KEY=your-r2-secret-access-key
-      - R2_BUCKET_NAME=your-dev-bucket-name
-      - R2_PUBLIC_URL=https://your-dev-bucket.your-account-id.r2.cloudflarestorage.com
+      - AWS_ACCESS_KEY_ID=your-aws-access-key-id
+      - AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
+      - AWS_REGION=us-east-1
+      - S3_BUCKET_NAME=your-dev-bucket-name
+      - S3_CUSTOM_DOMAIN=
       - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
     depends_on:
       - postgres
@@ -173,12 +174,12 @@ chmod +x run_local.sh
 
 ## Testing File Uploads
 
-With R2 configured, your file uploads will work exactly the same as before:
+With S3 configured, your file uploads will work exactly the same as before:
 - Upload images via `/api/v1/upload/image`
 - Upload logos via `/api/v1/organizers/upload-logo`
 - Upload advert images via `/api/v1/adverts` (with image_file parameter)
 
-All files will be stored in your R2 bucket and served via public URLs.
+All files will be stored in your S3 bucket and served via public URLs.
 
 ## Frontend Integration
 
@@ -189,3 +190,29 @@ Your frontend can connect to the local backend at:
 
 Make sure your frontend's CORS configuration includes `http://localhost:8000` in the allowed origins.
 
+## AWS Credentials Setup
+
+### Option A: Environment Variables (Recommended for local dev)
+Add to your `.env` file:
+```env
+AWS_ACCESS_KEY_ID=your-key-id
+AWS_SECRET_ACCESS_KEY=your-secret-key
+AWS_REGION=us-east-1
+```
+
+### Option B: AWS CLI Configuration
+If you have AWS CLI installed and configured, you can use:
+```bash
+aws configure
+```
+
+The boto3 library will automatically use credentials from `~/.aws/credentials` if environment variables are not set.
+
+## S3 Bucket Setup for Development
+
+1. Create a development bucket in AWS S3
+2. Configure bucket permissions:
+   - Unblock public access if you want public file URLs
+   - Enable ACLs for public-read access
+3. (Optional) Set up a CloudFront distribution for better performance
+4. Update your `.env` with the bucket name and region
