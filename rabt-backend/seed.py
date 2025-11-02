@@ -1,8 +1,7 @@
 import random
 import os
-import shutil
-import urllib.request
 from datetime import datetime, timedelta
+from io import BytesIO
 
 from faker import Faker
 from sqlalchemy import create_engine, delete
@@ -10,6 +9,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from app.auth.password_utils import get_password_hash
 from app.config import settings
+from app.utils.s3_storage import upload_to_s3
 from app.database.enums import (
     DayPeriod,
     DurationType,
@@ -93,10 +93,6 @@ def seed_data():
         print("Seeding organizers...")
         # Setup for logos
         logo_dir = "seed-data/organizations"
-        upload_dir = "uploads"
-        if not os.path.exists(upload_dir):
-            os.makedirs(upload_dir)
-
         logo_files = [
             f
             for f in os.listdir(logo_dir)
@@ -115,20 +111,43 @@ def seed_data():
             db.commit()
             db.refresh(user)
 
-            # Copy logo to uploads/logos/{organizer_id}/
-            logo_upload_dir = os.path.join(upload_dir, "logos", str(i + 1))
-            os.makedirs(logo_upload_dir, exist_ok=True)
-            shutil.copy(os.path.join(logo_dir, logo_filename), logo_upload_dir)
-            logo_url = f"logos/{i + 1}/{logo_filename}"  # Store relative path
-
+            # Create organizer first
             organizer = Organizer(
                 user_id=user.id,
                 name=os.path.splitext(logo_filename)[0],
                 website=fake.url(),
                 description=fake.text(),
-                logo_url=logo_url,
+                logo_url=None,  # Will be set after upload
             )
             db.add(organizer)
+            db.flush()  # Get organizer.id without committing
+
+            # Upload logo to S3 using organizer.id
+            logo_path = os.path.join(logo_dir, logo_filename)
+            with open(logo_path, "rb") as f:
+                # Create a file-like object for upload
+                file_obj = BytesIO(f.read())
+                # Determine content type from extension
+                ext = os.path.splitext(logo_filename)[1].lower()
+                content_type_map = {
+                    ".png": "image/png",
+                    ".jpg": "image/jpeg",
+                    ".jpeg": "image/jpeg",
+                    ".gif": "image/gif",
+                    ".webp": "image/webp"
+                }
+                content_type = content_type_map.get(ext, "image/png")
+                
+                # Create a mock UploadFile
+                class MockUploadFile:
+                    def __init__(self, file_obj, filename, content_type):
+                        self.file = file_obj
+                        self.filename = filename
+                        self.content_type = content_type
+                
+                mock_file = MockUploadFile(file_obj, logo_filename, content_type)
+                logo_url = upload_to_s3(mock_file, "logos", organizer.id)
+                organizer.logo_url = logo_url
         db.commit()
         print("Organizers seeded.")
 
@@ -172,11 +191,33 @@ def seed_data():
             advert_image_filename = random.choice(advert_image_files)
             advert_title = os.path.splitext(advert_image_filename)[0]
 
-            # Copy advert image to uploads
-            shutil.copy(
-                os.path.join(advert_image_dir, advert_image_filename), upload_dir
-            )
-            advert_image_url = f"{advert_image_filename}"
+            # Upload advert image to S3
+            advert_image_path = os.path.join(advert_image_dir, advert_image_filename)
+            with open(advert_image_path, "rb") as f:
+                # Create a file-like object for upload
+                file_obj = BytesIO(f.read())
+                # Determine content type from extension
+                ext = os.path.splitext(advert_image_filename)[1].lower()
+                content_type_map = {
+                    ".png": "image/png",
+                    ".jpg": "image/jpeg",
+                    ".jpeg": "image/jpeg",
+                    ".gif": "image/gif",
+                    ".webp": "image/webp"
+                }
+                content_type = content_type_map.get(ext, "image/png")
+                
+                # Create a mock UploadFile
+                class MockUploadFile:
+                    def __init__(self, file_obj, filename, content_type):
+                        self.file = file_obj
+                        self.filename = filename
+                        self.content_type = content_type
+                
+                mock_file = MockUploadFile(file_obj, advert_image_filename, content_type)
+                # Temporarily add advert_id (will be updated after commit)
+                # We'll upload after creating the advert
+                temp_file = mock_file
 
             advert = Advert(
                 organizer_id=organizer.id,
@@ -189,7 +230,7 @@ def seed_data():
                 address_text=fake.address(),
                 postcode=fake.postcode(),
                 is_active=True,
-                advert_image_url=advert_image_url,
+                advert_image_url=None,  # Will be set after upload
                 city=fake.city().lower(),
             )
 
@@ -199,6 +240,11 @@ def seed_data():
 
             db.add(advert)
             db.flush()
+            
+            # Now upload the image with the advert ID
+            temp_file.file.seek(0)  # Reset file pointer
+            advert_image_url = upload_to_s3(temp_file, "adverts", advert.id)
+            advert.advert_image_url = advert_image_url
 
             if advert.frequency == FrequencyType.ONE_OFF.value:
                 one_off = OneOffAdvert(
