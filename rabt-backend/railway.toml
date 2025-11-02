@@ -1,6 +1,3 @@
-# This file is kept for reference, but Railway should use the railway.toml at the monorepo root
-# See README-DEPLOYMENT.md for monorepo setup instructions
-
 [build]
 builder = "dockerfile"
 

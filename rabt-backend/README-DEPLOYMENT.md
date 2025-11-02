@@ -122,26 +122,18 @@ This guide walks you through deploying the RABT backend to Railway with PostgreS
 
    **Note:** If you're not using CloudFront (Option B), leave `S3_CUSTOM_DOMAIN` empty or omit it.
 
-## Step 2: Setup Railway Project (Monorepo Configuration)
-
-**Important:** This project is part of a monorepo. The `railway.toml` file is located at the **monorepo root** (`/Users/amr/Documents/Personal/saed_platform/railway.toml`), not in the `rabt-backend` directory.
+## Step 2: Setup Railway Project
 
 1. **Create New Project:**
    - Go to Railway dashboard
    - Click "New Project" → "Deploy from GitHub repo"
-   - Connect your GitHub repository (the monorepo root, not the `rabt-backend` subdirectory)
+   - Connect your GitHub repository
 
-2. **Configure Root Directory (Monorepo):**
-   - After connecting the repo, Railway should detect the `railway.toml` at the root
-   - The `railway.toml` specifies `dockerfilePath = "rabt-backend/Dockerfile"`
-   - Railway will automatically use the correct build context
-   - **Alternative method:** If Railway doesn't auto-detect, go to Settings → Root Directory and ensure it's set to the repository root (not `rabt-backend`)
-
-3. **Add PostgreSQL Database:**
+2. **Add PostgreSQL Database:**
    - In your project, click "New" → "Database" → "PostgreSQL"
    - Railway will automatically provide the `DATABASE_URL` environment variable
 
-4. **Configure Environment Variables:**
+3. **Configure Environment Variables:**
    - Go to your service settings → Variables
    - Add the following variables:
 
@@ -226,23 +218,10 @@ ALLOWED_ORIGINS=https://your-frontend-domain.com,https://another-domain.com
 - Check Railway logs for Alembic errors
 - Ensure database is accessible during build
 
-### Monorepo Build Issues
-- **Build failing with "file not found" errors:**
-  - Ensure `railway.toml` is at the monorepo root, not in `rabt-backend/`
-  - Verify `dockerfilePath = "rabt-backend/Dockerfile"` in railway.toml
-  - Check that the Dockerfile correctly copies from `rabt-backend/` directory
-- **Railway not detecting the Dockerfile:**
-  - Go to Railway dashboard → Your Service → Settings
-  - Under "Root Directory", ensure it's set to `/` (root) not `/rabt-backend`
-  - Under "Dockerfile Path", verify it shows `rabt-backend/Dockerfile`
-- **Alternative: Manual Root Directory Setting:**
-  - If auto-detection fails, manually set Root Directory to repository root in Railway UI
-  - Railway will then find the `railway.toml` at root and use specified Dockerfile path
-
 ### S3 Access Denied Errors
-- Verify IAM user has correct permissions (`s3:PutObject`, `s3:GetObject`)
-- Check bucket policy allows public access (if using Option B) or CloudFront access (if using Option A)
-- Ensure bucket exists in the specified region
+- Verify IAM user has correct permissions
+- Check bucket policy allows public access (if needed)
+- Ensure ACLs are enabled on the bucket
 
 ## API Endpoints
 
