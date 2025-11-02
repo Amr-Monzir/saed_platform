@@ -19,11 +19,11 @@ COPY . .
 # Add .venv to PATH so we can use installed commands
 ENV PATH="/app/.venv/bin:$PATH"
 
-# Run Alembic migrations
-RUN alembic upgrade head
+# Make startup script executable
+RUN chmod +x /app/start.sh
 
 # Expose the port the app runs on
 EXPOSE 8000
 
-# Run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run the startup script (runs migrations then starts server)
+CMD ["/app/start.sh"]
