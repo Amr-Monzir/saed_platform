@@ -6,6 +6,7 @@ from io import BytesIO
 from faker import Faker
 from sqlalchemy import create_engine, delete
 from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.exc import ProgrammingError, OperationalError
 
 from app.auth.password_utils import get_password_hash
 from app.config import settings
@@ -54,9 +55,26 @@ SKILLS = [
 def is_database_seeded(db: Session) -> bool:
     """
     Checks if the database has already been seeded by checking if skills exist.
+    Returns False if tables don't exist yet (database not initialized).
     """
-    skill_count = db.query(Skill).count()
-    return skill_count > 0
+    try:
+        skill_count = db.query(Skill).count()
+        return skill_count > 0
+    except (ProgrammingError, OperationalError) as e:
+        # Table doesn't exist yet, database not initialized
+        # This can happen if migrations haven't run yet
+        error_str = str(e).lower()
+        if "does not exist" in error_str or "undefined table" in error_str or "relation" in error_str:
+            return False
+        # Re-raise if it's a different database error
+        raise
+    except Exception as e:
+        # Catch any other exceptions (including psycopg2 errors that might not be wrapped)
+        error_str = str(e).lower()
+        if "does not exist" in error_str or "undefined table" in error_str or "relation" in error_str:
+            return False
+        # Re-raise if it's a different error
+        raise
 
 
 def clear_data(db: Session):
