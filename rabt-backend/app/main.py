@@ -17,11 +17,19 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 # CORS Middleware
-cors_origins = settings.allowed_origins.split(",") if settings.allowed_origins != "*" else ["*"]
+# When allow_credentials=True, you cannot use allow_origins=["*"]
+# So we need to handle this case specially
+if settings.allowed_origins == "*":
+    cors_origins = ["*"]
+    allow_credentials = False
+else:
+    cors_origins = [origin.strip() for origin in settings.allowed_origins.split(",")]
+    allow_credentials = True
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins,
-    allow_credentials=True,
+    allow_credentials=allow_credentials,
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
 )
