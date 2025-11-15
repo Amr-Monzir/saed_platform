@@ -51,6 +51,14 @@ SKILLS = [
 ]
 
 
+def is_database_seeded(db: Session) -> bool:
+    """
+    Checks if the database has already been seeded by checking if skills exist.
+    """
+    skill_count = db.query(Skill).count()
+    return skill_count > 0
+
+
 def clear_data(db: Session):
     """
     Clears all data from the database tables in the correct order to avoid FK violations.
@@ -80,6 +88,11 @@ def seed_data():
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
     with SessionLocal() as db:
+        # Check if database is already seeded
+        if is_database_seeded(db):
+            print("Database is already seeded. Skipping seeding.")
+            return
+        
         clear_data(db)
 
         print("Seeding skills...")
