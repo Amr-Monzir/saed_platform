@@ -51,6 +51,7 @@ SKILLS = [
     "Other",
 ]
 
+
 def clear_data(db: Session):
     """
     Clears all data from the database tables in the correct order to avoid FK violations.
@@ -80,7 +81,11 @@ def seed_data():
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
     with SessionLocal() as db:
-        clear_data(db)
+        try:
+            clear_data(db)
+        except Exception as e:
+            print(f"Error clearing database: {e}")
+            return
 
         print("Seeding skills...")
         # Create Skills
@@ -134,17 +139,17 @@ def seed_data():
                     ".jpg": "image/jpeg",
                     ".jpeg": "image/jpeg",
                     ".gif": "image/gif",
-                    ".webp": "image/webp"
+                    ".webp": "image/webp",
                 }
                 content_type = content_type_map.get(ext, "image/png")
-                
+
                 # Create a mock UploadFile
                 class MockUploadFile:
                     def __init__(self, file_obj, filename, content_type):
                         self.file = file_obj
                         self.filename = filename
                         self.content_type = content_type
-                
+
                 mock_file = MockUploadFile(file_obj, logo_filename, content_type)
                 logo_url = upload_to_s3(mock_file, "logos", organizer.id)
                 organizer.logo_url = logo_url
@@ -203,18 +208,20 @@ def seed_data():
                     ".jpg": "image/jpeg",
                     ".jpeg": "image/jpeg",
                     ".gif": "image/gif",
-                    ".webp": "image/webp"
+                    ".webp": "image/webp",
                 }
                 content_type = content_type_map.get(ext, "image/png")
-                
+
                 # Create a mock UploadFile
                 class MockUploadFile:
                     def __init__(self, file_obj, filename, content_type):
                         self.file = file_obj
                         self.filename = filename
                         self.content_type = content_type
-                
-                mock_file = MockUploadFile(file_obj, advert_image_filename, content_type)
+
+                mock_file = MockUploadFile(
+                    file_obj, advert_image_filename, content_type
+                )
                 # Temporarily add advert_id (will be updated after commit)
                 # We'll upload after creating the advert
                 temp_file = mock_file
@@ -240,7 +247,7 @@ def seed_data():
 
             db.add(advert)
             db.flush()
-            
+
             # Now upload the image with the advert ID
             temp_file.file.seek(0)  # Reset file pointer
             advert_image_url = upload_to_s3(temp_file, "adverts", advert.id)
