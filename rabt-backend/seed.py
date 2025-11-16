@@ -51,60 +51,25 @@ SKILLS = [
     "Other",
 ]
 
-
-def is_database_seeded(db: Session) -> bool:
-    """
-    Checks if the database has already been seeded by checking if skills exist.
-    Returns False if tables don't exist yet (database not initialized).
-    """
-    try:
-        skill_count = db.query(Skill).count()
-        return skill_count > 0
-    except (ProgrammingError, OperationalError) as e:
-        # Table doesn't exist yet, database not initialized
-        # This can happen if migrations haven't run yet
-        # Rollback the failed transaction before returning
-        db.rollback()
-        error_str = str(e).lower()
-        if "does not exist" in error_str or "undefined table" in error_str or "relation" in error_str:
-            return False
-        # Re-raise if it's a different database error
-        raise
-    except Exception as e:
-        # Catch any other exceptions (including psycopg2 errors that might not be wrapped)
-        # Rollback the failed transaction before returning
-        db.rollback()
-        error_str = str(e).lower()
-        if "does not exist" in error_str or "undefined table" in error_str or "relation" in error_str:
-            return False
-        # Re-raise if it's a different error
-        raise
-
-
 def clear_data(db: Session):
     """
     Clears all data from the database tables in the correct order to avoid FK violations.
     """
     print("Clearing database...")
-    try:
-        # Clear association tables first
-        db.execute(delete(volunteer_skills))
-        db.execute(delete(advert_skills))
-        # Clear tables with dependencies
-        db.execute(delete(Application))
-        db.execute(delete(OneOffAdvert))
-        db.execute(delete(RecurringAdvert))
-        db.execute(delete(Advert))
-        db.execute(delete(Volunteer))
-        db.execute(delete(Organizer))
-        db.execute(delete(Skill))
-        db.execute(delete(User))
-        db.commit()
-        print("Database cleared.")
-    except Exception as e:
-        # If clearing fails (e.g., tables don't exist), rollback and continue
-        db.rollback()
-        print(f"Could not clear database (this is OK if tables are empty or don't exist): {e}")
+    # Clear association tables first
+    db.execute(delete(volunteer_skills))
+    db.execute(delete(advert_skills))
+    # Clear tables with dependencies
+    db.execute(delete(Application))
+    db.execute(delete(OneOffAdvert))
+    db.execute(delete(RecurringAdvert))
+    db.execute(delete(Advert))
+    db.execute(delete(Volunteer))
+    db.execute(delete(Organizer))
+    db.execute(delete(Skill))
+    db.execute(delete(User))
+    db.commit()
+    print("Database cleared.")
 
 
 def seed_data():
@@ -115,16 +80,6 @@ def seed_data():
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
     with SessionLocal() as db:
-        try:
-            # Check if database is already seeded
-            if is_database_seeded(db):
-                print("Database is already seeded. Skipping seeding.")
-                return
-        except Exception as e:
-            # If check fails for any reason, rollback and continue with seeding
-            db.rollback()
-            print(f"Could not check if database is seeded: {e}. Proceeding with seeding...")
-        
         clear_data(db)
 
         print("Seeding skills...")
