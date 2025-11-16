@@ -80,12 +80,18 @@ def seed_data():
     engine = create_engine(settings.database_url, echo=False)
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+    # Check if the database is already seeded (e.g., any skills are present)
+    with SessionLocal() as db:
+        skill_exists = db.query(Skill).first() is not None
+    if skill_exists:
+        print("Database already seeded. Exiting seeder.")
+        return
+
     with SessionLocal() as db:
         try:
             clear_data(db)
         except Exception as e:
             print(f"Error clearing database: {e}")
-            return
 
         print("Seeding skills...")
         # Create Skills
