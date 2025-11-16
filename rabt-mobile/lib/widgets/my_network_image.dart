@@ -1,8 +1,5 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rabt_mobile/services/api_service.dart';
 
 class MyNetworkImage extends ConsumerWidget {
   const MyNetworkImage({super.key, required this.url, this.width, this.height});
@@ -14,12 +11,18 @@ class MyNetworkImage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+
+    String resolvedUrl = url;
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      resolvedUrl = 'https://$url';
+    }
+
     return Hero(
       tag: url,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Image.network(
-          '${ref.read(apiServiceProvider).baseUrl}$url',
+          resolvedUrl,
           fit: BoxFit.cover,
           width: width,
           height: height,

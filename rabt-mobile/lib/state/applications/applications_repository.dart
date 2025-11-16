@@ -13,7 +13,6 @@ class ApplicationsRepository {
     if (ref.read(authControllerProvider).value?.userType != UserType.organizer) {
       throw Exception('Only organizations can fetch applications');
     }
-    final token = ref.read(authControllerProvider).value?.token;
     final query = <String, String>{};
     if (page != null) query['page'] = page.toString();
     if (limit != null) query['limit'] = limit.toString();
@@ -21,25 +20,23 @@ class ApplicationsRepository {
     if (status != null) query['status'] = status.name;
     final resp = await ref
         .read(apiServiceProvider)
-        .get('/api/v1/applications/organization', query: query, headers: ref.read(apiServiceProvider).authHeaders(token));
+        .get('/api/v1/applications/organization', query: query);
     return parsePaginated(resp, (e) => Application.fromJson(e));
   }
 
   Future<Application> create({required int advertId, String? coverMessage}) async {
-    final token = ref.read(authControllerProvider).value?.token;
     final resp = await ref.read(apiServiceProvider).post('/api/v1/applications', {
       'advert_id': advertId,
       'cover_message': coverMessage,
-    }, headers: ref.read(apiServiceProvider).authHeaders(token));
+    });
     return parseObject(resp, (e) => Application.fromJson(e));
   }
 
   Future<Application> updateStatus(int id, ApplicationStatus status, {String? organizerMessage}) async {
-    final token = ref.read(authControllerProvider).value?.token;
     final resp = await ref.read(apiServiceProvider).put('/api/v1/applications/$id/status', {
       'status': status.name,
       'organizer_message': organizerMessage,
-    }, headers: ref.read(apiServiceProvider).authHeaders(token));
+    });
     return parseObject(resp, (e) => Application.fromJson(e));
   }
 }

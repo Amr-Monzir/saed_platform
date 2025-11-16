@@ -23,6 +23,47 @@ class ApiService {
   String get baseUrl => dotenv.env['API_BASE_URL'] ?? 'http://10.0.2.2:8000';
   ApiEnvironment get env => (dotenv.env['ENV'] == 'local') ? ApiEnvironment.local : ApiEnvironment.production;
 
+  /// Gets the current authentication token
+  String? _getToken() {
+    return ref.read(authControllerProvider).value?.token;
+  }
+
+  /// Checks if a valid token exists
+  bool _hasToken() {
+    final token = _getToken();
+    return token != null && token.isNotEmpty;
+  }
+
+  /// Gets authentication headers for the current token
+  /// Returns null if token is not available
+  Map<String, String>? _getAuthHeaders() {
+    final token = _getToken();
+    if (token == null || token.isEmpty) {
+      return null;
+    }
+    return authHeaders(token);
+  }
+
+  /// Determines if request should be authenticated based on isAuthenticated flag and token availability
+  /// If isAuthenticated is true but no token exists, falls back to unauthenticated
+  bool _shouldAuthenticate(bool isAuthenticated) {
+    if (!isAuthenticated) return false;
+    return _hasToken();
+  }
+
+  /// Merges provided headers with authentication headers if authenticated
+  Map<String, String> _mergeHeaders(Map<String, String>? providedHeaders, bool isAuthenticated) {
+    final shouldAuth = _shouldAuthenticate(isAuthenticated);
+    final authHeaders = shouldAuth ? _getAuthHeaders() : null;
+    if (authHeaders == null && providedHeaders == null) {
+      return {};
+    }
+    return {
+      ...?authHeaders,
+      ...?providedHeaders,
+    };
+  }
+
   Future<http.Response> post(
     String path,
     Map<String, dynamic> data, {
@@ -30,16 +71,20 @@ class ApiService {
     Map<String, String>? query,
     bool isAuthenticated = true,
   }) async {
-    return isAuthenticated
+    final shouldAuth = _shouldAuthenticate(isAuthenticated);
+    final mergedHeaders = _mergeHeaders(headers, isAuthenticated);
+    final finalHeaders = {'Content-Type': 'application/json', ...mergedHeaders};
+    
+    return shouldAuth
         ? _makeAuthenticatedRequest(() async {
           final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
-          final resp = await http.post(uri, headers: {'Content-Type': 'application/json', ...?headers}, body: jsonEncode(data));
+          final resp = await http.post(uri, headers: finalHeaders, body: jsonEncode(data));
           _throwOnError(resp);
           return resp;
         })
         : await http.post(
           Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}'),
-          headers: {'Content-Type': 'application/json', ...?headers},
+          headers: finalHeaders,
           body: jsonEncode(data),
         );
   }
@@ -51,31 +96,46 @@ class ApiService {
     Map<String, String>? query,
     bool isAuthenticated = true,
   }) async {
-    return isAuthenticated
+    final shouldAuth = _shouldAuthenticate(isAuthenticated);
+    final mergedHeaders = _mergeHeaders(headers, isAuthenticated);
+    final finalHeaders = {'Content-Type': 'application/x-www-form-urlencoded', ...mergedHeaders};
+    
+    return shouldAuth
         ? _makeAuthenticatedRequest(() async {
           final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
-          final resp = await http.post(
-            uri,
-            headers: {'Content-Type': 'application/x-www-form-urlencoded', ...?headers},
-            body: fields,
-          );
+          final resp = await http.post(uri, headers: finalHeaders, body: fields);
           _throwOnError(resp);
           return resp;
         })
         : await http.post(
           Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}'),
-          headers: {'Content-Type': 'application/x-www-form-urlencoded', ...?headers},
+          headers: finalHeaders,
           body: fields,
         );
   }
 
-  Future<http.Response> get(String path, {Map<String, String>? headers, Map<String, String>? query}) async {
-    return _makeAuthenticatedRequest(() async {
+  Future<http.Response> get(
+    String path, {
+    Map<String, String>? headers,
+    Map<String, String>? query,
+    bool isAuthenticated = true,
+  }) async {
+    final shouldAuth = _shouldAuthenticate(isAuthenticated);
+    final mergedHeaders = _mergeHeaders(headers, isAuthenticated);
+    
+    Future<http.Response> makeRequest() async {
       final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
-      final resp = await http.get(uri, headers: headers);
+      final resp = await http.get(uri, headers: mergedHeaders.isEmpty ? null : mergedHeaders).timeout(
+        const Duration(seconds: 30),
+        onTimeout: () {
+          throw Exception('Request timeout after 30 seconds');
+        },
+      );
       _throwOnError(resp);
       return resp;
-    });
+    }
+
+    return shouldAuth ? _makeAuthenticatedRequest(makeRequest) : await makeRequest();
   }
 
   Future<http.Response> put(
@@ -84,18 +144,23 @@ class ApiService {
     Map<String, String>? headers,
     Map<String, String>? query,
   }) async {
+    final mergedHeaders = _mergeHeaders(headers, true);
+    final finalHeaders = {'Content-Type': 'application/json', ...mergedHeaders};
+    
     return _makeAuthenticatedRequest(() async {
       final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
-      final resp = await http.put(uri, headers: {'Content-Type': 'application/json', ...?headers}, body: jsonEncode(data));
+      final resp = await http.put(uri, headers: finalHeaders, body: jsonEncode(data));
       _throwOnError(resp);
       return resp;
     });
   }
 
   Future<http.Response> delete(String path, {Map<String, String>? headers, Map<String, String>? query}) async {
+    final mergedHeaders = _mergeHeaders(headers, true);
+    
     return _makeAuthenticatedRequest(() async {
       final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
-      final resp = await http.delete(uri, headers: headers);
+      final resp = await http.delete(uri, headers: mergedHeaders.isEmpty ? null : mergedHeaders);
       _throwOnError(resp);
       return resp;
     });
@@ -110,6 +175,9 @@ class ApiService {
     bool isAuthenticated = true,
     String? contentType,
   }) async {
+    final shouldAuth = _shouldAuthenticate(isAuthenticated);
+    final mergedHeaders = _mergeHeaders(headers, isAuthenticated);
+    
     makeRequest() async {
       final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
       final request = http.MultipartRequest('POST', uri);
@@ -132,8 +200,8 @@ class ApiService {
         }
       }
 
-      if (headers != null) {
-        request.headers.addAll(headers);
+      if (mergedHeaders.isNotEmpty) {
+        request.headers.addAll(mergedHeaders);
       }
 
       final streamedResponse = await request.send();
@@ -142,7 +210,7 @@ class ApiService {
       return response;
     }
 
-    return isAuthenticated ? _makeAuthenticatedRequest(makeRequest) : await makeRequest();
+    return shouldAuth ? _makeAuthenticatedRequest(makeRequest) : await makeRequest();
   }
 
   Future<http.Response> _makeAuthenticatedRequest(Future<http.Response> Function() request) async {

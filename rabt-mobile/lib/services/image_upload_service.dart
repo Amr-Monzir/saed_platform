@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
 import 'api_service.dart';
 
 class ImageUploadService {
@@ -30,43 +29,27 @@ class ImageUploadService {
   /// Upload image with category and entity_id (new generic endpoint)
   Future<String?> uploadImageWithCategory(File imageFile, {required String category, String? entityId, String? token}) async {
     try {
-      final uri = Uri.parse('${ref.read(apiServiceProvider).baseUrl}/api/v1/upload/image');
+      final fields = <String, String>{
+        'category': category,
+        if (entityId != null) 'entity_id': entityId,
+      };
 
-      // Create multipart request
-      final request = http.MultipartRequest('POST', uri);
+      final headers = token != null && token.isNotEmpty
+          ? ref.read(apiServiceProvider).authHeaders(token)
+          : null;
 
-      // Add authorization header if token provided
-      if (token != null) {
-        request.headers['Authorization'] = 'Bearer $token';
-      }
+      final response = await ref.read(apiServiceProvider).postMultipart(
+        '/api/v1/upload/image',
+        fields,
+        files: {'file': imageFile},
+        headers: headers,
+        isAuthenticated: token != null && token.isNotEmpty,
+      );
 
-      // Add category field
-      request.fields['category'] = category;
-
-      // Add entity_id field if provided
-      if (entityId != null) {
-        request.fields['entity_id'] = entityId;
-      }
-
-      // Add the image file
-      final stream = http.ByteStream(imageFile.openRead());
-      final length = await imageFile.length();
-      final multipartFile = http.MultipartFile('file', stream, length, filename: imageFile.path.split('/').last);
-      request.files.add(multipartFile);
-
-      // Send request
-      final response = await request.send();
-      final responseBody = await response.stream.bytesToString();
-
-      if (response.statusCode == 200) {
-        // Parse JSON response to get image URL
-        // Expected format: {"url": "https://example.com/image.jpg"}
-        final Map<String, dynamic> data = jsonDecode(responseBody);
-        return data['url'] as String?;
-      } else {
-        developer.log('Upload failed: ${response.statusCode} - $responseBody', name: 'ImageUploadService');
-        return null;
-      }
+      // Parse JSON response to get image URL
+      // Expected format: {"url": "https://example.com/image.jpg"}
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return data['url'] as String?;
     } catch (e) {
       developer.log('Error uploading image with category: $e', name: 'ImageUploadService');
       return null;

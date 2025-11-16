@@ -28,7 +28,6 @@ class OrganizerRepository {
     String? description,
     String? logoUrl,
   }) async {
-    final token = ref.read(authControllerProvider).value?.token;
     final data = <String, dynamic>{
       'name': name,
     };
@@ -46,7 +45,6 @@ class OrganizerRepository {
     final resp = await ref.read(apiServiceProvider).put(
       '/api/v1/organizers/profile',
       data,
-      headers: ref.read(apiServiceProvider).authHeaders(token),
     );
     return OrganizerProfile.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
   }
