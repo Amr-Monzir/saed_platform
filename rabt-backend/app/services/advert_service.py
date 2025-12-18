@@ -25,8 +25,6 @@ class AdvertService:
             location_type=advert_data.location_type,
             address_text=advert_data.address_text,
             postcode=advert_data.postcode,
-            latitude=advert_data.latitude,
-            longitude=advert_data.longitude,
         )
 
         # Add skills
