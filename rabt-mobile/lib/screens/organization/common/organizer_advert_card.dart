@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:rabt_mobile/models/advert.dart';
 import 'package:rabt_mobile/screens/adverts/advert_detail_screen.dart';
 import 'package:rabt_mobile/widgets/app_card.dart';
+import 'package:rabt_mobile/widgets/badge_chip.dart';
 import 'package:rabt_mobile/widgets/my_network_image.dart';
 
 class OrganizerAdvertCard extends ConsumerWidget {
@@ -21,8 +22,19 @@ class OrganizerAdvertCard extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (advert.imageUrl != null) ...[MyNetworkImage(url: advert.imageUrl!, height: 200, width: double.infinity,), const SizedBox(height: 18)],
-                Text(advert.title, style: Theme.of(context).textTheme.titleMedium),
+                if (advert.imageUrl != null) ...[
+                  MyNetworkImage(url: advert.imageUrl!, height: 200, width: double.infinity),
+                  const SizedBox(height: 18),
+                ],
+                Row(
+                  children: [
+                    Expanded(child: Text(advert.title, style: Theme.of(context).textTheme.titleMedium)),
+                    if (!advert.isActive) ...[
+                      const SizedBox(width: 8),
+                      BadgeChip(label: 'Closed', color: Theme.of(context).colorScheme.error),
+                    ],
+                  ],
+                ),
                 const SizedBox(height: 4),
                 Text('${advert.category} • ${advert.frequency.displayName} • ${advert.locationType.displayName}'),
               ],

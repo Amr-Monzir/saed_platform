@@ -28,7 +28,11 @@ class LoginScreen extends ConsumerWidget {
             const SizedBox(height: 24),
             Text('Voluneer login', style: Theme.of(context).textTheme.headlineMedium, textAlign: TextAlign.center),
             const SizedBox(height: 8),
-            Text('Connect with organisations. Volunteer for Palestine.', style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
+            Text(
+              'Connect with organisations. Volunteer for Palestine.',
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
             const Spacer(),
             Image.asset('assets/images/logo/logo_no_bg.png', width: MediaQuery.of(context).size.width, fit: BoxFit.contain),
             const Spacer(),
@@ -49,7 +53,13 @@ class LoginScreen extends ConsumerWidget {
                   emailController.text = email;
                   passController.text = password;
                 }
-                await ref.read(authControllerProvider.notifier).loginWithBackend(email: email, password: password, type: UserType.volunteer);
+                if (email.isEmpty || password.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please enter email and password')));
+                  return;
+                }
+                await ref
+                    .read(authControllerProvider.notifier)
+                    .loginWithBackend(email: email, password: password, type: UserType.volunteer);
                 if (!context.mounted) return;
               },
               label: 'Login',
@@ -80,5 +90,3 @@ class LoginScreen extends ConsumerWidget {
     );
   }
 }
-
-

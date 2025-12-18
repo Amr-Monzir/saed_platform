@@ -157,8 +157,8 @@ final createAdvertControllerProvider = StateNotifierProvider<CreateAdvertControl
   return CreateAdvertController(ref);
 });
 
-class CloseAdvertController extends StateNotifier<AsyncValue<void>> {
-  CloseAdvertController(this.ref) : super(const AsyncValue.data(null));
+class AdvertStatusController extends StateNotifier<AsyncValue<void>> {
+  AdvertStatusController(this.ref) : super(const AsyncValue.data(null));
 
   final Ref ref;
 
@@ -172,8 +172,33 @@ class CloseAdvertController extends StateNotifier<AsyncValue<void>> {
       // Invalidate the adverts list to refresh it
       ref.invalidate(advertsProvider);
       ref.invalidate(myAdvertsProvider);
+      ref.invalidate(advertByIdProvider(id));
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
+    }
+  }
+
+  Future<void> publishAdvert(int id) async {
+    state = const AsyncValue.loading();
+    try {
+      final repository = ref.read(advertsRepositoryProvider);
+      await repository.publish(id);
+      state = const AsyncValue.data(null);
+
+      // Invalidate the adverts list to refresh it
+      ref.invalidate(advertsProvider);
+      ref.invalidate(myAdvertsProvider);
+      ref.invalidate(advertByIdProvider(id));
+    } catch (error, stackTrace) {
+      state = AsyncValue.error(error, stackTrace);
+    }
+  }
+
+  Future<void> toggleAdvertStatus(int id, bool isCurrentlyActive) async {
+    if (isCurrentlyActive) {
+      await closeAdvert(id);
+    } else {
+      await publishAdvert(id);
     }
   }
 
@@ -182,8 +207,8 @@ class CloseAdvertController extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final closeAdvertControllerProvider = StateNotifierProvider<CloseAdvertController, AsyncValue<void>>((ref) {
-  return CloseAdvertController(ref);
+final advertStatusControllerProvider = StateNotifierProvider<AdvertStatusController, AsyncValue<void>>((ref) {
+  return AdvertStatusController(ref);
 });
 
 // My Adverts Search Controller

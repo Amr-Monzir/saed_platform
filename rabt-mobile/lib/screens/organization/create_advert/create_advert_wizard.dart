@@ -141,7 +141,7 @@ class _CreateAdvertWizardState extends ConsumerState<CreateAdvertWizard> with Au
         return true; // Skills are optional
       case 3: // Details
         if (_frequency == FrequencyType.oneOff) {
-          return _eventDateTime != null && _applicationDeadline != null;
+          return _eventDateTime != null && _applicationDeadline != null && _applicationDeadline!.isBefore(_eventDateTime!);
         } else {
           return _specificDays.isNotEmpty;
         }

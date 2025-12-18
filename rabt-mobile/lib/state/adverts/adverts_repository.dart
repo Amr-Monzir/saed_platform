@@ -12,9 +12,7 @@ class AdvertsRepository {
 
   Future<PaginatedAdverts> fetchAll({Map<String, String>? query}) async {
     // ApiService automatically handles optional auth - uses token if available
-    final resp = await ref
-        .read(apiServiceProvider)
-        .get('/api/v1/adverts', query: query);
+    final resp = await ref.read(apiServiceProvider).get('/api/v1/adverts', query: query);
     final json = jsonDecode(resp.body) as Map<String, dynamic>;
     List<Advert> data;
     int totalPages;
@@ -24,17 +22,13 @@ class AdvertsRepository {
   }
 
   Future<List<Advert>> fetchMine() async {
-    final resp = await ref
-        .read(apiServiceProvider)
-        .get('/api/v1/adverts/my-adverts');
+    final resp = await ref.read(apiServiceProvider).get('/api/v1/adverts/my-adverts');
     return parseList(resp, (e) => Advert.fromJson(e));
   }
 
   Future<Advert?> getById(int id) async {
     // ApiService automatically handles optional auth - uses token if available
-    final resp = await ref
-        .read(apiServiceProvider)
-        .get('/api/v1/adverts/$id');
+    final resp = await ref.read(apiServiceProvider).get('/api/v1/adverts/$id');
     return parseObject(resp, (e) => Advert.fromJson(e));
   }
 
@@ -53,9 +47,15 @@ class AdvertsRepository {
   }
 
   Future<void> close(int id) async {
-    await ref
-        .read(apiServiceProvider)
-        .post('/api/v1/adverts/$id/close', {});
+    await ref.read(apiServiceProvider).putMultipart('/api/v1/adverts/$id', {
+      'advert_data_json': jsonEncode({'is_active': false}),
+    });
+  }
+
+  Future<void> publish(int id) async {
+    await ref.read(apiServiceProvider).putMultipart('/api/v1/adverts/$id', {
+      'advert_data_json': jsonEncode({'is_active': true}),
+    });
   }
 }
 

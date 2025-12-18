@@ -58,10 +58,7 @@ class ApiService {
     if (authHeaders == null && providedHeaders == null) {
       return {};
     }
-    return {
-      ...?authHeaders,
-      ...?providedHeaders,
-    };
+    return {...?authHeaders, ...?providedHeaders};
   }
 
   Future<http.Response> post(
@@ -74,7 +71,7 @@ class ApiService {
     final shouldAuth = _shouldAuthenticate(isAuthenticated);
     final mergedHeaders = _mergeHeaders(headers, isAuthenticated);
     final finalHeaders = {'Content-Type': 'application/json', ...mergedHeaders};
-    
+
     return shouldAuth
         ? _makeAuthenticatedRequest(() async {
           final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
@@ -99,7 +96,7 @@ class ApiService {
     final shouldAuth = _shouldAuthenticate(isAuthenticated);
     final mergedHeaders = _mergeHeaders(headers, isAuthenticated);
     final finalHeaders = {'Content-Type': 'application/x-www-form-urlencoded', ...mergedHeaders};
-    
+
     return shouldAuth
         ? _makeAuthenticatedRequest(() async {
           final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
@@ -122,15 +119,17 @@ class ApiService {
   }) async {
     final shouldAuth = _shouldAuthenticate(isAuthenticated);
     final mergedHeaders = _mergeHeaders(headers, isAuthenticated);
-    
+
     Future<http.Response> makeRequest() async {
       final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
-      final resp = await http.get(uri, headers: mergedHeaders.isEmpty ? null : mergedHeaders).timeout(
-        const Duration(seconds: 30),
-        onTimeout: () {
-          throw Exception('Request timeout after 30 seconds');
-        },
-      );
+      final resp = await http
+          .get(uri, headers: mergedHeaders.isEmpty ? null : mergedHeaders)
+          .timeout(
+            const Duration(seconds: 30),
+            onTimeout: () {
+              throw Exception('Request timeout after 30 seconds');
+            },
+          );
       _throwOnError(resp);
       return resp;
     }
@@ -146,7 +145,7 @@ class ApiService {
   }) async {
     final mergedHeaders = _mergeHeaders(headers, true);
     final finalHeaders = {'Content-Type': 'application/json', ...mergedHeaders};
-    
+
     return _makeAuthenticatedRequest(() async {
       final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
       final resp = await http.put(uri, headers: finalHeaders, body: jsonEncode(data));
@@ -157,7 +156,7 @@ class ApiService {
 
   Future<http.Response> delete(String path, {Map<String, String>? headers, Map<String, String>? query}) async {
     final mergedHeaders = _mergeHeaders(headers, true);
-    
+
     return _makeAuthenticatedRequest(() async {
       final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
       final resp = await http.delete(uri, headers: mergedHeaders.isEmpty ? null : mergedHeaders);
@@ -177,10 +176,57 @@ class ApiService {
   }) async {
     final shouldAuth = _shouldAuthenticate(isAuthenticated);
     final mergedHeaders = _mergeHeaders(headers, isAuthenticated);
-    
+
     makeRequest() async {
       final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
       final request = http.MultipartRequest('POST', uri);
+
+      request.fields.addAll(fields);
+
+      if (files != null) {
+        for (final entry in files.entries) {
+          final file = entry.value;
+          final stream = http.ByteStream(file.openRead());
+          final length = await file.length();
+          final multipartFile = http.MultipartFile(
+            entry.key,
+            stream,
+            length,
+            filename: file.path.split('/').last,
+            contentType: contentType != null ? MediaType.parse(contentType) : null,
+          );
+          request.files.add(multipartFile);
+        }
+      }
+
+      if (mergedHeaders.isNotEmpty) {
+        request.headers.addAll(mergedHeaders);
+      }
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+      _throwOnError(response);
+      return response;
+    }
+
+    return shouldAuth ? _makeAuthenticatedRequest(makeRequest) : await makeRequest();
+  }
+
+  Future<http.Response> putMultipart(
+    String path,
+    Map<String, String> fields, {
+    Map<String, File>? files,
+    Map<String, String>? headers,
+    Map<String, String>? query,
+    bool isAuthenticated = true,
+    String? contentType,
+  }) async {
+    final shouldAuth = _shouldAuthenticate(isAuthenticated);
+    final mergedHeaders = _mergeHeaders(headers, isAuthenticated);
+
+    makeRequest() async {
+      final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
+      final request = http.MultipartRequest('PUT', uri);
 
       request.fields.addAll(fields);
 

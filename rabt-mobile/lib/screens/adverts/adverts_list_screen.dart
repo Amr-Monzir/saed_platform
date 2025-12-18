@@ -19,6 +19,13 @@ class AdvertsListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final advertsAsync = ref.watch(advertsProvider);
     final searchCtrl = TextEditingController(text: ref.watch(searchQueryProvider) ?? '');
+
+    ref.listen<String?>(searchQueryProvider, (previous, next) {
+      if (previous != next) {
+        ref.read(pageProvider.notifier).state = 1;
+      }
+    });
+
     return Scaffold(
       appBar: ref.watch(authControllerProvider).value == null ? null : AppBar(title: const Text('Activist Adverts')),
       body: Column(

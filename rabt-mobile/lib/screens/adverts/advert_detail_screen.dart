@@ -83,9 +83,9 @@ class _AdvertDetailScreenState extends ConsumerState<AdvertDetailScreen> {
                               ),
                             ),
                             // Location information
-                            if (advert.locationType != LocationType.remote || 
-                                advert.addressText != null || 
-                                advert.postcode != null || 
+                            if (advert.locationType != LocationType.remote ||
+                                advert.addressText != null ||
+                                advert.postcode != null ||
                                 advert.city != null)
                               AppCard(
                                 child: Column(
@@ -377,23 +377,37 @@ class _AdvertDetailScreenState extends ConsumerState<AdvertDetailScreen> {
                                           },
                                         ),
                                       ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: AppButton(
-                                          label: 'Close',
-                                          variant: AppButtonVariant.outline,
-                                          onPressed: () async {
-                                            final session = ref.read(authControllerProvider).value;
-                                            if (session == null) {
-                                              context.push(SignupVolunteerScreen.path);
-                                              return;
-                                            }
-                                            await ref.read(closeAdvertControllerProvider.notifier).closeAdvert(advert.id);
-                                            if (!context.mounted) return;
-                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Advert closed')));
-                                          },
+                                      if (role == UserType.organizer) ...[
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: AppButton(
+                                            label: advert.isActive ? 'Close' : 'Publish',
+                                            variant: AppButtonVariant.outline,
+                                            onPressed: () async {
+                                              final wasActive = advert.isActive;
+                                              await ref
+                                                  .read(advertStatusControllerProvider.notifier)
+                                                  .toggleAdvertStatus(advert.id, advert.isActive);
+                                              if (!context.mounted) return;
+                                              final statusState = ref.read(advertStatusControllerProvider);
+                                              if (statusState.hasError) {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      'Failed to ${wasActive ? 'close' : 'publish'} advert: ${statusState.error}',
+                                                    ),
+                                                    backgroundColor: Theme.of(context).colorScheme.error,
+                                                  ),
+                                                );
+                                              } else {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(content: Text('Advert ${wasActive ? 'closed' : 'published'}')),
+                                                );
+                                              }
+                                            },
+                                          ),
                                         ),
-                                      ),
+                                      ],
                                     ],
                                   ),
                                 ],
