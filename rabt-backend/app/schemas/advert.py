@@ -50,7 +50,18 @@ class AdvertCreate(AdvertBase):
     recurring_details: Optional[RecurringAdvertDetails] = None
 
 
-class AdvertUpdate(AdvertBase):
+class AdvertUpdate(BaseModel):
+    """Update schema with all fields optional to support partial updates"""
+    title: Optional[str] = None
+    description: Optional[str] = None
+    category: Optional[str] = None
+    frequency: Optional[FrequencyType] = None
+    number_of_volunteers: Optional[int] = None
+    location_type: Optional[LocationType] = None
+    address_text: Optional[str] = None
+    postcode: Optional[str] = None
+    advert_image_url: Optional[str] = None
+    city: Optional[str] = None
     required_skill_ids: Optional[List[int]] = None
     oneoff_details: Optional[OneOffAdvertDetails] = None
     recurring_details: Optional[RecurringAdvertDetails] = None
