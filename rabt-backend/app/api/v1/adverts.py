@@ -24,7 +24,7 @@ from app.schemas.advert import (
     OrganizerAdvertsListResponse,
 )
 from app.services.advert_service import AdvertService
-from app.api.dependencies import require_organizer, get_current_user
+from app.api.dependencies import require_organizer, get_current_user, get_current_user_optional
 
 router = APIRouter(prefix="/adverts", tags=["Adverts"])
 
@@ -115,12 +115,34 @@ def get_my_adverts(
 
 
 @router.get("/{advert_id}", response_model=AdvertResponse)
-def get_advert(advert_id: int, db: Session = Depends(get_db)):
+async def get_advert(
+    advert_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional),
+):
     advert = db.query(Advert).filter(Advert.id == advert_id).first()
-    if not advert or not advert.is_active:
+    if not advert:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Advert not found"
         )
+    
+    # Check if user is organizer, volunteer, or guest
+    is_organizer = (
+        current_user is not None
+        and current_user.user_type == "organizer"
+        and current_user.organizer is not None
+        and advert.organizer_id == current_user.organizer.id
+    )
+    # Organizers can view their own adverts even if inactive
+    if is_organizer:
+        return advert
+    
+    # Volunteers and guests can only view active adverts
+    if not advert.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Advert not found"
+        )
+    
     return advert
 
 

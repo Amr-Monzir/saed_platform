@@ -1,11 +1,13 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
+from typing import Optional
 from app.database.connection import get_db
 from app.database.models import User
 from app.auth.jwt_handler import verify_token
 
 security = HTTPBearer()
+optional_security = HTTPBearer(auto_error=False)
 
 
 async def get_current_user(
@@ -25,6 +27,23 @@ async def get_current_user(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found"
         )
+    return user
+
+
+async def get_current_user_optional(
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(optional_security),
+    db: Session = Depends(get_db),
+) -> Optional[User]:
+    """Get current user if authenticated, otherwise return None (for guests)"""
+    if credentials is None:
+        return None
+    
+    token = credentials.credentials
+    email = verify_token(token)
+    if email is None:
+        return None
+
+    user = db.query(User).filter(User.email == email).first()
     return user
 
 
