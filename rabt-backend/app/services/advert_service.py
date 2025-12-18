@@ -85,8 +85,12 @@ class AdvertService:
         update_data = advert_data.dict(exclude_unset=True)
 
         for key, value in update_data.items():
-            if key not in ["required_skill_ids", "oneoff_details", "recurring_details"]:
+            if key not in ["required_skill_ids", "oneoff_details", "recurring_details", "is_active"]:
                 setattr(advert, key, value)
+        
+        # Handle is_active separately to allow toggling
+        if advert_data.is_active is not None:
+            advert.is_active = advert_data.is_active
 
         if advert_data.required_skill_ids is not None:
             skills = (

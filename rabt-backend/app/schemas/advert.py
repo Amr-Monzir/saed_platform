@@ -54,6 +54,7 @@ class AdvertUpdate(AdvertBase):
     required_skill_ids: Optional[List[int]] = None
     oneoff_details: Optional[OneOffAdvertDetails] = None
     recurring_details: Optional[RecurringAdvertDetails] = None
+    is_active: Optional[bool] = None
 
 
 class AdvertResponse(AdvertBase):
