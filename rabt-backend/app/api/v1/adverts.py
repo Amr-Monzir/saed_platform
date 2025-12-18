@@ -146,6 +146,29 @@ def update_advert(
     return advert
 
 
+@router.get("/{advert_id}/close", response_model=AdvertResponse)
+def close_advert(
+    advert_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_organizer),
+):
+    advert = db.query(Advert).filter(Advert.id == advert_id).first()
+    if not advert:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Advert not found"
+        )
+    if advert.organizer_id != current_user.organizer.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to close this advert",
+        )
+
+    advert.is_active = False
+    db.commit()
+    db.refresh(advert)
+    return advert
+
+
 @router.delete("/{advert_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_advert(
     advert_id: int,
