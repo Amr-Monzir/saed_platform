@@ -9,8 +9,8 @@ from fastapi import (
     Body,
 )
 from sqlalchemy.orm import Session
-from sqlalchemy import text, Text
-from typing import List, Optional
+from sqlalchemy import Text
+from typing import Optional
 import json
 
 from app.database.connection import get_db
@@ -73,7 +73,7 @@ def list_adverts(
     query = db.query(Advert).filter(Advert.is_active == True)
     if search:
         query = query.filter(
-            Advert.title.contains(search) | Advert.description.contains(search)
+            Advert.title.ilike(f"%{search}%") | Advert.description.ilike(f"%{search}%")
         )
     if category:
         query = query.filter(Advert.category == category)
