@@ -26,7 +26,7 @@ final advertsProvider = FutureProvider<PaginatedAdverts>((ref) async {
   if (filters.timeOfDay != null) query['time_of_day'] = filters.timeOfDay!.wireValue;
   if (filters.locationType != null) query['location_type'] = filters.locationType!.wireValue;
   if (filters.city != null && filters.city!.isNotEmpty) query['city'] = filters.city!;
-  if (search != null && search.isNotEmpty) query['q'] = search;
+  if (search != null && search.isNotEmpty) query['search'] = search;
   if (page > 1) query['page'] = page.toString();
   return repo.fetchAll(query: query.isEmpty ? null : query);
 });
