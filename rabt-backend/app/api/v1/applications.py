@@ -105,8 +105,29 @@ def update_application_status(
             detail="Not authorized to update this application",
         )
 
+    # Track if we're changing status to accepted (and it wasn't already accepted)
+    was_already_accepted = application.status == ApplicationStatus.ACCEPTED.value
+    is_being_accepted = status_update.status == ApplicationStatus.ACCEPTED
+    
     application.status = status_update.status
     application.organizer_message = status_update.organizer_message
+    
+    # If accepting an application (and it wasn't already accepted), check if we've reached the volunteer limit
+    if is_being_accepted and not was_already_accepted:
+        advert = application.advert
+        accepted_count = (
+            db.query(Application)
+            .filter(
+                Application.advert_id == advert.id,
+                Application.status == ApplicationStatus.ACCEPTED.value
+            )
+            .count()
+        )
+        
+        # Close the advert if we've reached or exceeded the required number of volunteers
+        if accepted_count >= advert.number_of_volunteers and advert.is_active:
+            advert.is_active = False
+    
     db.commit()
     db.refresh(application)
     return application

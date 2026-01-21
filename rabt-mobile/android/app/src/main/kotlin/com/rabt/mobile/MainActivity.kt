@@ -1,5 +1,10 @@
-package com.example.rabt_mobile
+package com.rabt.mobile
 
 import io.flutter.embedding.android.FlutterActivity
 
 class MainActivity : FlutterActivity()
+
+
+
+
+
