@@ -2,7 +2,7 @@ name: rabt_mobile
 description: "Rabt is a platform for volunteer networking for Palestine."
 publish_to: 'none'
 
-version: 1.0.1+3
+version: 1.0.2+4
 
 environment:
   sdk: ^3.7.0
