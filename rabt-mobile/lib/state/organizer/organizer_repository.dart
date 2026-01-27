@@ -3,9 +3,9 @@ import 'package:rabt_mobile/models/organizer.dart';
 import 'package:rabt_mobile/services/api_service.dart';
 import 'package:rabt_mobile/services/image_upload_service.dart';
 import 'dart:io';
-import 'dart:convert';
 
 import 'package:rabt_mobile/state/auth/auth_providers.dart';
+import 'package:rabt_mobile/util/parse_helpers.dart';
 
 class OrganizerRepository {
   OrganizerRepository(this.ref);
@@ -13,13 +13,17 @@ class OrganizerRepository {
   final Ref ref;
 
   Future<OrganizerProfile> fetchOrganizerProfile(String token) async {
-    final resp = await ref.read(apiServiceProvider).get('/api/v1/organizers/profile', headers: ref.read(apiServiceProvider).authHeaders(token));
-    return OrganizerProfile.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
+    final resp = await ref
+        .read(apiServiceProvider)
+        .get('/api/v1/organizers/profile', headers: ref.read(apiServiceProvider).authHeaders(token));
+    return parseObject(resp, (json) => OrganizerProfile.fromJson(json));
   }
 
   Future<OrganizerProfile> fetchPublicOrganizerProfile(String token, int id) async {
-    final resp = await ref.read(apiServiceProvider).get('/api/v1/organizers/$id/public', headers: ref.read(apiServiceProvider).authHeaders(token));
-    return OrganizerProfile.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
+    final resp = await ref
+        .read(apiServiceProvider)
+        .get('/api/v1/organizers/$id/public', headers: ref.read(apiServiceProvider).authHeaders(token));
+    return parseObject(resp, (json) => OrganizerProfile.fromJson(json));
   }
 
   Future<OrganizerProfile> updateOrganizerProfile({
@@ -28,9 +32,7 @@ class OrganizerRepository {
     String? description,
     String? logoUrl,
   }) async {
-    final data = <String, dynamic>{
-      'name': name,
-    };
+    final data = <String, dynamic>{'name': name};
 
     if (website != null && website.isNotEmpty) {
       data['website'] = website;
@@ -42,11 +44,8 @@ class OrganizerRepository {
       data['logo_url'] = logoUrl;
     }
 
-    final resp = await ref.read(apiServiceProvider).put(
-      '/api/v1/organizers/profile',
-      data,
-    );
-    return OrganizerProfile.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
+    final resp = await ref.read(apiServiceProvider).put('/api/v1/organizers/profile', data);
+    return parseObject(resp, (json) => OrganizerProfile.fromJson(json));
   }
 
   /// Register a new organizer
@@ -58,11 +57,7 @@ class OrganizerRepository {
     String? description,
     String? logoUrl,
   }) async {
-    final data = <String, dynamic>{
-      'name': name,
-      'email': email,
-      'password': password,
-    };
+    final data = <String, dynamic>{'name': name, 'email': email, 'password': password};
 
     if (website != null && website.isNotEmpty) {
       data['website'] = website;
@@ -80,11 +75,7 @@ class OrganizerRepository {
   /// Upload organizer logo using the generic image upload endpoint
   Future<String?> uploadLogo(File logoFile) async {
     final token = ref.read(authControllerProvider).value?.token;
-    return await ref.read(imageUploadServiceProvider).uploadImageWithCategory(
-      logoFile,
-      category: 'logos',
-      token: token,
-    );
+    return await ref.read(imageUploadServiceProvider).uploadImageWithCategory(logoFile, category: 'logos', token: token);
   }
 }
 
@@ -94,7 +85,7 @@ final organizerRepositoryProvider = Provider((ref) => OrganizerRepository(ref));
 final organizerProfileProvider = FutureProvider<OrganizerProfile?>((ref) async {
   final session = ref.watch(authControllerProvider).value;
   if (session == null) return null;
-  
+
   final repository = ref.watch(organizerRepositoryProvider);
   return repository.fetchOrganizerProfile(session.token);
 });

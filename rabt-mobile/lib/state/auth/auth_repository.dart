@@ -1,8 +1,8 @@
-import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rabt_mobile/models/organizer.dart';
 import 'package:rabt_mobile/models/user.dart';
 import 'package:rabt_mobile/services/api_service.dart';
+import 'package:rabt_mobile/util/parse_helpers.dart';
 
 class AuthRepository {
   AuthRepository(this.ref);
@@ -13,7 +13,7 @@ class AuthRepository {
       'username': email,
       'password': password,
     }, isAuthenticated: false);
-    return Token.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
+    return parseObject(resp, (json) => Token.fromJson(json));
   }
 
   Future<bool?> signupVolunteer({
@@ -30,7 +30,7 @@ class AuthRepository {
       'password': password,
       'skill_ids': skillIds,
     }, isAuthenticated: false);
-    return resp.statusCode == 201;
+    return resp.statusCode >= 200 && resp.statusCode < 300;
   }
 
   Future<bool?> signupOrganizer({
@@ -43,14 +43,14 @@ class AuthRepository {
       'password': password,
       ...organizerProfile.toJson(),
     }, isAuthenticated: false);
-    return resp.statusCode == 201;
+    return resp.statusCode >= 200 && resp.statusCode < 300;
   }
 
   Future<Token> refreshToken({required String refreshToken}) async {
     final resp = await ref.read(apiServiceProvider).postForm('/api/v1/auth/refresh', {
       'refresh_token': refreshToken,
     }, isAuthenticated: false);
-    return Token.fromJson(jsonDecode(resp.body) as Map<String, dynamic>);
+    return parseObject(resp, (json) => Token.fromJson(json));
   }
 }
 

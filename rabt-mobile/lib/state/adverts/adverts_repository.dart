@@ -13,12 +13,12 @@ class AdvertsRepository {
   Future<PaginatedAdverts> fetchAll({Map<String, String>? query}) async {
     // ApiService automatically handles optional auth - uses token if available
     final resp = await ref.read(apiServiceProvider).get('/api/v1/adverts', query: query);
-    final json = jsonDecode(resp.body) as Map<String, dynamic>;
-    List<Advert> data;
-    int totalPages;
-    data = (json['items'] as List<dynamic>).map((e) => Advert.fromJson(e as Map<String, dynamic>)).toList();
-    totalPages = (json['total_pages'] as num).toInt();
-    return PaginatedAdverts(items: data, totalPages: totalPages);
+    try {
+      final paginated = parsePaginated(resp, (json) => Advert.fromJson(json));
+      return PaginatedAdverts(items: paginated.items, totalPages: paginated.totalPages);
+    } on ApiException catch (e) {
+      throw Exception(e.message);
+    }
   }
 
   Future<List<Advert>> fetchMine() async {

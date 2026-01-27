@@ -76,14 +76,15 @@ class ApiService {
         ? _makeAuthenticatedRequest(() async {
           final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
           final resp = await http.post(uri, headers: finalHeaders, body: jsonEncode(data));
-          _throwOnError(resp);
+          _throwOnError(resp, isAuthenticated: isAuthenticated);
           return resp;
         })
-        : await http.post(
-          Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}'),
-          headers: finalHeaders,
-          body: jsonEncode(data),
-        );
+        : () async {
+          final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
+          final resp = await http.post(uri, headers: finalHeaders, body: jsonEncode(data));
+          _throwOnError(resp, isAuthenticated: isAuthenticated);
+          return resp;
+        }();
   }
 
   Future<http.Response> postForm(
@@ -101,14 +102,15 @@ class ApiService {
         ? _makeAuthenticatedRequest(() async {
           final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
           final resp = await http.post(uri, headers: finalHeaders, body: fields);
-          _throwOnError(resp);
+          _throwOnError(resp, isAuthenticated: isAuthenticated);
           return resp;
         })
-        : await http.post(
-          Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}'),
-          headers: finalHeaders,
-          body: fields,
-        );
+        : () async {
+          final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
+          final resp = await http.post(uri, headers: finalHeaders, body: fields);
+          _throwOnError(resp, isAuthenticated: isAuthenticated);
+          return resp;
+        }();
   }
 
   Future<http.Response> get(
@@ -130,7 +132,7 @@ class ApiService {
               throw Exception('Request timeout after 30 seconds');
             },
           );
-      _throwOnError(resp);
+      _throwOnError(resp, isAuthenticated: isAuthenticated);
       return resp;
     }
 
@@ -149,7 +151,7 @@ class ApiService {
     return _makeAuthenticatedRequest(() async {
       final uri = Uri.parse('$baseUrl$path${query != null ? '?${Uri(queryParameters: query).query}' : ''}');
       final resp = await http.put(uri, headers: finalHeaders, body: jsonEncode(data));
-      _throwOnError(resp);
+      _throwOnError(resp, isAuthenticated: true);
       return resp;
     });
   }
@@ -205,7 +207,7 @@ class ApiService {
 
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
-      _throwOnError(response);
+      _throwOnError(response, isAuthenticated: isAuthenticated);
       return response;
     }
 
@@ -252,7 +254,7 @@ class ApiService {
 
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
-      _throwOnError(response);
+      _throwOnError(response, isAuthenticated: isAuthenticated);
       return response;
     }
 
@@ -278,11 +280,25 @@ class ApiService {
     }
   }
 
-  void _throwOnError(http.Response resp) {
-    if (resp.statusCode == 401 || resp.statusCode == 403) {
-      throw TokenExpiredException('Token has expired or is invalid');
-    }
+  void _throwOnError(http.Response resp, {bool isAuthenticated = true}) {
     if (resp.statusCode >= 400) {
+      try {
+        final errorBody = jsonDecode(resp.body) as Map<String, dynamic>;
+        final detail = errorBody['detail'] as String?;
+        if (detail != null && detail.isNotEmpty) {
+          if (isAuthenticated && (resp.statusCode == 401 || resp.statusCode == 403)) {
+            throw TokenExpiredException(detail);
+          }
+          throw Exception(detail);
+        }
+      } catch (e) {
+        if (e is TokenExpiredException || (e is Exception && !e.toString().contains('API error'))) {
+          rethrow;
+        }
+      }
+      if (isAuthenticated && (resp.statusCode == 401 || resp.statusCode == 403)) {
+        throw TokenExpiredException('Token has expired or is invalid');
+      }
       throw Exception('API error ${resp.statusCode}: ${resp.body}');
     }
   }

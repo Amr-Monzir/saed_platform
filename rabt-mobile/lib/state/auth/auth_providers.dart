@@ -58,33 +58,37 @@ class AuthController extends _$AuthController {
   }
 
   Future<bool> loginWithBackend({required String email, required String password, required UserType type}) async {
-    final token = await ref.read(authRepositoryProvider).login(email: email, password: password);
+    try {
+      final token = await ref.read(authRepositoryProvider).login(email: email, password: password);
 
-    OrganizerProfile? organizerProfile;
-    VolunteerProfile? volunteerProfile;
+      OrganizerProfile? organizerProfile;
+      VolunteerProfile? volunteerProfile;
 
-    if (type == UserType.organizer) {
-      organizerProfile = await ref.read(organizerRepositoryProvider).fetchOrganizerProfile(token.accessToken);
-    } else if (type == UserType.volunteer) {
-      volunteerProfile = await ref.read(volunteerRepositoryProvider).fetchVolunteerProfile(token.accessToken);
+      if (type == UserType.organizer) {
+        organizerProfile = await ref.read(organizerRepositoryProvider).fetchOrganizerProfile(token.accessToken);
+      } else if (type == UserType.volunteer) {
+        volunteerProfile = await ref.read(volunteerRepositoryProvider).fetchVolunteerProfile(token.accessToken);
+      }
+
+      final session = SessionData(
+        token: token.accessToken,
+        userType: type,
+        organizerProfile: organizerProfile,
+        volunteerProfile: volunteerProfile,
+        refreshToken: token.refreshToken,
+      );
+
+      await saveTokenToStorage(
+        token: token,
+        userType: type,
+        organizerProfile: organizerProfile,
+        volunteerProfile: volunteerProfile,
+      );
+      state = AsyncData(session);
+      return true;
+    } catch (e) {
+      rethrow;
     }
-
-    final session = SessionData(
-      token: token.accessToken,
-      userType: type,
-      organizerProfile: organizerProfile,
-      volunteerProfile: volunteerProfile,
-      refreshToken: token.refreshToken,
-    );
-    
-    await saveTokenToStorage(
-      token: token,
-      userType: type,
-      organizerProfile: organizerProfile,
-      volunteerProfile: volunteerProfile,
-    );
-    state = AsyncData(session);
-    return true;
   }
 
   Future<bool> signupVolunteer({
